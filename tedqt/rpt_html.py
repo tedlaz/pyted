@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 Created on 5 Μαρ 2013
-
+Updated on 26 Mar 2017
 @author: tedlaz
 '''
 import PyQt5.QtWidgets as Qw
