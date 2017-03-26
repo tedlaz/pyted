@@ -4,5 +4,5 @@ This is an easy to use library to create pdf reports.
 
 Reports
 -------
-- Simple page **report** signed
+- Simple page **report** signed special
 - Multiple page table report
