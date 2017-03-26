@@ -74,7 +74,8 @@ class Invoice():
 
     def print_header(self):
         self.pdf.set_line_width(1.0)
-        self.pdf.image('logo.png', 11.0, 11.0, link='', type='', w=20.0, h=20)
+        logo = os.path.join(PATH, "fpdf/logo.png")
+        self.pdf.image(logo, 11.0, 11.0, link='', type='', w=20.0, h=20)
         # Τύπος παραστατικού
         self.hp.txtcb(150.0, 47.5, self.data['ityp'], 12)
         # Γραμμή από μεταφορά
