@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>443</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/pr/m13</normaloff>:/pr/m13</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTreeView" name="treeMis"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Δοκιμή1</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Αρχείο</string>
+    </property>
+    <addaction name="a_open"/>
+    <addaction name="a_new"/>
+    <addaction name="separator"/>
+    <addaction name="a_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Εκτυπώσεις</string>
+    </property>
+    <widget class="QMenu" name="menu_5">
+     <property name="title">
+      <string>Δημιουργία Αρχείων</string>
+     </property>
+     <addaction name="a_fmyFiscal"/>
+     <addaction name="a_apd"/>
+    </widget>
+    <addaction name="a_print_report"/>
+    <addaction name="a_print_report_apod"/>
+    <addaction name="menu_5"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Εργαζόμενοι</string>
+    </property>
+    <widget class="QMenu" name="menu_4">
+     <property name="title">
+      <string>Αποχωρήσεις</string>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="a_apol"/>
+     <addaction name="a_apox"/>
+    </widget>
+    <addaction name="a_fpr"/>
+    <addaction name="a_pros"/>
+    <addaction name="a_pros_wizard"/>
+    <addaction name="menu_4"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>Υπολογισμοί</string>
+    </property>
+    <addaction name="a_auto_par"/>
+    <addaction name="a_par"/>
+    <addaction name="a_pard"/>
+    <addaction name="a_calcmis"/>
+   </widget>
+   <widget class="QMenu" name="menuAdministration">
+    <property name="title">
+     <string>Παράμετροι</string>
+    </property>
+    <addaction name="a_tables"/>
+    <addaction name="a_sql"/>
+    <addaction name="a_xrisi"/>
+    <addaction name="a_eid"/>
+    <addaction name="a_ypok"/>
+   </widget>
+   <widget class="QMenu" name="menu_7">
+    <property name="title">
+     <string>Βοήθεια</string>
+    </property>
+    <addaction name="a_peri"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_6"/>
+   <addaction name="menuAdministration"/>
+   <addaction name="menu_7"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="toolTip">
+    <string>Κατάσταση</string>
+   </property>
+   <property name="statusTip">
+    <string>Όλα καλά</string>
+   </property>
+   <property name="whatsThis">
+    <string>Εδώ βλέπουμε την κατάσταση της εφαρμογής</string>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="a_open"/>
+   <addaction name="a_new"/>
+   <addaction name="separator"/>
+   <addaction name="a_print_report"/>
+   <addaction name="a_pros"/>
+   <addaction name="a_tables"/>
+  </widget>
+  <action name="a_open">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/fileOpen</normaloff>:/pr/fileOpen</iconset>
+   </property>
+   <property name="text">
+    <string>Άνοιγμα</string>
+   </property>
+   <property name="statusTip">
+    <string>Άνοιμα Αρχείου εταιρίας</string>
+   </property>
+  </action>
+  <action name="a_new">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/fileNew</normaloff>:/pr/fileNew</iconset>
+   </property>
+   <property name="text">
+    <string>Νέο</string>
+   </property>
+   <property name="toolTip">
+    <string>Νέο Αρχείο εταιρίας</string>
+   </property>
+   <property name="statusTip">
+    <string>Δημιουργία Νέου Αρχείου Εταιρίας</string>
+   </property>
+  </action>
+  <action name="a_print_report">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/print</normaloff>:/pr/print</iconset>
+   </property>
+   <property name="text">
+    <string>Μισθοδοσία</string>
+   </property>
+  </action>
+  <action name="a_pros">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/newProsopo</normaloff>:/pr/newProsopo</iconset>
+   </property>
+   <property name="text">
+    <string>Προσλήψεις</string>
+   </property>
+   <property name="statusTip">
+    <string>Διαχείρηση προσλήψεων εργαζομένων</string>
+   </property>
+  </action>
+  <action name="a_apol">
+   <property name="text">
+    <string>Απόλυση</string>
+   </property>
+  </action>
+  <action name="a_apox">
+   <property name="text">
+    <string>Οικιοθελής αποχώρηση</string>
+   </property>
+  </action>
+  <action name="a_fmyFiscal">
+   <property name="text">
+    <string>Οριστική ΦΜΥ</string>
+   </property>
+  </action>
+  <action name="a_apd">
+   <property name="text">
+    <string>ΑΠΔ Περιόδου</string>
+   </property>
+  </action>
+  <action name="a_calcmis">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/add</normaloff>:/pr/add</iconset>
+   </property>
+   <property name="text">
+    <string>Μισθοδοσία</string>
+   </property>
+  </action>
+  <action name="a_tables">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/table</normaloff>:/pr/table</iconset>
+   </property>
+   <property name="text">
+    <string>Πίνακες εφαρμογής</string>
+   </property>
+  </action>
+  <action name="a_fpr">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/newProsopo</normaloff>:/pr/newProsopo</iconset>
+   </property>
+   <property name="text">
+    <string>Στοιχεία εργαζομένων</string>
+   </property>
+   <property name="statusTip">
+    <string>Στοιχεία εργαζομένων</string>
+   </property>
+  </action>
+  <action name="a_pard">
+   <property name="text">
+    <string>Παρουσίες Details</string>
+   </property>
+  </action>
+  <action name="a_exit">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/exit</normaloff>:/pr/exit</iconset>
+   </property>
+   <property name="text">
+    <string>Έξοδος</string>
+   </property>
+   <property name="statusTip">
+    <string>Έξοδος από την εφαρμογή</string>
+   </property>
+  </action>
+  <action name="a_peri">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/info</normaloff>:/pr/info</iconset>
+   </property>
+   <property name="text">
+    <string>Περί...</string>
+   </property>
+  </action>
+  <action name="a_sql">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/sql</normaloff>:/pr/sql</iconset>
+   </property>
+   <property name="text">
+    <string>Εξαγωγή σε SQL</string>
+   </property>
+  </action>
+  <action name="a_par">
+   <property name="text">
+    <string>Παρουσίες Master</string>
+   </property>
+  </action>
+  <action name="a_xrisi">
+   <property name="text">
+    <string>Χρήσεις</string>
+   </property>
+  </action>
+  <action name="a_eid">
+   <property name="text">
+    <string>Ειδικότητες</string>
+   </property>
+  </action>
+  <action name="a_ypok">
+   <property name="text">
+    <string>Υποκαταστήματα</string>
+   </property>
+  </action>
+  <action name="a_auto_par">
+   <property name="text">
+    <string>Αυτόματες παρουσίες</string>
+   </property>
+  </action>
+  <action name="a_pros_wizard">
+   <property name="text">
+    <string>Οδηγός Νέας Πρόσληψης</string>
+   </property>
+  </action>
+  <action name="a_print_report_apod">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pr/print</normaloff>:/pr/print</iconset>
+   </property>
+   <property name="text">
+    <string>Αποδείξεις</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
+ <connections/>
+</ui>

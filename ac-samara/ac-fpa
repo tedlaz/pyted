@@ -1,0 +1,289 @@
+#!/usr/bin/python
+# *- coding: utf-8 -*
+# Δίνουμε sqlite database και μας επιστρέφει ισοζύγιο σε μορφή txt
+import sqlite3
+import decimal
+PIN_ERROR, DB_ERROR, NULL_VAL, ONE_VAL, MANY_VAL = range(5)
+
+sql = '''
+SELECT lmo.lmo, lmo.lmop, sum(trd.xr) as txr, sum(trd.pi) as tpi,
+sum(trd.xr) - sum(trd.pi) as typ
+FROM trd
+INNER JOIN tr on tr.id = trd.id_tr
+INNER JOIN lmo on trd.id_lmo = lmo.id
+WHERE tr.dat BETWEEN '%s' AND '%s'
+GROUP BY lmo
+'''
+
+sqla = '''
+SELECT lmo.lmo, lmo.lmop, sum(trd.xr) as txr, sum(trd.pi) as tpi,
+sum(trd.xr) - sum(trd.pi) as typ
+FROM trd
+INNER JOIN tr on tr.id = trd.id_tr
+INNER JOIN lmo on trd.id_lmo = lmo.id
+WHERE tr.dat >= '%s'
+GROUP BY lmo
+'''
+
+sqle = '''
+SELECT lmo.lmo, lmo.lmop, sum(trd.xr) as txr, sum(trd.pi) as tpi,
+sum(trd.xr) - sum(trd.pi) as typ
+FROM trd
+INNER JOIN tr on tr.id = trd.id_tr
+INNER JOIN lmo on trd.id_lmo = lmo.id
+WHERE tr.dat <= '%s'
+GROUP BY lmo
+'''
+
+sql1 = '''
+SELECT lmo.lmo, lmo.lmop, sum(trd.xr) as txr, sum(trd.pi) as tpi,
+sum(trd.xr) - sum(trd.pi) as typ
+FROM trd
+INNER JOIN tr on tr.id = trd.id_tr
+INNER JOIN lmo on trd.id_lmo = lmo.id
+GROUP BY lmo
+'''
+
+
+def isNum(value):  # Einai to value arithmos, i den einai ?
+    """ use: Returns False if value is not a number , True otherwise
+        input parameters :
+            1.value : the value to check against.
+        output: True or False
+        """
+    try:
+        float(value)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimals
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def triades(txt, separator='.'):
+    '''
+    Help function to split digits to thousants ( 123456 becomes 123.456 )
+    '''
+    ltxt = len(txt)
+    rem = ltxt % 3
+    precSpace = 3 - rem
+    stxt = ' ' * precSpace + txt
+    a = []
+    while len(stxt) > 0:
+        a.append(stxt[:3])
+        stxt = stxt[3:]
+    a[0] = a[0].strip()
+    fval = ''
+    for el in a:
+        fval += el + separator
+    return fval[:-1]
+
+
+def strGrDec(poso, decimals=2):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if dec(poso) == dec(0):
+        prosimo = ''
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+
+def remove_zero(stra):
+    if len(stra) > 1 and stra[0] == '0':
+        return stra[1:]
+    else:
+        return stra
+
+
+def date_iso2gr(date):
+    if not date:
+        return ''
+    year, month, day = date.split('-')
+    return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
+
+
+def nul2z(val):
+    '''
+    Instead of null returns 0. For sqlite use.
+    '''
+    if val:
+        return val
+    else:
+        return 0
+
+
+def grup(txtVal):
+    '''
+    Trasforms a string to uppercase special for Greek comparison
+    '''
+    ar1 = u"αάΆβγδεέΈζηήΉθιίϊΊκλμνξοόΌπρσςτυύΎφχψωώΏ"
+    ar2 = u"ΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΦΧΨΩΩΩ"
+    ftxt = u''
+    for letter in txtVal:
+        if letter in ar1:
+            ftxt += ar2[ar1.index(letter)]
+        else:
+            ftxt += letter.upper()
+    return ftxt
+
+
+def dbRows(pin):
+    """
+    input
+        sql : sql code to run
+        db  : database name
+    output:
+        1.Array of dbrows
+        2.Array of fieldNames
+        3.execution status :
+            DB_ERROR (0) for error
+            NULL_VAL (1) for success but empty recordset
+            ONE_VAL  (2) for only one row
+            MANY_VAL (3) for more than one row
+        4.text message
+    """
+    sqla = pin.get('sql', None)
+    db = pin.get('db', None)
+    limit = pin.get('limit', None)
+
+    if (not sqla) or (not db):
+        return {'status': PIN_ERROR,
+                'msg': 'dbRows :script and/or db name are empty'}
+
+    if not os.path.exists(db):
+        return {'status': PIN_ERROR, 'msg': 'dbRows : Path %s not exists' % db}
+
+    status = DB_ERROR
+    msg = 'dbRows :Something bad happened !!'
+
+    columnNames = []
+
+    if limit:
+        sqla += ' limit(%s)' % limit
+    try:
+        con = sqlite3.connect(db)  # @UndefinedVariable
+        # hook functions here
+        con.create_function("grup", 1, grup)
+        con.create_function("nul2z", 1, nul2z)
+
+        rowNum = 0
+        colNum = 0
+        cur = con.cursor()
+        cur.execute(sqla)
+        columnNames = [t[0] for t in cur.description]
+        colNum = len(columnNames)
+        rws = cur.fetchall()
+        cur.close()
+        con.close()
+        rowNum = len(rws)
+        if rowNum == 0:
+            status = NULL_VAL
+            msg = 'dbRows: Success , But no records'
+        elif rowNum == 1:
+            status = ONE_VAL
+            msg = 'dbRows: Success , Only One record'
+        else:
+            status = MANY_VAL
+            msg = 'dbRows: Success , %s records' % rowNum
+
+    except sqlite3.Error as e:  # @UndefinedVariable
+        rws = []
+        status = DB_ERROR
+        msg = 'dbRows: %s' % e
+
+    return {
+        'rows': rws,
+        'columnNames': columnNames,
+        'status': status,
+        'msg': msg,
+        'rowNumber': rowNum,
+        'columnNumber': colNum
+        }
+
+
+def txt_from_sql(db, apo=None, eos=None, Out=None):
+    if apo and eos:
+        fsql = sql % (apo, eos)
+    elif apo and not eos:
+        fsql = sqla % apo
+    elif eos and not apo:
+        fsql = sqle % eos
+    else:
+        fsql = sql1
+    data = dbRows({'sql': fsql, 'db': db})
+    if not apo:
+        apo = u'αρχή'
+    if not eos:
+        eos = u'τέλος'
+    finaltxt = u'Ανάλυση ΦΠΑ από: %s    έως: %s\n' % (apo, eos)
+    tmpl = '%-12s %44s %12s %12s %12s\n'
+    fpa = u'ΦΠΑ\n'
+    vfpa = ['', u'Σύνολο ΦΠΑ', dec(0), dec(0), dec(0)]
+    # tran = 0
+    for lin in data['rows']:
+        lty = lin[0][0]
+        xr = strGrDec(lin[2])
+        pi = strGrDec(lin[3])
+        yp = strGrDec(lin[4])
+        if lty in '1267':
+            finaltxt +=  tmpl % (lin[0], lin[1], xr, pi, yp)
+        if lin[0][:5] == '54.00':
+            fpa += tmpl % (lin[0], lin[1], xr, pi, yp)
+            vfpa[2] += dec(lin[2])
+            vfpa[3] += dec(lin[3])
+            vfpa[4] += dec(lin[4])
+    vf2 = strGrDec(vfpa[2])
+    vf3 = strGrDec(vfpa[3])
+    vf4 = strGrDec(vfpa[4])
+    fpa += '\n'
+    fpa += tmpl % ('', u'Σύνολο ΦΠΑ', vf2, vf3, vf4)
+    if Out:
+        with open(Out, 'w') as afile:
+            afile.write(finaltxt.encode('utf-8'))
+            afile.write(fpa.encode('utf-8'))
+    else:
+        print(finaltxt)
+        print(fpa)
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description=u'Ισοζύγιο σε αρχείο')
+    pars.add_argument('db', help='Sqlite database file')
+    pars.add_argument('-o', '--Out', help='Output text file')
+    pars.add_argument('-f', '--From', help='From Date')
+    pars.add_argument('-t', '--To', help='To Date')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.db):
+        print('No such file : %s' % args.db)
+    else:
+        txt_from_sql(args.db, args.From, args.To, args.Out)

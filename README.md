@@ -1,2 +1,3 @@
 # pyted
-A set of python projects
+
+Συλλογή απο προγράμματα

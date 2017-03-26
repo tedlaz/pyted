@@ -1,0 +1,10 @@
+<h1>Greek book keeping application</h1>
+
+
+Dependencies
+1.python2.7 http://www.python.org/download
+2.PyQt4 http://www.riverbankcomputing.co.uk/software/pyqt/download
+3.Suds https://fedorahosted.org/suds
+4.(For windows only) pyWin32 http://sourceforge.net/projects/pywin32/files
+5.pyinstaller 2.1 http://www.pyinstaller.org
+test2

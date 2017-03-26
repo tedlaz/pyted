@@ -1,0 +1,53 @@
+To create an automatic form we need:
+
+1.A database file
+2.A table name or sql(View only)
+3.Table Fields or sql fields(View only)
+4.Type of form
+
+===============================================================================
+Διαδικασία αυτόματης φόρμας.
+===============================================================================
+
+1. Περνάμε σαν παράμετρους στη φόρμα:
+1.1. Εαν υπάρχει το parent και από εκεί παίρνουμε την database
+1.2. Τον Πίνακα ή το sql (Read only)
+1.3. To id (Κενό αν πρόκειται για εισαγωγή νέας εγγραφής)
+
+2. Δημιουργία πεδίων
+2.1. Με βάση τα προηγούμενα βρίσκουμε τα labels , τους τύπους πεδίων και τα
+     validation rules (Όταν πρόκειται για insert mode)
+
+3. Γέμισμα φόρμας με τιμές εκτός εάν πρόκειται για insert mode.
+
+DataBase -- Form
+
+Για τη μεταφορά δεδομένων από την database σε φόρμα χρησιμοποιούμε dict
+
+1. dmeta : για τη μεταφορά metadata
+1.1. Δομή dmeta :
+     {
+       "type": "dmeta"
+       "name": "atable",
+       "mode": "edit", "view", "search"
+       "sqlcreate": "CREATE TABLE IF NOT EXISTS atable(id INTEGER PRIMARY KEY, epo TEXT NOT NULL, ono TEXT NOT NULL)"
+       "title": "Ένας πίνακας",
+       "fldorder": ['id', 'epo', 'ono'],
+       "fields":{
+            "id": {'lbl': u"AA", 'qt': ""},
+            "epo": {'lbl': u"Επώνυμο", "qt": ""},
+            "ono": {"lbl": u"Όνομα", "qt": ""}
+
+       }
+     }
+2. ddata : για τη μεταφορά δεδομένων
+2.1. Δομή ddata:
+     {
+        "type": "ddata",
+        "name": "table1",
+        "action": "save" or "edit" or "view" or "search",
+        "rows": [
+            {'id': 1, 'epo': 'Laz', 'ono': 'Ted'},
+            {'id': 2, 'epo': 'Daz', 'ono': 'Popi'}
+        ]
+     }

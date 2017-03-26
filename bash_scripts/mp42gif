@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# DEPENDENCIES
+
+# ffmpeg to record mp4 video and convert to webm
+# slop to get coordinates where to record, https://github.com/naelstrof/slop
+# sox to play audio file
+
+# deal with passed arguments
+if [ $# -gt 1 ]; then
+    dur=$2
+elif [ $# -gt 0 ]; then
+    dur=320
+else
+    dur=320
+fi
+
+ffmpeg -i $1 -r 10 -vf scale=$dur:-1 $1.gif

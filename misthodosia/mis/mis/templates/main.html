@@ -1,0 +1,21 @@
+{% extends "basic.html" %}
+
+{% block title %}Κεντρικό μενού {% endblock %}
+{% block content %}
+	<h1>Κεντρικό μενού εφαρμογής</h1>
+	<li><a href="/erg/">Λίστα Εργαζομένων</a></li>
+	<li><a href="/paroysies/2012/11/">Παρουσίες Εργαζομένων</a></li>
+	{% if form.errors %}
+		<p style="color: red;">
+			please correct the error {{ form.errors|pluralize }} below.
+		</p>
+	{% endif %}
+	<form action="/erg/" method="post">
+		{% csrf_token %}
+		<table>
+			{{ form.as_table }}
+		</table>
+		<input type="submit" value="Αποθήκευση">
+	</form>
+	
+{% endblock %}

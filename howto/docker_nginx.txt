@@ -1,0 +1,1 @@
+sudo docker run --name ws -p 80:80 -v /home/tedlaz/http:/usr/share/nginx/html:ro -d nginx:stable-alpine

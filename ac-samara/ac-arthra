@@ -1,0 +1,154 @@
+#!/usr/bin/python2
+# -*- coding: utf-8 -*-
+# Εκτύπωση άρθρων λογιστικής με δυνατοτητα επιλογής λογαριασμών 
+import sqlite3
+import decimal
+# ENCODING = 'windows-1253'
+ENCODING = 'utf8'
+
+sqlt = '''
+select tr.dat, trd.id_tr, tr.par,  trd.id, lmo.lmo, lmo.lmop, trd.xr, trd.pi
+FROM trd INNER JOIN lmo ON lmo.id=trd.id_lmo
+INNER JOIN tr on tr.id=trd.id_tr
+where trd.id_tr in (
+select distinct trd.id_tr as id6 from trd INNER JOIN lmo
+ON lmo.id=trd.id_lmo where lmo.lmo like '%s%%'
+)
+order by tr.dat, trd.id_tr, trd.id;
+'''
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimals
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    def isNum(value):  # Einai to value arithmos, i den einai ?
+        try:
+            float(value)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def strGrDec(poso, decimals=2):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    def triades(txt, separator='.'):
+        '''
+        Help function to split digits to thousants ( 123456 becomes 123.456 )
+        '''
+        ltxt = len(txt)
+        rem = ltxt % 3
+        precSpace = 3 - rem
+        stxt = ' ' * precSpace + txt
+        a = []
+        while len(stxt) > 0:
+            a.append(stxt[:3])
+            stxt = stxt[3:]
+        a[0] = a[0].strip()
+        fval = ''
+        for el in a:
+            fval += el + separator
+        return fval[:-1]
+
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+
+def date_iso2gr(date):
+    '''
+    date : iso date yyyy-mm-dd
+    '''
+    def remove_zero(stra):
+        if len(stra) > 1 and stra[0] == '0':
+            return stra[1:]
+        else:
+            return stra
+    if not date:
+        return ''
+
+    year, month, day = date.split('-')
+    return u'%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
+
+
+def select(dbpath, sql):
+    con = sqlite3.connect(dbpath)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute(sql)
+    rows = cur.fetchall()
+    cur.close()
+    con.close()
+    return rows
+
+
+def run(db, omada=6):
+    tomad = '%s' % omada
+    lomad = len(tomad)
+    rows = select(db, sqlt % omada)
+    dat = ''
+    idtr = ''
+    lh = u'\n%s (%s) %s'
+    ld = u'%12s %40s %12s %12s'
+    s6 = 0
+
+    for row in rows:
+        if dat != row['dat']:
+            dat = row['dat']
+            print('\n Total %s : %12s' % (omada, strGrDec(s6)))
+            s6 = 0
+            print('')
+            print('-' * 79)
+        if idtr != row['id_tr']:
+
+            idtr = row['id_tr']
+            astr = lh % (date_iso2gr(row['dat']), row['id_tr'], row['par'])
+            print(astr.encode(ENCODING))
+        if row['lmo'][:lomad] == tomad:
+            s6 += dec(row['xr']) - dec(row['pi'])
+        xr = strGrDec(row['xr'])
+        pi = strGrDec(row['pi'])
+        astr = ld % (row['lmo'], row['lmop'], xr, pi)
+        print(astr.encode(ENCODING))
+    print('\n Total %s : %12s' % (omada, strGrDec(s6)))
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description='Arthra omadas (default 6)')
+    pars.add_argument('el', help='sqlite file for logistiki')
+    pars.add_argument('-o', '--Omada', help='Omada Logistikis')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.el):
+        print('No such file : %s' % args.el)
+    else:
+        if args.Omada:
+            ret = run(args.el, args.Omada)
+        else:
+            ret = run(args.el)

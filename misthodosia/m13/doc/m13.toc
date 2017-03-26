@@ -1,0 +1,24 @@
+\contentsline {chapter}{Πρόλογος}{i}
+\contentsline {chapter}{\numberline {1} Εργαλεία Προγραμματισμού}{1}
+\contentsline {section}{\numberline {1.1}ΕΛ/ΛΑΚ - GPL }{1}
+\contentsline {section}{\numberline {1.2}Απαραίτητα προγράμματα για εγκατάσταση}{1}
+\contentsline {subsection}{\numberline {1.2.1}Python}{1}
+\contentsline {subsection}{\numberline {1.2.2}Δοκιμαστικό}{1}
+\contentsline {subsection}{\numberline {1.2.3}sqlite}{1}
+\contentsline {subsection}{\numberline {1.2.4}PyQt}{1}
+\contentsline {subsection}{\numberline {1.2.5}Py2exe}{2}
+\contentsline {subsection}{\numberline {1.2.6}Inno Setup}{2}
+\contentsline {subsection}{\numberline {1.2.7}Eclipse}{2}
+\contentsline {subsection}{\numberline {1.2.8}pydev}{2}
+\contentsline {chapter}{\numberline {2}Τεχνικές προδιαγραφές}{3}
+\contentsline {section}{\numberline {2.1}Γενικές γραμμές}{3}
+\contentsline {section}{\numberline {2.2}Βάση δεδομένων - Πίνακες - Views }{3}
+\contentsline {subsection}{\numberline {2.2.1}Πίνακες}{3}
+\contentsline {subsection}{\numberline {2.2.2}SQL}{4}
+\contentsline {section}{\numberline {2.3}Gui - Φόρμες - Εκτυπώσεις}{4}
+\contentsline {subsection}{\numberline {2.3.1}Gui}{4}
+\contentsline {subsection}{\numberline {2.3.2}Φόρμες}{5}
+\contentsline {section}{\numberline {2.4}Επικοινωνίες με άλλα συστήματα}{5}
+\contentsline {section}{\numberline {2.5}Διαδικασίες Backup - Restore - Αναβάθμισης}{5}
+\contentsline {section}{\numberline {2.6}Υποσυστήματα}{5}
+\contentsline {subsection}{\numberline {2.6.1}Υπολογισμοί}{5}

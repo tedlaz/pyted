@@ -1,0 +1,28 @@
+sudo pacman-key --init
+sudo dirmngr και όταν τρέξει πατάμε ctrl+c
+sudo pacman-key -r 962DDE58
+sudo pacman-key --lsign-key 962DDE58
+
+sudo leafpad /etc/pacman.conf και προσθέτουμε στο τέλος
+
+[infinality-bundle]
+Server = http://bohoomil.com/repo/$arch
+
+[infinality-bundle-multilib]
+Server = http://bohoomil.com/repo/multilib/$arch
+
+[infinality-bundle-fonts]
+Server = http://bohoomil.com/repo/fonts
+
+Σώζουμε το αρχείο pacman.conf
+
+sudo pacman -Sy
+sudo pacman -S infinality-bundle
+sudo pacman -S infinality-bundle-multilib
+sudo pacman -S ibfonts-meta-base ibfonts-meta-extended
+
+Για μοντέρνα icons τρέχουμε
+yaourt oranchelo
+
+για ωραίο screen recorder τρέχουμε
+sudo pacman -S simplescreenrecorder

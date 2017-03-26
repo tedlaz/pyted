@@ -1,0 +1,19 @@
+<RCC>
+  <qresource>
+    <file alias="filenew">images/filenew.png</file>
+    <file alias="fileopen">images/fileopen.png</file>
+    <file alias="filesave">images/filesave.png</file>
+    <file alias="key">images/key.png</file>
+    <file alias="filesaveas">images/filesaveas.png</file>
+    <file alias="filequit">images/filequit.png</file>
+    <file alias="editdelete">images/editdelete.png</file>
+    <file alias="icon">images/icon.png</file>
+    <file alias="print">images/print.png</file>
+    <file alias="resync">images/resync.png</file>
+    <file alias="add">images/add.png</file>
+    <file alias="balance">images/balance.png</file>
+    <file alias="pdf">images/pdf.png</file>
+    <file alias="euro">images/euro.png</file>
+    <file alias="eurod">images/eurod.png</file>
+  </qresource>
+</RCC>

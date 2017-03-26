@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Άρθρο Νο {{ tr }}{% endblock %}
+
+{% block content %}
+<h1>Άρθρο Νο {{ tr }} - ( {{ par }} )</h1>
+<h1>{{ imnia }} {{ per }}</h1>
+<table>
+<tr>
+<th>Κωδικός</th>
+<th>Περιγραφή</th>
+<th>Χρέωση</th>
+<th>Πίστωση</th>
+</tr>
+ {%  for ln in lin  %}
+ 	<tr>
+ 	<td>{{ ln.lmos }}</td>
+ 	<td>{{ ln.per2 }}</td>
+ 	<td align="right">{{ ln.xr }}</td>
+ 	<td align="right">{{ ln.pi }}</td>
+ 	</tr>
+ {% endfor %}
+  	<tr>
+ 	<th>Σύνολα</th>
+ 	<td></td>
+ 	<td align="right"><b>{{ total_xr }}</b></td>
+ 	<td align="right"><b>{{ total_pi }}</b></td>
+ 	</tr>
+</table>
+
+{% endblock %}

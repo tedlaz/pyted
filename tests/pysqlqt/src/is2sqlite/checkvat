@@ -1,0 +1,262 @@
+#!/usr/bin/python
+# *- coding: utf-8 -*
+# Δεν είναι έτοιμο !!!
+# Δοκιμαστικό !!!
+import sqlite3
+import decimal
+# from collections import OrderedDict
+PIN_ERROR, DB_ERROR, NULL_VAL, ONE_VAL, MANY_VAL = range(5)
+
+sql = '''
+select lmo.lmo, sum(trd.xr) as txr, sum(trd.pi) as tpi
+From trd inner join lmo on trd.id_lmo = lmo.id group by lmo
+'''
+sqlp = 'SELECT * from aa'
+
+
+def isNum(value):  # Einai to value arithmos, i den einai ?
+    """ use: Returns False if value is not a number , True otherwise
+        input parameters :
+            1.value : the value to check against.
+        output: True or False
+        """
+    try:
+        float(value)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimals
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def triades(txt, separator='.'):
+    '''
+    Help function to split digits to thousants ( 123456 becomes 123.456 )
+    '''
+    ltxt = len(txt)
+    rem = ltxt % 3
+    precSpace = 3 - rem
+    stxt = ' ' * precSpace + txt
+    a = []
+    while len(stxt) > 0:
+        a.append(stxt[:3])
+        stxt = stxt[3:]
+    a[0] = a[0].strip()
+    fval = ''
+    for el in a:
+        fval += el + separator
+    return fval[:-1]
+
+
+def strGrDec(poso, decimals=2):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+
+def remove_zero(stra):
+    if len(stra) > 1 and stra[0] == '0':
+        return stra[1:]
+    else:
+        return stra
+
+
+def date_iso2gr(date):
+    if not date:
+        return ''
+    year, month, day = date.split('-')
+    return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
+
+
+def nul2z(val):
+    '''
+    Instead of null returns 0. For sqlite use.
+    '''
+    if val:
+        return val
+    else:
+        return 0
+
+
+def grup(txtVal):
+    '''
+    Trasforms a string to uppercase special for Greek comparison
+    '''
+    ar1 = u"αάΆβγδεέΈζηήΉθιίϊΊκλμνξοόΌπρσςτυύΎφχψωώΏ"
+    # aAbBeEHiIkKMNoOpPstTyYxXzZ"
+    ar2 = u"ΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΦΧΨΩΩΩ"
+    # ΑΑΒΒΕΕΗΙΙΚΚΜΝΟΟΡΡΣΤΤΥΥΧΧΖΖ"
+    ftxt = u''
+    for letter in txtVal:
+        if letter in ar1:
+            ftxt += ar2[ar1.index(letter)]
+        else:
+            ftxt += letter.upper()
+    return ftxt
+
+
+def dbRows(pin):
+    """
+    input
+        sql : sql code to run
+        db  : database name
+    output:
+        1.Array of dbrows
+        2.Array of fieldNames
+        3.execution status :
+            DB_ERROR (0) for error
+            NULL_VAL (1) for success but empty recordset
+            ONE_VAL  (2) for only one row
+            MANY_VAL (3) for more than one row
+        4.text message
+    """
+    sqla = pin.get('sql', None)
+    db = pin.get('db', None)
+    limit = pin.get('limit', None)
+
+    if (not sqla) or (not db):
+        return {'status': PIN_ERROR,
+                'msg': 'dbRows :script and/or db name are empty'}
+
+    if not os.path.exists(db):
+        return {'status': PIN_ERROR, 'msg': 'dbRows : Path %s not exists' % db}
+
+    status = DB_ERROR
+    msg = 'dbRows :Something bad happened !!'
+
+    columnNames = []
+
+    if limit:
+        sqla += ' limit(%s)' % limit
+    try:
+        con = sqlite3.connect(db)  # @UndefinedVariable
+        # hook functions here
+        con.create_function("grup", 1, grup)
+        con.create_function("nul2z", 1, nul2z)
+
+        rowNum = 0
+        colNum = 0
+        cur = con.cursor()
+        cur.execute(sql)
+        columnNames = [t[0] for t in cur.description]
+        colNum = len(columnNames)
+        rws = cur.fetchall()
+        cur.close()
+        con.close()
+        rowNum = len(rws)
+        if rowNum == 0:
+            status = NULL_VAL
+            msg = 'dbRows: Success , But no records'
+        elif rowNum == 1:
+            status = ONE_VAL
+            msg = 'dbRows: Success , Only One record'
+        else:
+            status = MANY_VAL
+            msg = 'dbRows: Success , %s records' % rowNum
+
+    except sqlite3.Error, e:  # @UndefinedVariable
+        rws = []
+        status = DB_ERROR
+        msg = 'dbRows: %s' % e
+
+    return {
+        'rows': rws,
+        'columnNames': columnNames,
+        'status': status,
+        'msg': msg,
+        'rowNumber': rowNum,
+        'columnNumber': colNum
+        }
+
+
+def create_dict(array):
+    print(array)
+
+
+def txt_from_sql(db, Out):
+    if not Out:
+        Out = 'iso-%s.txt' % db
+    data = dbRows({'sql': sql, 'db': db})
+    par = dbRows({'sql': sqlp, 'db': 'entypo.db'})
+    # finaltxt = u'Ισοζύγιο Λογιστικής\n'
+    flmo_kod = {}
+    flmo_lmof = {}
+    fkod_synt = {}
+    kod_kodf = {}
+    for line in par['rows']:
+        flmo_kod[line[1]] = line[3]
+        flmo_lmof[line[1]] = line[2]
+        fkod_synt[line[3]] = dec(line[7])
+        kod_kodf[line[3]] = line[6]
+    # a = OrderedDict()
+    valxr = {}
+    valpi = {}
+    arrd = []
+    for line in data['rows']:
+        lmo, txr, tpi = line
+        txr = dec(txr)
+        tpi = dec(tpi)
+        ypol = txr-tpi
+        if lmo in flmo_kod:
+            fpa = dec(ypol * fkod_synt[flmo_kod[lmo]] / 100)
+            arrd.append([lmo, flmo_lmof[lmo], flmo_kod[lmo], ypol, fpa])
+            valxr[flmo_kod[lmo]] = valxr.get(flmo_kod[lmo], dec(0)) + txr
+            valpi[flmo_kod[lmo]] = valpi.get(flmo_kod[lmo], dec(0)) + tpi
+    fstr = '%13s %13s %5s %10s %10s'
+    for el in arrd:
+        print(fstr % tuple(el))
+
+    fstr = '%5s %10s %10s %5s %10s %10s'
+    for key in valxr:
+        fpaxr = dec(fkod_synt[key] * valxr[key] / 100)
+        fpapi = dec(fkod_synt[key] * valpi[key] / 100)
+
+        keyt = str(key)
+        keyf = int(keyt[:3])
+        print fstr % (keyf,
+                      valxr[key],
+                      valpi[key],
+                      kod_kodf[key],
+                      fpaxr,
+                      fpapi)
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description=u'Έλεγχος ΦΠΑ')
+    pars.add_argument('db', help='Sqlite database file')
+    pars.add_argument('-o', '--Out', help='Output text file')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.db):
+        print('No such file : %s' % args.db)
+    else:
+        txt_from_sql(args.db, args.Out)

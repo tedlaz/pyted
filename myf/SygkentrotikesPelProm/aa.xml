@@ -1,0 +1,45 @@
+<packages>
+
+<package actor_afm="100299188" month="9" year="2013" branch="123">
+
+<groupedRevenues action="replace|incremental">
+  <revenue>
+    <afm>300400000</afm>
+    <amount>1200,00</amount>
+    <tax>251,00</tax>
+    <invoices>3</invoices>
+    <note>normal</note>
+    <date>2013-10-01</date>
+  </revenue>
+</groupedRevenues>
+
+<groupedCashRegisters action="replace|incremental" >
+  <cashregister>
+    <cashreg_id>09000882</cashreg_id>
+    <amount>100,10</amount>
+    <tax>10,10</tax>
+    <date>2013-10-01</date>
+  </cashregister>
+</groupedCashRegisters>
+
+<groupedExpenses action="replace|incremental">
+  <expense>
+    <afm>300400000</afm>
+    <amount >100,10</amount>
+    <tax>10,10</tax>
+    <invoices>3</invoices>
+    <note>credit|normal</note>
+    <nonObl>0|1</nonObl>
+    <date>2013-10-01</date>
+    </expense>
+</groupedExpenses>
+
+
+<otherExpenses>
+    <amount>100,10</amount>
+    <tax>10,10</tax>
+    <date>2013-10-01</date>
+</otherExpenses>
+
+</package>
+</packages>

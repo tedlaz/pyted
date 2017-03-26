@@ -1,0 +1,208 @@
+#!/usr/bin/python2
+# *- coding: utf-8 -*
+# Δίνουμε sqlite database και μας επιστρέφει ισοζύγιο σε μορφή txt
+import sqlite3
+import decimal
+PIN_ERROR, DB_ERROR, NULL_VAL, ONE_VAL, MANY_VAL = range(5)
+
+sql = '''
+select lmo.lmo, lmo.lmop, sum(trd.xr) as txr, sum(trd.pi) as tpi,
+sum(trd.xr) - sum(trd.pi) as typ
+From trd
+inner join lmo on trd.id_lmo = lmo.id
+INNER JOIN tr on tr.id = trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+group by lmo
+union
+select substr(lmo.lmo, 1, 8) as lmo3, '' as lmop, sum(trd.xr) , sum(trd.pi) ,
+sum(trd.xr) - sum(trd.pi) as typ
+from trd
+inner join lmo on trd.id_lmo = lmo.id
+INNER JOIN tr on tr.id = trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+group by lmo3
+union
+select substr(lmo.lmo, 1, 5) as lmo2, '' as lmop, sum(trd.xr) , sum(trd.pi) ,
+sum(trd.xr) - sum(trd.pi) as typ
+from trd
+inner join lmo on trd.id_lmo = lmo.id
+INNER JOIN tr on tr.id = trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+group by lmo2
+union
+select substr(lmo.lmo, 1, 2) as lmo1, '' as lmop, sum(trd.xr) , sum(trd.pi) ,
+sum(trd.xr) - sum(trd.pi) as typ
+from trd
+inner join lmo on trd.id_lmo = lmo.id
+INNER JOIN tr on tr.id = trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+group by lmo1
+union
+select substr(lmo.lmo, 1, 1) as lmo0, '' as lmop, sum(trd.xr) , sum(trd.pi) ,
+sum(trd.xr) - sum(trd.pi) as typ
+from trd
+inner join lmo on trd.id_lmo = lmo.id
+INNER JOIN tr on tr.id = trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+group by lmo0
+union
+select '99.Totals' as lmot, '' as lmop, sum(trd.xr) , sum(trd.pi) ,
+sum(trd.xr) - sum(trd.pi) as typ
+from trd
+inner join lmo on trd.id_lmo = lmo.id
+INNER JOIN tr on tr.id = trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+'''
+
+
+def isNum(value):  # Einai to value arithmos, i den einai ?
+    """ use: Returns False if value is not a number , True otherwise
+        input parameters :
+            1.value : the value to check against.
+        output: True or False
+        """
+    try:
+        float(value)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimals
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def triades(txt, separator='.'):
+    '''
+    Help function to split digits to thousants ( 123456 becomes 123.456 )
+    '''
+    ltxt = len(txt)
+    rem = ltxt % 3
+    precSpace = 3 - rem
+    stxt = ' ' * precSpace + txt
+    a = []
+    while len(stxt) > 0:
+        a.append(stxt[:3])
+        stxt = stxt[3:]
+    a[0] = a[0].strip()
+    fval = ''
+    for el in a:
+        fval += el + separator
+    return fval[:-1]
+
+
+def strGrDec(poso, decimals=2):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if dec(poso) == dec(0):
+        prosimo = ''
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+
+def remove_zero(stra):
+    if len(stra) > 1 and stra[0] == '0':
+        return stra[1:]
+    else:
+        return stra
+
+
+def date_iso2gr(date):
+    if not date:
+        return ''
+    year, month, day = date.split('-')
+    return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
+
+
+def nul2z(val):
+    '''
+    Instead of null returns 0. For sqlite use.
+    '''
+    if val:
+        return val
+    else:
+        return 0
+
+
+def grup(txtVal):
+    '''
+    Trasforms a string to uppercase special for Greek comparison
+    '''
+    ar1 = u"αάΆβγδεέΈζηήΉθιίϊΊκλμνξοόΌπρσςτυύΎφχψωώΏ"
+    # aAbBeEHiIkKMNoOpPstTyYxXzZ"
+    ar2 = u"ΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΦΧΨΩΩΩ"
+    # ΑΑΒΒΕΕΗΙΙΚΚΜΝΟΟΡΡΣΤΤΥΥΧΧΖΖ"
+    ftxt = u''
+    for letter in txtVal:
+        if letter in ar1:
+            ftxt += ar2[ar1.index(letter)]
+        else:
+            ftxt += letter.upper()
+    return ftxt
+
+
+def dbRows(db, sql):
+    con = sqlite3.connect(db)  # @UndefinedVariable
+    cur = con.cursor()
+    cur.execute(sql)
+    rws = cur.fetchall()
+    cur.close()
+    con.close()
+    return rws
+
+def txt_from_sql(db, dapo=None, deos=None, Out=None):
+    fsql = sql.format(apo=dapo, eos=deos)
+    data = dbRows(db, fsql)
+    finaltxt = u'Ισοζύγιο Λογιστικής από: %s  έως: %s\n' % (dapo, deos)
+    # tran = 0
+    for lin in data:
+        xre = strGrDec(lin[2])
+        pis = strGrDec(lin[3])
+        ypo = strGrDec(lin[4])
+        finaltxt += '%-12s %44s %12s %12s %12s\n' % (lin[0], lin[1], xre, pis, ypo)
+    if Out:
+        with open(Out, 'w') as afile:
+            afile.write(finaltxt.encode('utf-8'))
+    else:
+        print(finaltxt)
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description=u'Ισοζύγιο σε αρχείο')
+    pars.add_argument('db', help='Sqlite database file')
+    pars.add_argument('-o', '--Out', help='Output text file')
+    pars.add_argument('-f', '--From', help='From Date')
+    pars.add_argument('-t', '--To', help='To Date')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.db):
+        print('No such file : %s' % args.db)
+    else:
+        txt_from_sql(args.db, args.From, args.To, args.Out)

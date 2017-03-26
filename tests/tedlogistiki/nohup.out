@@ -1,0 +1,124 @@
+[03/Mar/2010 15:56:16] "GET /admin/ HTTP/1.1" 200 8408
+[03/Mar/2010 15:56:19] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27544
+[03/Mar/2010 15:56:21] "GET /admin/logistiki/tran/631/ HTTP/1.1" 200 58773
+[03/Mar/2010 15:56:21] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+Validating models...
+0 errors found
+
+Django version 1.1.1, using settings 'ted.settings'
+Development server is running at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[03/Mar/2010 15:57:25] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[03/Mar/2010 15:57:27] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27544
+[03/Mar/2010 15:57:28] "GET /admin/logistiki/tran/634/ HTTP/1.1" 200 58686
+[03/Mar/2010 15:57:28] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 15:57:31] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27544
+[03/Mar/2010 15:57:34] "GET /admin/logistiki/tran/624/ HTTP/1.1" 200 68098
+[03/Mar/2010 15:57:34] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 15:57:41] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[03/Mar/2010 15:57:43] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23060
+[03/Mar/2010 15:57:49] "GET /admin/logistiki/lmo/71/ HTTP/1.1" 200 3862
+[03/Mar/2010 15:57:49] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 15:57:52] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[03/Mar/2010 15:58:20] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23060
+[03/Mar/2010 15:58:22] "GET /admin/logistiki/lmo/80/ HTTP/1.1" 200 3842
+[03/Mar/2010 15:58:22] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 15:59:01] "GET /admin/logistiki/lmo/80/ HTTP/1.1" 200 1777
+[03/Mar/2010 15:59:03] "POST /admin/logistiki/lmo/80/ HTTP/1.1" 302 0
+[03/Mar/2010 15:59:03] "GET /admin/logistiki/lmo/80/ HTTP/1.1" 200 3842
+[03/Mar/2010 15:59:03] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 15:59:07] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23060
+[03/Mar/2010 15:59:09] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[03/Mar/2010 15:59:10] "GET /admin/logistiki/tran_d/ HTTP/1.1" 200 45087
+[03/Mar/2010 16:05:34] "GET /admin/logistiki/tran_d/1559/ HTTP/1.1" 200 67441
+[03/Mar/2010 16:05:34] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 16:05:44] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[03/Mar/2010 16:05:46] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27544
+[03/Mar/2010 16:05:48] "GET /admin/logistiki/tran/631/ HTTP/1.1" 200 58773
+[03/Mar/2010 16:05:48] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 16:15:32] "GET /admin/ HTTP/1.1" 200 8408
+[03/Mar/2010 17:50:11] "GET / HTTP/1.1" 404 2119
+[03/Mar/2010 17:50:22] "GET /admin/ HTTP/1.1" 200 8408
+[03/Mar/2010 20:12:29] "GET /admin HTTP/1.1" 301 0
+[03/Mar/2010 20:12:30] "GET /admin/ HTTP/1.1" 200 1760
+[03/Mar/2010 20:12:34] "POST /admin/ HTTP/1.1" 302 0
+[03/Mar/2010 20:12:35] "GET /admin/ HTTP/1.1" 200 8408
+[03/Mar/2010 20:12:38] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27544
+[03/Mar/2010 20:13:15] "GET /admin/logistiki/tran/618/ HTTP/1.1" 200 58863
+[03/Mar/2010 20:13:16] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 20:14:09] "GET /admin/logistiki/tran/?imnia__year=2011 HTTP/1.1" 200 4006
+[03/Mar/2010 20:14:15] "GET /admin/logistiki/tran/?imnia__year=2010 HTTP/1.1" 200 23478
+[03/Mar/2010 20:15:02] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23060
+[03/Mar/2010 20:15:18] "GET /lmoi HTTP/1.1" 301 0
+[03/Mar/2010 20:15:19] "GET /lmoi/ HTTP/1.1" 200 14012
+[03/Mar/2010 20:15:24] "GET /lmoi/73/ HTTP/1.1" 200 1931
+[03/Mar/2010 20:15:39] "GET /lmoi/73/185/ HTTP/1.1" 200 1640
+[03/Mar/2010 20:15:50] "GET /lmoi/79/ HTTP/1.1" 200 1644
+[03/Mar/2010 20:15:59] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23060
+[03/Mar/2010 20:16:02] "GET /admin/logistiki/lmo/79/ HTTP/1.1" 200 3826
+[03/Mar/2010 20:16:02] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[03/Mar/2010 20:16:11] "POST /admin/logistiki/lmo/79/ HTTP/1.1" 302 0
+[03/Mar/2010 20:16:12] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23225
+[03/Mar/2010 20:16:15] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[03/Mar/2010 20:16:28] "GET /lmoi HTTP/1.1" 301 0
+[03/Mar/2010 20:16:29] "GET /lmoi/ HTTP/1.1" 200 14012
+[03/Mar/2010 20:16:31] "GET /lmoi/79/ HTTP/1.1" 200 1644
+[03/Mar/2010 20:16:44] "GET /lmoi/6/ HTTP/1.1" 200 17401
+[03/Mar/2010 20:17:04] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27544
+[03/Mar/2010 20:17:22] "GET /admin/logistiki/tran_d/ HTTP/1.1" 200 45087
+[03/Mar/2010 20:17:33] "GET /admin/logistiki/ HTTP/1.1" 200 3208
+[05/Mar/2010 16:09:19] "GET /lmoi/ HTTP/1.1" 200 14012
+[05/Mar/2010 16:09:34] "GET /admin HTTP/1.1" 301 0
+[05/Mar/2010 16:09:34] "GET /admin/ HTTP/1.1" 200 8399
+[05/Mar/2010 16:09:37] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27518
+[05/Mar/2010 16:09:38] "GET /admin/logistiki/tran/add/ HTTP/1.1" 200 40217
+[05/Mar/2010 16:09:38] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[05/Mar/2010 16:10:49] "POST /admin/logistiki/tran/add/ HTTP/1.1" 302 0
+[05/Mar/2010 16:10:49] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27735
+[05/Mar/2010 16:10:56] "GET /lmoi/ HTTP/1.1" 200 14012
+[05/Mar/2010 16:10:57] "GET /lmoi/ HTTP/1.1" 200 14012
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.6/dist-packages/django/core/servers/basehttp.py", line 280, in run
+    self.finish_response()
+  File "/usr/local/lib/python2.6/dist-packages/django/core/servers/basehttp.py", line 320, in finish_response
+    self.write(data)
+  File "/usr/local/lib/python2.6/dist-packages/django/core/servers/basehttp.py", line 416, in write
+    self._write(data)
+  File "/usr/lib/python2.6/socket.py", line 300, in write
+    self.flush()
+  File "/usr/lib/python2.6/socket.py", line 286, in flush
+    self._sock.sendall(buffer)
+error: [Errno 32] Broken pipe
+[05/Mar/2010 16:11:00] "GET /lmoi/ HTTP/1.1" 200 14012
+[05/Mar/2010 16:39:10] "GET /lmoi/ HTTP/1.1" 200 14012
+[05/Mar/2010 16:39:20] "GET /lmoi/49/ HTTP/1.1" 200 3009
+[05/Mar/2010 16:40:23] "GET /lmoi/49/612/ HTTP/1.1" 200 1625
+[05/Mar/2010 16:40:37] "GET /admin/ HTTP/1.1" 200 8412
+[05/Mar/2010 16:40:41] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27536
+[05/Mar/2010 16:40:52] "GET /admin/logistiki/tran/612/ HTTP/1.1" 200 58743
+[05/Mar/2010 16:40:52] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[05/Mar/2010 16:41:17] "POST /admin/logistiki/tran/612/ HTTP/1.1" 302 0
+[05/Mar/2010 16:41:18] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27736
+[05/Mar/2010 16:41:30] "GET /lmoi/49/612/ HTTP/1.1" 200 1641
+[05/Mar/2010 20:58:55] "GET /lmoi/ HTTP/1.1" 200 14012
+[05/Mar/2010 20:59:07] "GET /admin HTTP/1.1" 301 0
+[05/Mar/2010 20:59:07] "GET /admin/ HTTP/1.1" 200 8419
+[05/Mar/2010 20:59:09] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27552
+[05/Mar/2010 20:59:11] "GET /admin/logistiki/tran/add/ HTTP/1.1" 200 40217
+[05/Mar/2010 20:59:11] "GET /admin/jsi18n/ HTTP/1.1" 200 3379
+[05/Mar/2010 20:59:53] "POST /admin/logistiki/tran/add/ HTTP/1.1" 302 0
+[05/Mar/2010 20:59:53] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27708
+[05/Mar/2010 20:59:59] "GET /lmoi/ HTTP/1.1" 200 14012
+Validating models...
+0 errors found
+
+Django version 1.1.1, using settings 'ted.settings'
+Development server is running at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+[08/Mar/2010 16:23:34] "GET /admin/ HTTP/1.1" 200 8474
+[08/Mar/2010 16:49:52] "GET /admin/logistiki/lmo/ HTTP/1.1" 200 23060
+[08/Mar/2010 16:49:57] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27549
+[08/Mar/2010 16:53:49] "GET /admin/ HTTP/1.1" 200 8474
+[08/Mar/2010 16:53:52] "GET /admin/logistiki/tran/ HTTP/1.1" 200 27549
+[08/Mar/2010 20:02:39] "GET /lmoi/ HTTP/1.1" 200 14012
+[08/Mar/2010 20:02:48] "GET /lmoi/61/ HTTP/1.1" 200 4879

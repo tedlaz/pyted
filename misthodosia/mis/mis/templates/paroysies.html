@@ -1,0 +1,28 @@
+{% extends "basic.html" %}
+
+{% block title %}Παρουσίες εργαζομένων{% endblock %}
+{% block content %}
+<h1>{{ xr }} - {{ pe }}</h1>
+<table border="1" bordercolor="FFCC00" style="background-color:FFFFCC" width="400" cellpadding="3" cellspacing="3">
+<tr>
+<th>Επώνυμο</th><th>Όνομα</th><th>Ειδικότητα</th><th>Χρήση</th>
+<th>Περίοδος</th><th>Αποδοχές</th><th>Ικα Εργ/νος</th><th>ΙΚΑ Εργ/της</th><th>ΙΚΑ</th><th>Συν.Κρ</th><th>Πληρωτέο</th><th>Ημσ/θιο</th>
+</tr>
+{% for er in par %}
+ <tr>
+ 	<td>{{ er.pro.fpr.epon }}</td>
+ 	<td>{{ er.pro.fpr.onom }}</td>
+ 	<td>{{ er.pro.eid }}</td>
+ 	<td>{{ er.xrisi }}</td>
+ 	<td>{{ er.period }}</td>
+ 	<td>{{ er.tmis|floatformat:2 }}</td>
+ 	<td>{{ er.tikaenos|floatformat:2 }}</td>
+ 	<td>{{ er.tikaetis|floatformat:2 }}</td>
+ 	<td>{{ er.tika|floatformat:2 }}</td>
+ 	<td>{{ er.tkenos|floatformat:2 }}</td>
+ 	<td>{{ er.tplir|floatformat:2 }}</td>
+ 	<td>{{ er.ted }}</td>
+ </tr>
+{% endfor %}
+</table>
+{% endblock %}

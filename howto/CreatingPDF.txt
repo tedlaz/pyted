@@ -1,0 +1,25 @@
+1. Σκανάρουμε και αποθηκεύουμε τις εικόνες με τη σειρά 001 , κλπ
+
+2. Για να κόψουμε τα περιθώρια τρέχουμε σε γραμμή εντολής :
+
+for file in *.jpg; do convert $file -crop 1200x1710+250+80 -gravity South c$file; done
+
+3. Για να μικρύνουμε το μέγεθος των εικόνων τρέχουμε:
+
+for file in *.jpg; do convert $file -resize 55% x$file; done
+
+4. Για να δημιουργήσουμε pdf αρχείο τρέχουμε
+
+convert -density 50 xc*.jpg myfile.pdf
+
+Σε αυτή τη φάση εάν είναι πολλές εικόνες μπορεί να χρειαστεί να δημιουργήσουμε πολλαπλά αρχεία
+
+5. Ενώνουμε τα πολλαπλά αρχεία σε ένα
+
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=merged.pdf file1.pdf file2.pdf file3.pdf ...
+
+6. Για να μειώσουμε το μέγεθος του τελικού τρέχουμε
+
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/default -dNOPAUSE -dQUIET -dBATCH -dDetectDuplicateImages -dCompressFonts=true -r150 -sOutputFile=Final.pdf merged.pdf
+
+

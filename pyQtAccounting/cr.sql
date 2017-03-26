@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS mis (id INTEGER PRIMARY KEY NOT NULL,xrisi text, period text,erg text, type text, val text, per text);

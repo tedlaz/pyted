@@ -1,0 +1,594 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import sqlite3
+import decimal
+
+html = '''<html lang="gr">
+<head><meta charset="UTF-8"></head>
+<body>
+<h2><center>ΠΕΡΙΟΔΙΚΗ ΔΗΛΩΣΗ ΦΠΑ</center></h2>
+<br>
+<p>Από : <b>{apo}</b> Έως :  <b>{eos}</b></p>
+<p>Παρατηρήσεις : {i9} ευρώ.</p>
+<br>
+<table border="1" align="center" width="100%" cellspacing="0" cellpadding="4">
+  <tbody>
+    <tr>
+      <td colspan=12>Α. ΠΙΝΑΚΑΣ ΜΕ ΤΑ ΣΤΟΙΧΕΙΑ ΤΟΥ ΥΠΟΚΕΙΜΕΝΟΥ ΣΤΟ ΦΟΡΟ Ή ΛΗΠΤΗ</td>
+    </tr>
+    <tr>
+      <td colspan=12>101.ΕΠΩΝΥΜΟ Ή ΕΠΩΝΥΜΙΑ <b> {epon} </b></td>
+    </tr>
+    <tr>
+      <td colspan=4>102.ΟΝΟΜΑ <br> <b>{onom}</b></td>
+      <td><center>103<center></td>
+      <td colspan=4>ΟΝΟΜΑ ΠΑΤΕΡΑ <br><b>{patr}</b></td>
+      <td><center>104<center></td>
+      <td colspan=2>ΑΦΜ <br><b>{afm}</b></td>
+    </tr>
+    <tr>
+      <td colspan=12>Β. ΠΙΝΑΚΑΣ ΕΚΡΟΩΝ - ΕΙΣΡΟΩΝ μετά την αφαίρεση (κατά συντελεστή) των επιστροφών - εκπτώσεων.</td>
+    </tr>
+    <tr>
+      <td rowspan=3><center>Ι. ΕΚΡΟΕΣ, ΕΝΔΟΚ. ΑΠΟΚΤΗΣΕΙΣ & ΠΡΑΞΕΙΣ ΛΗΠΤΗ σε λοιπή Ελλάδα</center></td>
+      <td width="3%"><center>301</center></td>
+      <td align="right" width="9%">{i301}</td>
+      <td width="3%"><center>13</center></td>
+      <td width="3%"><center>331</center></td>
+      <td align="right" width="7%">{i331}</td>
+      <td rowspan=3><center>Ι. ΕΙΣΡΟΕΣ, ΕΝΔΟΚ. ΑΠΟΚΤ. ΚΛΠ στη λοιπή Ελλάδα</center></td>
+      <td width="3%"><center>351</center></td>
+      <td align="right" width="9%">{i351}</td>
+      <td width="3%"><center>13</center></td>
+      <td width="3%"><center>371</center></td>
+      <td align="right" width="7%">{i371}</td>
+    </tr>
+    <tr>
+      <td><center>302</center></td>
+      <td align="right">{i302}</td>
+      <td><center>24</center></td>
+      <td><center>332</center></td>
+      <td align="right">{i332}</td>
+      <td><center>352</center></td>
+      <td align="right">{i352}</td>
+      <td><center>24</center></td>
+      <td><center>372</center></td>
+      <td align="right">{i372}</td>
+    </tr>
+    <tr>
+      <td><center>303</center></td>
+      <td align="right">{i303}</td>
+      <td><center>23</center></td>
+      <td><center>333</center></td>
+      <td align="right">{i333}</td>
+      <td><center>353</center></td>
+      <td align="right">{i353}</td>
+      <td><center>23</center></td>
+      <td><center>373</center></td>
+      <td align="right">{i373}</td>
+    </tr>
+    <tr>
+      <td rowspan=3><center>ΙΙ. ΕΚΡΟΕΣ, ΕΝΔΟΚ. ΑΠΟΚΤΗΣΕΙΣ & ΠΡΑΞΕΙΣ ΛΗΠΤΗ στα νησιά Αιγαίου</center></td>
+      <td><center>304</center></td>
+      <td align="right">{i304}</td>
+      <td><center>9</center></td>
+      <td><center>334</center></td>
+      <td align="right">{i334}</td>
+      <td rowspan=3><center>ΙΙ. ΕΙΣΡΟΕΣ, ΕΝΔΟΚ. ΑΠΟΚΤ. ΚΛΠ στα νησιά Αιγαίου</center></td>
+      <td><center>354</center></td>
+      <td align="right">{i354}</td>
+      <td><center>9</center></td>
+      <td><center>374</center></td>
+      <td align="right">{i374}</td>
+    </tr>
+    <tr>
+      <td><center>305</center></td>
+      <td align="right">{i305}</td>
+      <td><center>5</center></td>
+      <td><center>335</center></td>
+      <td align="right">{i335}</td>
+      <td><center>355</center></td>
+      <td align="right">{i355}</td>
+      <td><center>5</center></td>
+      <td><center>375</center></td>
+      <td align="right">{i375}</td>
+    </tr>
+    <tr>
+      <td><center>306</center></td>
+      <td align="right">{i306}</td>
+      <td><center>16</center></td>
+      <td><center>336</center></td>
+      <td align="right">{i336}</td>
+      <td><center>356</center></td>
+      <td align="right">{i356}</td>
+      <td><center>16</center></td>
+      <td><center>376</center></td>
+      <td align="right">{i376}</td>
+    </tr>
+    <tr>
+      <td><center><b>ΣΥΝΟΛΟ ΦΟΡ. ΕΚΡΟΩΝ</b></center></td>
+      <td><center><b>307</b></center></td>
+      <td align="right"><b>{i307}</b></td>
+      <td><center>ΣΥΝ</center></td>
+      <td><center>337</center></td>
+      <td align="right"><b>{i337}</b></td>
+      <td><center>Δαπάνες γεν.εξ. φορολογητέα</center></td>
+      <td><center>357</center></td>
+      <td align="right">{i357}</td>
+      <td><center>ΦΠΑ</center></td>
+      <td><center>377</center></td>
+      <td align="right">{i377}</td>
+    </tr>
+    <tr>
+      <td><center>Εκροές φορολ.εκτός Ελ Με δικ εκπτ.</center></td>
+      <td><center>308</center></td>
+      <td align="right">{i308}</td>
+      <td colspan=3 rowspan=4><center></center></td>
+      <td><center><b>ΣΥΝΟΛΟ ΦΟΡΟΛ. ΕΙΣΡΟΩΝ</b></center></td>
+      <td><center>358</center></td>
+      <td align="right"><b>{i358}</b></td>
+      <td><center>ΣΥΝ</center></td>
+      <td><center>378</center></td>
+      <td align="right"><b>{i378}</b></td>
+    </tr>
+    <tr>
+      <td><center>Ενδοκ. παραδ. & λοιπά με δικ εκπτ.</center></td>
+      <td><center>309</center></td>
+      <td align="right">{i309}</td>
+      <td colspan=3><center>δ. ΠΡΟΣΤΙΘΕΜΕΝΑ ΠΟΣΑ ΣΤΟ ΣΥΝΟΛΟ ΦΟΡΟΥ ΕΙΣΡΟΩΝ</center></td>
+      <td colspan=3 rowspan=4><center></center></td>
+    </tr>
+    <tr>
+      <td><center>Ενδοκ. παραδ. & Λοιπά χωρίς δικ εκπτ.</center></td>
+      <td><center>310</center></td>
+      <td align="right">{i310}</td>
+      <td><center>Επιστροφή φόρου</center></td>
+      <td><center>400</center></td>
+      <td align="right">{i400}</td>
+    </tr>
+    <tr>
+      <td><center><b>ΣΥΝΟΛΟ ΕΚΡΟΩΝ</b></center></td>
+      <td><center>311</center></td>
+      <td align="right"><b>{i311}</b></td>
+      <td><center>Πιστ. υπολ.</center></td>
+      <td><center>401</center></td>
+      <td align="right">{i401}</td>
+    </tr>
+    <tr>
+      <td colspan=6><center>γ. ΕΙΔΙΚΟΙ Λ/ΜΟΙ</center></td>
+      <td><center>Λοιπά Προστ.</center></td>
+      <td><center>402</center></td>
+      <td align="right">{i402}</td>
+    </tr>
+    <tr>
+      <td colspan=3><center>Συνολικές ενδοκοινοτικές αποκτήσεις</center></td>
+      <td><center>341</center></td>
+      <td align="right" colspan=2>{i341}</td>
+      <td><center>Χρ. Αρχικής</center></td>
+      <td><center>403</center></td>
+      <td align="right">{i403}</td>
+      <td colspan=2><center>404</center></td>
+      <td align="right">{i404}</td>
+    </tr>
+    <tr>
+      <td colspan=3><center>Συνολικές ενδοκοινοτικές παραδόσεις</center></td>
+      <td><center>342</center></td>
+      <td align="right" colspan=2>{i342}</td>
+      <td colspan=3 ><center>ε.ΑΦΑΙΡΟΥΜΕΝΑ ΠΟΣΑ</center></td>
+      <td colspan=3 rowspan=2><center></center></td>
+    </tr>
+  </tbody>
+    <tr>
+      <td colspan=3><center>Πράξεις λήπτη αγαθών & υπηρ.</center></td>
+      <td><center>343</center></td>
+      <td align="right" colspan=2>{i343}</td>
+      <td><center>ΦΠΑ Prorata</center></td>
+      <td><center>411</center></td>
+      <td align="right">{i411}</td>
+
+    </tr>
+    <tr>
+      <td colspan=3><center>Ενδοκ. Λήψεις υπηρ.</center></td>
+      <td><center>344</center></td>
+      <td align="right" colspan=2>{i344}</td>
+      <td><center>Λοιπά Αφαιρούμενα</center></td>
+      <td><center>412</center></td>
+      <td align="right">{i412}</td>
+      <td colspan=2><center>413</center></td>
+      <td align="right">{i413}</td>
+    </tr>
+    <tr>
+      <td colspan=3><center>Ενδοκ. παροχές υπηρ.</center></td>
+      <td><center>345</center></td>
+      <td align="right" colspan=2>{i345}</td>
+      <td colspan=3><center><b>ΥΠΟΛΟΙΠΟ ΦΟΡΟΥ ΕΙΣΡΟΩΝ</b></center></td>
+      <td colspan=2><center>420</center></td>
+      <td align="right"><b>{i420}</b></td>
+    </tr>
+    <tr>
+      <td colspan=12>Γ. ΠΙΝΑΚΑΣ ΕΚΚΑΘΑΡΙΣΗΣ ΤΟΥ ΦΟΡΟΥ για καταβολή, έκπτωση ή επιστροφή</td>
+    </tr>
+    <tr>
+      <td><center><b>ΠΙΣΤΩΤΙΚΟ ΥΠΟΛΟΙΠΟ</b></center></td>
+      <td><center><b>501</b></center></td>
+      <td align="right"><b>{i501}</b></td>
+      <td colspan=3></center></td>
+      <td colspan=3><center><b>ΧΡΕΩΣΤΙΚΟ ΥΠΟΛΟΙΠΟ</b></center></td>
+      <td><center><b>511</b></center></td>
+      <td align="right" colspan=2><b>{i511}</b></td>
+    </tr>
+   <tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
+
+</body>
+</html>
+'''
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimals
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    def isNum(value):  # Einai to value arithmos, i den einai ?
+        try:
+            float(value)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def triades(txt, separator='.'):
+    '''
+    Help function to split digits to thousants ( 123456 becomes 123.456 )
+    '''
+    ltxt = len(txt)
+    rem = ltxt % 3
+    precSpace = 3 - rem
+    stxt = ' ' * precSpace + txt
+    a = []
+    while len(stxt) > 0:
+        a.append(stxt[:3])
+        stxt = stxt[3:]
+    a[0] = a[0].strip()
+    fval = ''
+    for el in a:
+        fval += el + separator
+    return fval[:-1]
+
+
+def grd(poso, decimals=2):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if dec(poso) == dec(0):
+        prosimo = ''
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+class F2():
+    def __init__(self):
+        self.v = {9: ''}
+        self._addzero(range(301, 312))
+        self._addzero(range(331, 338))
+        self._addzero(range(351, 359))
+        self._addzero(range(371, 379))
+        self._addzero(range(341, 346))
+        self._addzero([401, 402, 403, 404])
+        self._addzero([411, 412, 413, 420])
+        self._addzero([501, 502, 503, 511, 512, 513])
+        self._addzero([35700, 35713, 35716, 35723, 35724])
+        self._addzero([37700, 37713, 35716, 37723, 37724])
+        self._addzero([601, 611])
+
+    def _addzero(self, rng):
+        for i in rng:
+            self.v[i] = dec(0)
+
+    def calc(self, vl):
+        d100 = dec(100)
+        for el in vl.keys():
+            if el in self.v.keys():
+                self.v[el] = dec(vl[el])
+        self.v[331] = dec(self.v[301] * dec(13) / d100)
+        self.v[332] = dec(self.v[302] * dec(24) / d100)
+        self.v[333] = dec(self.v[303] * dec(23) / d100)
+        self.v[334] = dec(self.v[304] * dec(8) / d100)
+        self.v[335] = dec(self.v[305] * dec(4) / d100)
+        self.v[336] = dec(self.v[306] * dec(16) / d100)
+        self.v[307] = self._sum(range(301, 307))
+        self.v[337] = self._sum(range(331, 337))
+        self.v[311] = self._sum(range(307, 311))
+
+        self.v[371] = dec(self.v[351] * dec(13) / d100)
+        self.v[372] = dec(self.v[352] * dec(24) / d100)
+        self.v[373] = dec(self.v[353] * dec(23) / d100)
+        self.v[374] = dec(self.v[354] * dec(8) / d100)
+        self.v[375] = dec(self.v[355] * dec(4) / d100)
+        self.v[376] = dec(self.v[356] * dec(16) / d100)
+
+        self.v[37713] = dec(self.v[35713] * dec(13) / d100)
+        self.v[37723] = dec(self.v[35723] * dec(23) / d100)
+        self.v[37724] = dec(self.v[35724] * dec(24) / d100)
+        c377 = self.v[37713] + self.v[37723] + self.v[37724]
+        if c377 > self.v[377]:
+            fd = c377 - self.v[377]
+            self.v[9] = 'Το ΦΠΑ εξόδων είναι μικρότερο κατά %s' % grd(fd)
+        if c377 < self.v[377]:
+            fd = self.v[377] - c377
+            self.v[9] = 'Προσοχή !!!  Το ΦΠΑ εξόδων είναι μεγαλύτερο κατά %s' % grd(fd)
+        print(self.v[9])
+        self.v[357] = self.v[35713] + self.v[35716] + self.v[35723] + self.v[35724]
+
+        self.v[358] = self._sum(range(351, 358))
+        self.v[378] = self._sum(range(371, 378))
+        self._finalize()
+
+    def _finalize(self):
+        self.v[404] = self._sum([401, 402, 403])
+        self.v[413] = self._sum([411, 412])
+
+        self.v[420] = self.v[378] + self.v[404] - self.v[413]
+
+        if self.v[337] > self.v[420]:
+            self.v[511] = self.v[337] - self.v[420]
+        else:
+            self.v[501] = self.v[420] - self.v[337]
+
+        if self.v[601] > self.v[501]:
+            d = self.v[601] - self.v[501]
+            self.v[402] += d
+            self._finalize()
+        if self.v[601] < self.v[501]:
+            d = self.v[501] - self.v[601]
+            self.v[412] += d
+            self._finalize()
+
+        if self.v[611] > self.v[511]:
+            d = self.v[611] - self.v[511]
+            self.v[412] += d
+            self._finalize()
+
+        if self.v[611] < self.v[511]:
+            d = self.v[511] - self.v[611]
+            self.v[402] += d
+            self._finalize()
+
+    def _sum(self, rang):
+        tot = dec(0)
+        for i in rang:
+            tot += dec(self.v[i])
+        return tot
+
+    def __str__(self):
+        st = ''
+        stf = '{:4} {:>12} {:4} {:>12}\n'
+        sta = '{:4} {:>12}\n'
+        for i in range(301, 308):
+            st += stf.format(i, grd(self.v[i]), i+30, grd(self.v[i+30]))
+        for i in range(308, 312):
+            st += sta.format(i, grd(self.v[i]))
+        st += '\n'
+        for i in range(351, 359):
+            st += stf.format(i, grd(self.v[i]), i+20, grd(self.v[i+20]))
+        st += '\n'
+        for i in [401, 402, 403]:
+            st += sta.format(i, grd(self.v[i]))
+        st += stf.format('', '', 404, grd(self.v[404]))
+        for i in [411, 412]:
+            st += sta.format(i, grd(self.v[i]))
+        st += stf.format('', '', 413, grd(self.v[413]))
+        st += stf.format('', '', 420, grd(self.v[420]))
+        st += '\n'
+        for i in [341, 342, 343, 344, 345]:
+            st += sta.format(i, grd(self.v[i]))
+        st += '\n'
+        st += stf.format(501, grd(self.v[501]), 511, grd(self.v[511]))
+        st += '\n 35700: %s\n' % grd(self.v[35700])
+        return st
+
+
+# Λογαριασμός και υπόλοιπο που θα πρέπει πάντα να είναι θετικό
+# ανάλογα φυσικά με την ομάδα του λογαριασμού
+sql = '''select lmo.lmo, (sum(trd.pi) - sum(trd.xr))as vls
+from trd
+inner join lmo on lmo.id=trd.id_lmo
+inner join tr on tr.id=trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+AND substr(lmo.lmo, 1, 1) = '7'
+group by lmo.lmo
+UNION
+select lmo.lmo, (sum(trd.xr) - sum(trd.pi))
+from trd
+inner join lmo on lmo.id=trd.id_lmo
+inner join tr on tr.id=trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+AND (substr(lmo.lmo, 1, 1) = '1' OR substr(lmo.lmo, 1, 1) = '2' OR substr(lmo.lmo, 1, 1) = '6')
+group by lmo.lmo;
+'''
+
+#  Το υπόλοιπο ΦΠΑ της περιόδου
+#  με εξαίρεση τις πληρωμές του ΦΠΑ (Λμος 54.00.9* κατά κανόνα)
+sqlfpa = '''select (sum(trd.xr) - sum(trd.pi)) as vls
+from trd
+inner join lmo on lmo.id=trd.id_lmo
+inner join tr on tr.id=trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+AND (substr(lmo.lmo, 1, 7) BETWEEN '54.00.0' AND '54.00.8')
+group by substr(lmo.lmo,1, 5);
+'''
+
+sqlfpa29 = '''select (sum(trd.xr) - sum(trd.pi)) as vls
+from trd
+inner join lmo on lmo.id=trd.id_lmo
+inner join tr on tr.id=trd.id_tr
+WHERE tr.dat BETWEEN '{apo}' AND '{eos}'
+AND (substr(lmo.lmo, 1, 8) = '54.00.29')
+group by substr(lmo.lmo,1, 5);
+'''
+
+
+def readexeptions(fname):
+    '''
+    Συνάρτηση διαχείρησης εξαιρέσεων, για όσους λογαριασμούς δεν ακολουθούν
+    κάποιο κανόνα συσχετισμού με λογαριασμούς ΦΠΑ.
+    Οι εξαιρέσεις καταγράφονται σε αρχείο κειμένου (fname) ως εξής:
+    Λογαριασμός  κ1    κ2  κ3  κλπ
+    ------------ ---   --- --- ---
+    24.02.00.000 353   303 341
+    64.03.00     35723
+    70.02.00.000 309 342
+    Η συνάρτηση επιστρέφει dict : {}
+    '''
+    lins =''
+    f = {}
+    if not fname:
+        return {}
+    with open(fname) as fl:
+        lins = fl.readlines()
+    for lin in lins:
+        if len(lin) < 6:  # αποκλείουμε γραμμές με μέγεθος < 6
+            continue
+        a = lin.split()
+        key = a.pop(0)  # Το πρώτο στοιχείο είναι ο κωδικός
+        f[key] = [int(i) for i in a]  # Τα υπόλοιπα είναι list of integers
+    return f
+
+
+def dicfromar(arr):
+    '''
+    Μετατρέπει ένα [[α1, β1], [α2, β2], ... [αν, βν]] σε
+    {α1: β1, α2: β2, ... αν: βν}
+    '''
+    f = {}
+    assert len(arr[0]) == 2
+    for el in arr:
+        f[el[0]] = f.get(el[0], dec(0)) + dec(el[1])
+    return f
+
+
+def getrows(db, tapo, teos, fexcept):
+    print('Φ2 για περίοδο από: %s  έως: %s' % (tapo, teos))
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+
+    cur.execute(sql.format(apo=tapo, eos=teos))
+    rws = cur.fetchall()
+
+    cur.execute(sqlfpa.format(apo=tapo, eos=teos))
+    fpa = dec(cur.fetchone()[0])
+
+    cur.execute(sqlfpa29.format(apo=tapo, eos=teos))
+    fpa29 = dec(cur.fetchone()[0])
+
+    cur.close()
+    con.close()
+    rowdic = makeit(dicfromar(rws), readexeptions(fexcept))
+    rowdic[377] = fpa29
+    if fpa > 0:
+        rowdic[601] = fpa
+    else:
+        rowdic[611] = fpa * dec(-1)
+
+    return rowdic
+
+
+def guess(lmo):
+    '''
+    Μαντεύει τον κωδικό του ΦΠΑ από το έντυπο Φ2 με δεδομένο ότι υπάρχει
+    κάποια λογική αντιστοίχιση κατά τη δημιουργία των λογαριασμών
+    Όποιος λογαριασμός δεν είναι προβλέψιμος μπαίνει σε συνάρτηση διαχείρησης
+    εξαιρέσεων
+    '''
+    assert len(lmo) > 2  #Ο κωδικός πρέπει να έχει τουλάχιστον 3 ψηφία
+    cf = int(lmo[0])  # Το πρώτο ψηφίο του κωδικού (2 για 24.00.23)
+    cl = int(lmo[-2:])  # Τα δύο τελευταία ψηφία του κωδικού (23 για 24.00.23)
+    g = {1: {0 : 35700, 11: 352, 13: 351, 16: 356, 23: 353, 24: 352},
+         2: {0 : 35700, 11: 351, 13: 351, 16: 356, 23: 353, 24: 352},
+         6: {0 : 35700, 11: 35713, 13: 35713, 23: 35723, 24: 35724},
+         7: {0 : 309, 13: 301, 16: 306, 23: 303, 24: 302}
+         }
+    return g.get(cf, {}).get(cl, 0)
+
+
+def makeit(tmpldic, exceptdic):
+    vls = {}
+    for key in tmpldic.keys():
+        if  key in exceptdic.keys():  # if key in exception dictionary
+           for kod in exceptdic[key]:
+               vls[kod] = vls.get(kod, 0) + tmpldic[key]
+        else:  # Else try to guess key from tmpldic
+            vl = guess(key)
+            vls[vl] = vls.get(vl, 0) + tmpldic[key]
+    return vls
+
+
+def txkey(dicti):
+    final = {}
+    for key in dicti.keys():
+        tkey = 'i%s' % key
+        if key == 9:
+            final[tkey] = dicti[key]
+        else:
+            final[tkey] = grd(dicti[key])
+    return final
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description=u'Φ2 περιόδου')
+    pars.add_argument('db', help='Sqlite database file')
+    pars.add_argument('-e','--Except', help='Exception Accounts File')
+    pars.add_argument('-o', '--Out', help='Output HTML File')
+    pars.add_argument('-f', '--From', help='From Date')
+    pars.add_argument('-t', '--To', help='To Date')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    aa = F2()
+    vus = getrows(args.db, args.From, args.To, args.Except)
+    aa.calc(vus)
+    iv = txkey(aa.v)
+    iv['apo'] = '%s' % args.From
+    iv['eos'] = '%s' % args.To
+    iv['epon'] = ''
+    iv['onom'] = ''
+    iv['patr'] = ''
+    iv['afm'] = ''
+    iv['i400'] = ''
+    # print(aa.v)
+    if args.Out:
+        if args.Out.endswith('.html'):
+            fname = args.Out
+        else:
+            fname = '%s.html' % args.Out
+        with open(fname, 'w') as wfl:
+            wfl.write(html.format(**iv))
+    print(aa)
+    print(guess('940.00.00.025'))

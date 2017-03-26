@@ -1,0 +1,27 @@
+{% extends "basic.html" %}
+
+{% block title %}Προσλήψεις εργαζομένων{% endblock %}
+{% block content %}
+<table border="1" bordercolor="FFCC00" style="background-color:FFFFCC" width="400" cellpadding="3" cellspacing="3">
+<tr>
+<th>Επώνυμο</th><th>Όνομα</th><th>Πατρώνυμο</th><th>Μητρώνυμο</th>
+<th>Φύλο</th><th>Ειδικότητα</th><th>Τύπος Αποδοχών</th><th>Αποδοχές</th><th>ΚΑΔ</th><th>ΕΙΔ</th><th>Ηλικία</th>
+</tr>
+{% for er in pr %}
+ <tr>
+ 	<td>{{ er.fpr.epon }}</td>
+ 	<td>{{ er.fpr.onom }}</td>
+ 	<td>{{ er.fpr.patr }}</td>
+ 	<td>{{ er.fpr.mitr }}</td>
+ 	<td>{{ er.fpr.sex }}</td>
+ 	<td>{{ er.eid }}</td>
+ 	<td>{{ er.aptyp }}</td>
+ 	<td>{{ er.apod|floatformat:2 }}</td>
+ 	<td>{{ er.coy.kad }}</td>
+ 	<td>{{ er.eid.kad }}</td>
+ 	<td>{{ er.fpr.getAge }}</td>
+ 	<td>{{ er.getKPK }}</td>
+ </tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Ισοζύγιο {{ onoma }}{% endblock %}
+
+{% block content %}
+<h1>Ισοζύγιο λογαριασμών</h1>
+<table>
+<tr>
+<th>Κωδικός</th>
+<th>Περιγραφή</th>
+<th>Υπόλοιπο</th>
+</tr>
+{%  for lm in lmoi  %}
+    <tr>
+    <td><a href={{ lm.id }}/>{{ lm.code }}</a></td>
+    <td>{{ lm.per }}</td>
+    <td align="right">{{ lm.ypol }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,176 @@
+#!/usr/bin/python2
+# *- coding: utf-8 -*
+# Δίνουμε ημερολόγιο εγγραφών γενικής λογιστικής και μας επιστρέφει
+# sqlite database με τις εγγραφές !!!
+import sqlite3
+
+sql_create = '''CREATE TABLE IF NOT EXISTS lmo(
+id INTEGER PRIMARY KEY,
+lmo TEXT NOT NULL UNIQUE,
+lmop TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS tr(
+id INTEGER PRIMARY KEY,
+dat DATE NOT NULL,
+par TEXT NOT NULL,
+trp TEXT
+);
+CREATE TABLE IF NOT EXISTS trd(
+id INTEGER PRIMARY KEY,
+id_tr INTEGER NOT NULL,
+id_lmo INTEGER NOT NULL,
+xr NUMERIC NOT NULL DEFAULT 0,
+pi NUMERIC NOT NULL DEFAULT 0
+);
+'''
+sql_lmo = u"INSERT INTO lmo VALUES(%s, '%s', '%s');\n"
+sql_tr = u"INSERT INTO tr VALUES(%s, '%s', '%s', '%s');\n"
+sql_trd = u"INSERT INTO trd VALUES(%s, %s, %s, '%s', '%s');\n"
+
+
+def iso_number_from_greek(num):
+    num = num.strip()
+    num = num.replace('.', '')
+    num = num.replace(',', '.')
+    return num
+
+
+def iso_date_from_greek(dat):
+    day, month, year = dat.split('/')
+    return '%s-%s-%s' % (year, month, day)
+
+
+def remove_simple_quotes(strval):
+    retval = strval.strip()
+    retval = retval.replace("'", '')
+    return retval
+
+
+PIN_ERROR, DB_ERROR, NULL_VAL, ONE_VAL, MANY_VAL = range(5)
+
+
+def dbScript(pin):
+    '''
+    Generic sql script execution
+    input
+        script : one or many sql expressions divided by ;
+        db  : database name
+    output:
+        1 if no error , 0 if error
+        text message
+    '''
+    script = pin.get('script', None)
+    db = pin.get('db', None)
+
+    if (not script) or (not db):
+        return {'status': PIN_ERROR,
+                'msg': 'dbScript: script and/or db name are empty'}
+
+    try:
+        con = sqlite3.connect(db)  # @UndefinedVariable
+        cur = con.cursor()
+        cur.executescript(script)
+        con.commit()
+        status = NULL_VAL
+        msg = 'dbScript: Everything executed Fine !!'
+    except sqlite3.Error, e:  # @UndefinedVariable
+        if con:
+            con.rollback()
+        status = DB_ERROR
+        msg = 'dbScript: %s' % e
+    finally:
+        cur.close()
+        con.close()
+    return {'status': status, 'msg': msg}
+
+
+def parse(filename, encoding='WINDOWS-1253'):
+    tr_no = 0  # id value for table tr
+    trd_no = 0  # id value for table trd
+    lmo_no = 0  # id value for table lmo
+    lmo_no_last = 0  # Last inserted id for lmo
+    lmoi = {}  # Dictionary of lmo
+    dat = ''  # date for table tr
+    par = ''  # par for table tr
+    trp = ''  # per for table tr
+    lmo = ''  # lmo for table lmo
+    lmop = ''  # per for table lmo
+    xr = ''  # xreosi for table trd
+    pi = ''  # pistosi for table trd
+    a_lmo = []
+    a_tr = []
+    a_trd = []
+    with open(filename) as afile:
+        for line in afile:
+            line = line.decode(encoding)
+            # first check if linesize > 152
+            if len(line) > 152:
+                # Check if we have line with accoount code
+                if line[50] == '.' and line[53] == '.':
+                    pass
+                else:
+                    continue
+                # Check fo date witch means we have first transaction line
+                if line[4] == '/' and line[7] == '/':
+                    tr_no += 1
+                    dat = iso_date_from_greek(line[2:12])
+                    par = remove_simple_quotes(line[22:48])
+                    a_tr.append((tr_no, dat, par, trp))
+                trd_no += 1
+                lmo = line[48:60].strip()
+                if lmo in lmoi:
+                    lmo_no = lmoi[lmo]
+                else:
+                    lmop = remove_simple_quotes(line[77:122])
+                    lmo_no_last += 1
+                    lmo_no = lmo_no_last
+                    lmoi[lmo] = lmo_no_last
+                    a_lmo.append((lmo_no_last, lmo, lmop))
+                xr = iso_number_from_greek(line[124:137])
+                pi = iso_number_from_greek(line[139:152])
+                a_trd.append((trd_no, tr_no, lmo_no, xr, pi))
+    return a_lmo, a_tr, a_trd
+
+
+def array_to_sql(arr, sql_template):
+    sql = u''
+    for el in arr:
+        sql += sql_template % el
+    return sql
+
+
+def create_sql(imerologio):
+    a_lmo, a_tr, a_trd = parse(imerologio)
+    sql = u'BEGIN TRANSACTION;\n'
+    sql += array_to_sql(a_lmo, sql_lmo)
+    sql += array_to_sql(a_tr, sql_tr)
+    sql += array_to_sql(a_trd, sql_trd)
+    sql += 'COMMIT TRANSACTION;'
+    return sql
+
+
+def run(imerologio, dbname=None):
+    if not dbname:
+        imerol = imerologio.split('.')
+        dbname = '%s.sql3' % imerol[0]
+    ret1 = dbScript({'script': sql_create, 'db': dbname})
+    ret2 = dbScript({'script': create_sql(imerologio), 'db': dbname})
+    return '%s\n%s' % (ret1, ret2)
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description='Parse text to sqlite3')
+    pars.add_argument('file', help='Text FILE to be parsed')
+    pars.add_argument('-o', '--Out', help='sqlite3 file name')
+    pars.add_argument('-v', '--verbose', action='store_true',
+                      help='output detailed messages')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.file):
+        print('No such file : %s' % args.file)
+    else:
+        ret = run(args.file, args.Out)
+        if args.verbose:
+            print(ret)

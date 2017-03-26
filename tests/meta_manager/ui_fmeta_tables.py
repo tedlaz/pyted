@@ -1,0 +1,152 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file '/home/tedlaz/python_work/meta_manager/fmeta_tables.ui'
+#
+# Created by: PyQt4 UI code generator 4.11.4
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
+
+class Ui_Fmeta_tables(object):
+    def setupUi(self, Fmeta_tables):
+        Fmeta_tables.setObjectName(_fromUtf8("Fmeta_tables"))
+        Fmeta_tables.resize(805, 503)
+        self.verticalLayout_2 = QtGui.QVBoxLayout(Fmeta_tables)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.tbl = QtGui.QTableWidget(Fmeta_tables)
+        self.tbl.setMinimumSize(QtCore.QSize(200, 0))
+        self.tbl.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.tbl.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.tbl.setObjectName(_fromUtf8("tbl"))
+        self.tbl.setColumnCount(2)
+        self.tbl.setRowCount(3)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setVerticalHeaderItem(0, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setVerticalHeaderItem(1, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setVerticalHeaderItem(2, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setHorizontalHeaderItem(0, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setHorizontalHeaderItem(1, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setItem(0, 0, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setItem(0, 1, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setItem(1, 0, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setItem(1, 1, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setItem(2, 0, item)
+        item = QtGui.QTableWidgetItem()
+        self.tbl.setItem(2, 1, item)
+        self.horizontalLayout.addWidget(self.tbl)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.gridLayout = QtGui.QGridLayout()
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.label = QtGui.QLabel(Fmeta_tables)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.tblname = QtGui.QLineEdit(Fmeta_tables)
+        self.tblname.setObjectName(_fromUtf8("tblname"))
+        self.gridLayout.addWidget(self.tblname, 0, 1, 1, 1)
+        self.label_3 = QtGui.QLabel(Fmeta_tables)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1)
+        self.title = ted1(Fmeta_tables)
+        self.title.setText(_fromUtf8(""))
+        self.title.setObjectName(_fromUtf8("title"))
+        self.gridLayout.addWidget(self.title, 1, 1, 1, 1)
+        self.label_2 = QtGui.QLabel(Fmeta_tables)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.gridLayout.addWidget(self.label_2, 1, 2, 1, 1)
+        self.titlep = QtGui.QLineEdit(Fmeta_tables)
+        self.titlep.setObjectName(_fromUtf8("titlep"))
+        self.gridLayout.addWidget(self.titlep, 1, 3, 1, 1)
+        self.label_4 = QtGui.QLabel(Fmeta_tables)
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.gridLayout.addWidget(self.label_4, 2, 0, 1, 1)
+        self.repsql = QtGui.QTextEdit(Fmeta_tables)
+        self.repsql.setObjectName(_fromUtf8("repsql"))
+        self.gridLayout.addWidget(self.repsql, 2, 1, 1, 1)
+        self.label_5 = QtGui.QLabel(Fmeta_tables)
+        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.gridLayout.addWidget(self.label_5, 2, 2, 1, 1)
+        self.about = QtGui.QTextEdit(Fmeta_tables)
+        self.about.setObjectName(_fromUtf8("about"))
+        self.gridLayout.addWidget(self.about, 2, 3, 1, 1)
+        self.verticalLayout.addLayout(self.gridLayout)
+        self.fld = QtGui.QTableView(Fmeta_tables)
+        self.fld.setObjectName(_fromUtf8("fld"))
+        self.verticalLayout.addWidget(self.fld)
+        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.new_table = QtGui.QPushButton(Fmeta_tables)
+        self.new_table.setObjectName(_fromUtf8("new_table"))
+        self.horizontalLayout_2.addWidget(self.new_table)
+        self.save = QtGui.QPushButton(Fmeta_tables)
+        self.save.setObjectName(_fromUtf8("save"))
+        self.horizontalLayout_2.addWidget(self.save)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+
+        self.retranslateUi(Fmeta_tables)
+        QtCore.QMetaObject.connectSlotsByName(Fmeta_tables)
+
+    def retranslateUi(self, Fmeta_tables):
+        Fmeta_tables.setWindowTitle(_translate("Fmeta_tables", "Meta data tables", None))
+        item = self.tbl.verticalHeaderItem(0)
+        item.setText(_translate("Fmeta_tables", "1", None))
+        item = self.tbl.verticalHeaderItem(1)
+        item.setText(_translate("Fmeta_tables", "2", None))
+        item = self.tbl.verticalHeaderItem(2)
+        item.setText(_translate("Fmeta_tables", "3", None))
+        item = self.tbl.horizontalHeaderItem(0)
+        item.setText(_translate("Fmeta_tables", "id", None))
+        item = self.tbl.horizontalHeaderItem(1)
+        item.setText(_translate("Fmeta_tables", "table", None))
+        __sortingEnabled = self.tbl.isSortingEnabled()
+        self.tbl.setSortingEnabled(False)
+        item = self.tbl.item(0, 0)
+        item.setText(_translate("Fmeta_tables", "1", None))
+        item = self.tbl.item(0, 1)
+        item.setText(_translate("Fmeta_tables", "erg", None))
+        item = self.tbl.item(1, 0)
+        item.setText(_translate("Fmeta_tables", "2", None))
+        item = self.tbl.item(1, 1)
+        item.setText(_translate("Fmeta_tables", "ika", None))
+        item = self.tbl.item(2, 0)
+        item.setText(_translate("Fmeta_tables", "3", None))
+        item = self.tbl.item(2, 1)
+        item.setText(_translate("Fmeta_tables", "epo", None))
+        self.tbl.setSortingEnabled(__sortingEnabled)
+        self.label.setText(_translate("Fmeta_tables", "Name", None))
+        self.label_3.setText(_translate("Fmeta_tables", "Title", None))
+        self.label_2.setText(_translate("Fmeta_tables", "Title pl", None))
+        self.label_4.setText(_translate("Fmeta_tables", "Repr sql", None))
+        self.label_5.setText(_translate("Fmeta_tables", "About", None))
+        self.new_table.setText(_translate("Fmeta_tables", "New Table", None))
+        self.save.setText(_translate("Fmeta_tables", "Save", None))
+
+from ted1 import ted1

@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/media/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/media/css/changelists.css" />
+
+</head>
+<body>
+    <h1>Λογιστική 2010</h1>
+    {% block content %}{% endblock %}
+    {% block footer %}
+    <hr>
+    <p>Τέλος αναφοράς.</p>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,366 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import datetime
+import sqlite3
+import decimal
+import os
+
+
+lm = {'1': u'ΠΑΓΙΑ',
+      '10': u'Εδαφικές εκτάσεις',
+      '11': u'κτίρια-Εγκ.κτιρίων-Τεχνικά έργα',
+      '12': u'Μηχανήματα',
+      '13': u'Μεταφορικά μέσα',
+      '14': u'Έπιπλα & λοιπός εξοπλισμός',
+      '15': u'Ακιν.Υπό εκτέλεση',
+      '16': u'Ασώμ.ακινητοποιήσεις',
+      '18': u'Συμμετοχές & λοιπές μακρ. απαιτήσεις',
+      '2': u'ΑΠΟΘΕΜΑΤΑ',
+      '20': u'Εμπορεύματα',
+      '21': u'Προϊόντα έτοιμα & ημιτελή',
+      '22': u'Υποπροϊόντα & υπολείμματα',
+      '23': u'Παραγωγή σε εξέλιξη',
+      '24': u'Α & Β Ύλες - Υλικά συσκευασίας',
+      '25': u'Αναλώσιμα υλικά',
+      '26': u'Ανταλλακτικά παγίων',
+      '28': u'Είδη συσκευασίας',
+      '29': u'Αποθέματα υποκαταστημάτων',
+      '3': u'ΑΠΑΙΤΗΣΕΙΣ & ΔΙΑΘΕΣΙΜΑ',
+      '30': u'Πελάτες',
+      '31': u'Γραμμάτια εισπρακτέα',
+      '32': u'Παραγγελίες στο εξωτερικό',
+      '33': u'Χρεώστες διάφοροι',
+      '34': u'Χρεώγραφα',
+      '35': u'Λ/μοι διαχ.προκαταβολών',
+      '36': u'ΜΕταβατικοί λ/μοι ενεργητικού',
+      '38': u'Χρηματικά διαθέσιμα',
+      '39': u'Απαιτήσεις & διαθ. υπ/των',
+      '4': u'ΚΕΦΑΛΑΙΟ',
+      '40': u'Κεφάλαιο',
+      '41': u'Αποθεματικά-Διαφ.Αναπρ.-Επιχορηγ.',
+      '42': u'Αποτελέσματα σε νέο',
+      '43': u'Ποσά για αύξηση κεφαλαίου',
+      '44': u'Προβλέψεις',
+      '45': u'Μακροπρόθεσμες υποχρεώσεις',
+      '5': u'ΒΡΑΧΥΠΡΟΘΕΣΜΕΣ ΥΠΟΧΡΕΩΣΕΙΣ',
+      '50': u'Προμηθευτές',
+      '51': u'Γραμμάτια πληρωτέα',
+      '52': u'Τράπεζες',
+      '53': u'Πιστωτές διάφοροι',
+      '54': u'Υποχρεώσεις από φόρους-τέλη',
+      '54.00': u'Φόρος Προστιθέμενης Αξίας',
+      '55': u'Ασφαλιστικοί οργανισμοί',
+      '55.00': u'ΙΚΑ',
+      '56': u'Μεταβατικοί λ/μοί παθητικού',
+      '6': u'ΕΞΟΔΑ',
+      '60': u'Αμοιβές & έξοδα προσωπικού',
+      '60.00': u'Αμοιβές έμμισθου προσωπικού',
+      '60.01': u'Αμοιβές ημερομίσθιου προσωπικού',
+      '60.02': u'Παρεπόμενες αποδοχές & εξ. προσωπικού',
+      '60.03': u'Εργοδοτικές εισφορές μισθωτών',
+      '60.04': u'Εργοδοτικές εισφορές ημερομισθίων',
+      '60.05': u'Αποζημιώσεις απόλυσης ή εξόδου',
+      '61': u'Αμοιβές & έξοδα τρίτων',
+      '62': u'Παροχές τρίτων',
+      '63': u'Φόροι - Τέλη',
+      '64': u'Διάφορα έξοδα',
+      '64.00': u'Έξοδα μεταφορών',
+      '64.01': u'Έξοδα ταξειδίων',
+      '64.02': u'Έξοδα προβολής & διαφήμισης',
+      '64.03': u'Έξοδα εκθέσεων - επιδείξεων',
+      '64.04': u'Ειδικά έξοδα προώθησης εξαγωγών',
+      '64.05': u'Συνδρομές - εισφορές',
+      '64.06': u'Δωρεές - επιχορηγήσεις',
+      '64.07': u'Έντυπα & γραφική ύλη',
+      '64.08': u'Υλικά άμεσης ανάλωσης',
+      '64.09': u'Έξοδα δημοσιεύσεων',
+      '64.10': u'Έξοδα συμμετοχών & χρεογράφων',
+      '64.11': u'Διαφορές αποτίμησης συμμετοχών & χρεογράφων',
+      '64.12': u'Ζημιές από πώληση συμμετοχών & χρεογράφων',
+      '64.91': u'Ζημιές από πράξεις hedging',
+      '64.98': u'Διάφορα έξοδα',
+      '65': u'Τόκοι & συναφή έξοδα',
+      '66': u'Αποσβέσεις παγίων ενσ.στο λειτ.κόστος',
+      '68': u'Αμοιβές & έξοδα προσωπικού',
+      '7': u'ΕΣΟΔΑ',
+      '70': u'Πωλήσεις εμπορευμάτων',
+      '71': u'Πωλήσεις προϊόντων ετοίμων & ημιτελών',
+      '72': u'Πωλήσεις λοιπών αποθεμάτων & αχρ.υλικ.',
+      '73': u'Έσοδα απο παροχή υπηρεσιών',
+      '74': u'Επιχορηγήσεις & διάφορα έσοδα πωλήσεων',
+      '75': u'Έσοδα παρεπομένων ασχολιών',
+      '76': u'Έσοδα κεφαλαίων',
+      '8': u'ΑΠΟΤΕΛΕΣΜΑΤΑ',
+      }
+
+
+def select(dbpath, sql):
+    """
+    dbpath: sqlite file full path
+    sql: sql like SELECT ...
+    """
+    assert os.path.exists(dbpath)
+    assert sql[:6].upper() == 'SELECT'
+    con = sqlite3.connect(dbpath)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute(sql)
+    rows = cur.fetchall()
+    cur.close()
+    con.close()
+    return rows
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimal digits
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    def isNum(value):  # Einai to value arithmos, i den einai ?
+        try:
+            float(value)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def dec2gr(poso, decimals=2, zeroAsSpace=False):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    if dec(poso) == dec(0):
+        if zeroAsSpace:
+            return ''
+        else:
+            decs = '0' * decimals
+            if decimals > 0:
+                return '0,' + decs
+            else:
+                return '0'
+
+    def triades(txt, separator='.'):
+        '''
+        Help function to split digits to thousants ( 123456 becomes 123.456 )
+        '''
+        ltxt = len(txt)
+        rem = ltxt % 3
+        precSpace = 3 - rem
+        stxt = ' ' * precSpace + txt
+        a = []
+        while len(stxt) > 0:
+            a.append(stxt[:3])
+            stxt = stxt[3:]
+        a[0] = a[0].strip()
+        fval = ''
+        for el in a:
+            fval += el + separator
+        return fval[:-1]
+
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+
+def getymd_from_iso(date):
+    assert date[4] == '-'
+    assert date[7] == '-'
+    y, m, d = date.split('-')
+    return int(y), int(m), int(d)
+
+
+def saizon(dat, startmonth=10):
+    y, m, d = getymd_from_iso(dat)
+    if m >= startmonth:
+        return '%s-%s' % (y, y+1)
+    else:
+        return '%s-%s' % (y-1, y)
+
+
+def week(dat):
+    y, m, d = getymd_from_iso(dat)
+    wn = '%s' % datetime.date(y, m, d).isocalendar()[1]
+    if len(wn) == 1:
+        wn = '0' + wn
+    return '%s-%s' % (y, wn)
+
+
+def period(date, diast=2):
+    assert diast in (2, 3, 4, 6)
+    dval = {2: 'oDim', 3: 'oTrim', 4: 'oTetr', 6: 'oEjam'}
+    year, month, date = getymd_from_iso(date)
+    imonth = int(month)
+    period = imonth // diast
+    ypoloipo = imonth % diast
+    if ypoloipo > 0:
+        period += 1
+    return '%s-%s%s' % (year, period, dval[diast])
+
+
+def group_time_text(adate, per='m'):
+    if per == 'd':  # Όλη η ημερομηνία
+        dat = adate[:10]
+    elif per == 'm':  # Έτος + μήνας ####-##
+        dat = adate[:7]
+    elif per == 'y':  # Έτος μόνο
+        dat = adate[:4]
+    elif per == 'm2':
+        dat = period(adate, 2)
+    elif per == 'm3':
+        dat = period(adate, 3)
+    elif per == 'm4':
+        dat = period(adate, 4)
+    elif per == 'm6':
+        dat = period(adate, 6)
+    elif per == 'w':
+        dat = week(adate)
+    elif per == 's':
+        dat = saizon(adate)
+    else:  # Default is Year
+        dat = adate[:4]
+    return dat
+
+
+def lmo_hierarchy(lmos, split_char='.'):
+    assert len(lmos) > 1
+    listlmo = lmos.split(split_char)
+    listfinal = ['t']
+    if lmos[0] in '267':
+        listfinal.append('t267')
+    elif lmos[0] in '35':
+        listfinal.append('t35')
+    listfinal.append(lmos[0])
+    tmp =''
+    for el in listlmo:
+        if tmp == '':
+            tmp = el
+        else:
+            tmp = split_char.join([tmp, el])
+        listfinal.append(tmp)
+    return listfinal
+
+
+def group_by_time(data,  per='d', split_char='.'):
+    '''
+    Χρησιμοποιούμε όλα τα δεδομένα και τα μοιράζουμε σε δύο διαστάσεις
+    στις γραμμές αθροίζουμε ιεραρχικά τα υπόλοιπα των λογαριασμών
+    στις στήλες ορίζουμε τις χρονικές περιόδους (πχ δίμηνα ,τρίμηνα κλπ)
+    Θα μπορούσαμε να κινηθούμε και ανάποδα και από τα δεδομένα αυτά να κάνουμε
+    drill down και να φτάσουμε στα αρχικά αναλυτικά δεδομένα.
+    '''
+    totals = {}
+    pers = set()
+    lmop = {}
+    ttot = {}
+    tlines = {}
+    for tr in data:
+        dat = group_time_text(tr['dat'], per)
+        pers.add(dat)
+        lmohi = lmo_hierarchy(tr['lmo'], split_char)
+        for lmo in lmohi:
+            totals[lmo] = totals.get(lmo, {})
+            totals[lmo][dat] = totals[lmo].get(dat, 0)
+            totals[lmo][dat] += tr['xr'] - tr['pi']
+            # Δοκιμαστικό για να μαζέψω τις αντίστοιχες εγγραφές
+            tlines[lmo] = tlines.get(lmo, {})
+            tlines[lmo][dat] = tlines[lmo].get(dat, [])
+
+            tlines[lmo][dat].append([tr['id'],
+                                     tr['dat'],
+                                     tr['par'],
+                                     # tr['lmo'],
+                                     # tr['lmop'],
+                                     tr['xr'],
+                                     tr['pi']
+                                     ])
+            # Στήλη με σύνολα γραμμών
+            ttot[lmo] = ttot.get(lmo, 0) + tr['xr'] - tr['pi']
+            # Δημιουργία περιγραφών λογαριασμών συνδυάζοντας τα δεδομένα
+            # κινούμενων λογαριασμών με τα δεδομένα από το dictionary lm
+            if lmo == tr['lmo']:
+                lmop[lmo] = tr['lmop']
+            else:
+                lmop[lmo] = lm.get(lmo, '')
+    return totals, sorted(pers), lmop, ttot, tlines
+
+
+def main(db, sql, per='y'):
+    tmpl1 = '%-14s %-42s'
+    tmpl2 = '%14s'
+    vals = select(db, sql)
+    res, pers, lmop, ttot, tlines = group_by_time(vals, per)
+    stf = tmpl1 % (u'Λογαριασμός', u'Περιγραφή')
+    for el in pers:
+        stf += tmpl2 % el
+    stf += tmpl2 % u'Σύνολο'
+    stf += '\n'
+    for key in sorted(res.keys()):
+        stf += tmpl1 % (key, lmop[key])
+        for key2 in pers:
+            stf += tmpl2 % dec2gr(res[key].get(key2, 0))
+        stf += tmpl2 % dec2gr(ttot[key])
+        stf += '\n'
+    print(stf)
+    #for el in tlines['6']['2016-3oTrim']:
+        #  '%-4s %12s %-22s %-12s %-44s %12s %12s'
+    #    print('%-4s %12s %-25s %12s %12s' % tuple(el))
+
+
+def arr(db, sql, per='y'):
+    vals = select(db, sql)
+    res, pers = group_by_time(vals, per)
+    stt = ['Lmoi']
+    for el in pers:
+        stt.append(el)
+    vf = []
+    # vf.append(stt)
+
+    for key in sorted(res.keys()):
+        stf = [key]
+        for key2 in pers:
+            stf.append(dec(res[key].get(key2, 0)))
+        vf.append(stf)
+    return vf, stt
+
+
+def run(db, period='m3'):
+    sql = ("select tr.id, tr.par, tr.dat, lmo.lmo, lmo.lmop, trd.xr, trd.pi "
+           "From trd "
+           "inner join lmo on trd.id_lmo=lmo.id "
+           "inner join tr on tr.id=trd.id_tr ")
+    main(db, sql, period)
+
+
+if __name__ == '__main__':
+    # run('/home/tedlaz/tedfiles/prj/samaras2016d/2016.sql3', 'm3')
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description=u'Ισοζύγιο σε αρχείο')
+    pars.add_argument('db', help='Sqlite database file')
+    pars.add_argument('Period', nargs='?', help='Period', default='m3')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.db):
+        print('No such file : %s' % args.db)
+    else:
+        run(args.db, args.Period)

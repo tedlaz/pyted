@@ -1,0 +1,5 @@
+Πρώτα βρίσκουμε μια εικόνα διάστασης 800Χ600.Ας πούμε ότι λέγεται image.jpg
+Ας πούμε οτι το μουσικό αρχείο λέγεται music.mp3
+Τότε δίνουμε:
+
+ffmpeg -loop 1 -i image.jpg -i music.mp3 -c:v libx264 -tune stillimage -c:a aac -strict experimental -b:a 192k -pix_fmt yuv420p -shortest out.mp4

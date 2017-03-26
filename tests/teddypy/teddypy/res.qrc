@@ -1,0 +1,24 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/add.png</file>
+    <file>images/back.png</file>
+    <file>images/copy.png</file>
+    <file>images/cut.png</file>
+    <file>images/doy.png</file>
+    <file>images/editdelete.png</file>
+    <file>images/exit.png</file>
+    <file>images/filenew.png</file>
+    <file>images/fileopen.png</file>
+    <file>images/filesave.png</file>
+    <file>images/filesaveas.png</file>
+    <file>images/icon_find.png</file>
+    <file>images/info.png</file>
+    <file>images/new.png</file>
+    <file>images/open.png</file>
+    <file>images/par.png</file>
+    <file>images/paste.png</file>
+    <file>images/print.png</file>
+    <file>images/save.png</file>
+    <file>images/set.png</file>
+</qresource>
+</RCC>

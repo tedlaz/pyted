@@ -1,0 +1,97 @@
+for enabling teamviewer daemon : sudo systemctl enable teamviewerd
+for just running daemon        : sudo systemctl start teamviewerd
+Για animated gif	           : convert -delay 120 -loop 0 *.png animated.gif
+Τριμάρισμα για τον δίσκο ssd   : sudo fstrim /
+
+Αλλαγή mac address
+ip link show enp37s0   # για να δούμε το mac address
+macchanger -r enp37s0 # Τυχαία mac address
+macchanger -e enp37s0 # mac address του ίδιου κατασκευαστή
+macchanger -p enp37s0 # Επιστροφή στην κανονική mac address
+
+python virtualenv
+-----------------
+virtualenv --python=python2 tstvenv για python2
+ή
+virtualenv tstvenv για python 3
+και μετά source tstvenv/bin/activate
+και για έξοδο : deactivate
+
+How to correct what application to lounch chrome on click : 
+    gvfs-mime --set x-scheme-handler/magnet deluge.desktop
+    if you want to open magnet links with deluge
+
+totally remove app : sudo pacman -Rns <appname> 
+
+raspberry pi mount external disk
+Note:
+ntfs-3g for NTFS Drives
+vfat for FAT32 Drives
+ext4 for ext4 Drives
+--------------------------------------
+sudo apt-get install ntfs-3g 
+sudo mkdir /mnt/EXTERNAL
+sudo chmod 770 /mnt/EXTERNAL
+sudo mount -t ntfs-3g -o uid=1000,gid=1000,umask=007 /dev/sda1 /mnt/EXTERNAL
+for permanent disk connection:
+sudo cp /etc/fstab /etc/fstab.backup
+ls -l /dev/disk/by-uuid/   to find the uuid of the disk
+sudo nano /etc/fstab and add line:
+UUID=<the uuid found before> /media/EXTERNAL ntfs-3g uid=1000,gid=1000,umask=007 0 0
+
+deluge console:
+sudo -u deluge deluge-console
+
+για find και delete:
+find . -name *.pyc -delete
+
+Για κλείσιμο της οθόνης του laptop σε openbox
+sudo xrandr --output LVDS1 --off
+
+Για έλεγχο κλεισίματος monitor μετά από κάποιο χρόνο αδράνειας
+xset -q
+για απενεργοποίηση κλεισίματος μετά από κάποιο χρόνο αδράνειας
+xset s off -dpms
+Αν θέλουμε μόνιμη εφαρμογή προσθέτουμε στο .xinitrc πρίν από τον window manager τις γραμμές:
+xset s off
+xset -dpms
+
+# Για καθάρισμα ssh
+ssh-keygen -R <ip address εδώ>
+
+# Για σύνδεση ssh χωρίς κωδικό
+# Όλες οι ενέργειες γίνονται στο client computer
+1. ssh-keygen   # Generating public/private rsa key pair
+2. ssh-copy-id -i ~/.ssh/id_rsa.pub remote_user@remote_ip(eg ted@192.168.1.20)
+
+
+# ipython notebook jupyter
+  jupyter notebook
+
+Για έναρξη cups (server εκτύπωσης)
+  sudo systemctl start org.cups.cupsd.service 
+  η διεύθυνση του cups είναι : http://localhost:631
+
+Ελληνικά 
+  setxkbmap -layout us,el -variant -option grp:alt_shift_toggle,terminate:ctrl_alt_bksp &
+
+Για Εγκατάσταση fonts στο τερματικό
+  setfont ter-powerline-x12n.psf -m 8859-7
+
+Απενεργοποίηση ipv6
+  1.sudo nano /etc/default/grub και κάνουμε: GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 quiet"
+  2.sudo grub-mkconfig -o /boot/grub/grub.cfg  για ενεργοποίηση των αλλαγών
+  3.Άν θέλουμε να το επαναφέρουμε αφαιρούμε το ipv6.disable=1 απο το (1)
+
+Git Δημιουργία κεντρικού αποθετηρίου
+  mkdir projectName.git # στο μέρος που θέλουμε να δημιουργήθεί στον server
+  cd projectName.git
+  git init --bare
+
+Στον Client στη διαδρομή που θέλουμε να δημιουργήσουμε το τοπικό αποθετήριο
+  git init
+  κάνουμε αντιγραφή το αρχείο .gitignore
+  git remote add origin name@server:/path/to/projectName.git
+  git push --set-upstream origin master
+  Είμαστε έτοιμοι να δώσουμε εντολές git (add, commit, push)
+git clone name@server:/path/to/repo.git

@@ -1,0 +1,149 @@
+#!/usr/bin/python2
+
+#!/usr/bin/python2
+# -*- coding: utf-8 -*-
+# Σύγκριση μεταξύ των αρχείων (sqlite) της λογιστικής και των Εσόδων-Εξόδων
+# και εύρεση διαφορών ανά ημέρα
+import sqlite3
+import decimal
+from sets import Set
+
+
+def isNum(value):  # Einai to value arithmos, i den einai ?
+    try:
+        float(value)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
+def dec(poso=0, decimals=2):
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def remove_zero(stra):
+    if len(stra) > 1 and stra[0] == '0':
+        return stra[1:]
+    else:
+        return stra
+
+
+def d2gr(date):
+    if not date:
+        return ''
+    year, month, day = date.split('-')
+    return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
+
+
+sqlel = '''select tr.dat as dt,
+sum(case when substr(lmo.lmo, 1, 1)='1' or substr(lmo.lmo, 1, 1)='2'
+    or substr(lmo.lmo, 1, 1)='6' then trd.xr - trd.pi end) as om2plus6,
+sum(case when substr(lmo.lmo, 1, 1)='7' then trd.pi - trd.xr end) as om7,
+sum(case when substr(lmo.lmo, 1, 5)='54.00' AND
+    substr(lmo.lmo, 1, 7) <> '54.00.9' then trd.xr - trd.pi end) as fpa
+FROM trd
+INNER JOIN tr ON tr.id=trd.id_tr
+INNER JOIN lmo on lmo.id=id_lmo
+Group by dt
+order by dt;
+'''
+sqlee = '''select hm, ej, es, vj-vs as dfpa from eet'''
+
+
+def getdata(sql, db):
+    '''
+    {'sql': sql, 'db': 'afile.sql3'}
+    '''
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute(sql)
+    rws = cur.fetchall()
+    cur.close()
+    con.close()
+    return rws
+
+
+def dic_from_data(data):
+    adic = {}
+    for line in data:
+        adic[line[0]] = line[1:]
+    return adic
+
+
+def compare_dics(dic1, dic2):
+    diff = {}
+    setkey = Set(dic1.keys())
+    setkey.update(Set(dic2.keys()))
+    # print(sorted(setkey))
+    for key in setkey:
+        vej, ves, vfpa = dic1[key]
+        if not vej:
+            vej = 0
+        if not ves:
+            ves = 0
+        if not vfpa:
+            vfpa = 0
+        vej = dec(vej)
+        ves = dec(ves)
+        vfpa = dec(vfpa)
+        wej, wes, wfpa = dic2.get(key, [0, 0, 0])
+        if not wej:
+            wej = 0
+        if not wes:
+            wes = 0
+        if not wfpa:
+            wfpa = 0
+        wej = dec(wej)
+        wes = dec(wes)
+        wfpa = dec(wfpa)
+        if (vej != wej) or (ves != wes) or (vfpa != wfpa):
+            diff[key] = [vej, wej, vej-wej, ves, wes, ves-wes,
+                         vfpa, wfpa, vfpa-wfpa]
+    return diff
+
+
+def run(db1, datesize=10):
+    tstr = '%10s %12s %12s %12s %12s %12s %12s %12s %12s %12s'
+    hval = ('imnia', 'el-ejoda', 'ee-ejoda', 'ejoda-d',
+            'el-esoda', 'ee-esoda', 'esoda-d',
+            'el-fpa', 'ee-fpa', 'fpa-d')
+    data1 = getdata(sqlel, db1)
+    data2 = getdata(sqlee, db1)
+    dic1 = dic_from_data(data1)
+    dic2 = dic_from_data(data2)
+    comp = compare_dics(dic1, dic2)
+    if not comp:
+        print('Den yparxoyn diafores')
+        return True
+    print('Diafores ana imera')
+    print(tstr % hval)
+    for key in sorted(comp.keys()):
+        v1 = comp[key][0]
+        v2 = comp[key][1]
+        v3 = comp[key][2]
+        v4 = comp[key][3]
+        v5 = comp[key][4]
+        v6 = comp[key][5]
+        v7 = comp[key][6]
+        v8 = comp[key][7]
+        v9 = comp[key][8]
+        print(tstr % (d2gr(key), v1, v2, v3, v4, v5, v6, v7, v8, v9))
+    return True
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description='Compare logistiki me esej')
+    pars.add_argument('sqlitefile', help='sqlite file with data')
+    pars.add_argument('--version', action='version', version='2.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.sqlitefile):
+        print('No such file : %s' % args.sqlitefile)
+    else:
+        ret = run(args.sqlitefile)

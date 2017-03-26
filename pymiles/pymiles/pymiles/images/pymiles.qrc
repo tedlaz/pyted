@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/"/>
+    <qresource prefix="/icons">
+        <file>Humanity/actions/custom/arrow.png</file>
+    </qresource>
+</RCC>

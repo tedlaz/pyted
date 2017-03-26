@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>269</width>
+    <height>423</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Στοιχεία εργαζομένων</string>
+  </property>
+  <widget class="QLineEdit" name="t_epon">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>16</y>
+     <width>133</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>16</y>
+     <width>44</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Επώνυμο</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_epon</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_onom">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>42</y>
+     <width>133</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_2">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>42</y>
+     <width>33</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Όνομα</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_onom</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_pat">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>68</y>
+     <width>133</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_3">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>68</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Όνομα Πατέρα</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_pat</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_mit">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>94</y>
+     <width>133</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_4">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>94</y>
+     <width>77</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Όνομα Μητέρας</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_mit</cstring>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="d_gen">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>172</y>
+     <width>83</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="calendarPopup">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_5">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>172</y>
+     <width>80</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ημ/νία Γέννησης</string>
+   </property>
+   <property name="buddy">
+    <cstring>d_gen</cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_6">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>276</y>
+     <width>90</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ημ/νία Πρόσληψης</string>
+   </property>
+   <property name="buddy">
+    <cstring>d_pros</cstring>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="d_pros">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>276</y>
+     <width>83</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="calendarPopup">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_7">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>224</y>
+     <width>44</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Α.Μ.Κ.Α.</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_amka</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_amka">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>224</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_8">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>198</y>
+     <width>35</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Α.Φ.Μ.</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_afm</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_afm">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>198</y>
+     <width>91</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_amika">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>250</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_9">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>250</y>
+     <width>34</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Αμ.ΙΚΑ</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_amika</cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_10">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>120</y>
+     <width>26</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Φύλο</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_sex</cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_11">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>146</y>
+     <width>84</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Οικογ.Κατάσταση</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_cat</cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_12">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>302</y>
+     <width>62</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Προυπηρεσία</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_proy</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_proy">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>302</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_papod">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>354</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_13">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>354</y>
+     <width>47</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Αποδοχές</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_papod</cstring>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbEponymo_14">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>328</y>
+     <width>29</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Τύπος</string>
+   </property>
+   <property name="buddy">
+    <cstring>t_mis</cstring>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_sex">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>120</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_cat">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>146</y>
+     <width>131</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="t_mis">
+   <property name="geometry">
+    <rect>
+     <x>107</x>
+     <y>328</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>t_epon</tabstop>
+  <tabstop>t_onom</tabstop>
+  <tabstop>t_pat</tabstop>
+  <tabstop>t_mit</tabstop>
+  <tabstop>d_gen</tabstop>
+  <tabstop>t_afm</tabstop>
+  <tabstop>t_amka</tabstop>
+  <tabstop>t_amika</tabstop>
+  <tabstop>d_pros</tabstop>
+  <tabstop>t_proy</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

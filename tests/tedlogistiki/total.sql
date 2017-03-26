@@ -1,0 +1,1 @@
+select sum(xr), sum(pi) from logistiki_tran_d;

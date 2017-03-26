@@ -1,0 +1,41 @@
+<navtabs page-name="state.pageName"></navtabs>
+<div class="paddinglr10">
+  <h1>Λίστα εργαζομένων</h1>
+  <form ng-submit="addItem()">
+    <fieldset>
+      <input type="text" placeholder="Επώνυμο" size=30 ng-model="state.newEpo" />
+      <input type="text" placeholder="Όνομα" size=20 ng-model="state.newOno" />
+    </fieldset>
+    <input type="text" placeholder="Πατρώνυμο" size=20 ng-model="state.newPat" />
+    <br>
+    <button class="btn btn-success">Προσθήκη</button>
+  </form>
+
+
+  <button class="btn" ng-click="setAndRetrieveLastNItems(5)">
+  Retrieve last 5 items
+  </button>
+  <button class="btn btn-info" ng-click="setAndRetrieveLastNItems(10)">
+  Retrieve last 10 items
+  </button>
+  <button class="btn btn-danger" ng-click="setAndRetrieveLastNItems(1500)">
+  Retrieve last 1500 items
+  </button>
+
+  <table class="table">
+    <thead>
+      <th>No</th>
+      <th>Επώνυμο</th>
+      <th>Όνομα</th>
+      <th>Πατρώνυμο</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in state.todoList">
+        <td>{{ item.id }}</td>
+        <td>{{ item.epo }}</td>
+        <td>{{ item.ono }}</td>
+        <td>{{ item.pat }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,11 @@
+<RCC>
+  <qresource>
+    <file alias="filenew.png">images/filenew.png</file>
+    <file alias="filesave.png">images/filesave.png</file>
+    <file alias="key">images/key.png</file>
+    <file alias="filesaveas.png">images/filesaveas.png</file>
+    <file alias="filequit.png">images/filequit.png</file>
+    <file alias="editdelete.png">images/editdelete.png</file>
+    <file alias="icon.png">images/icon.png</file>
+  </qresource>
+</RCC>

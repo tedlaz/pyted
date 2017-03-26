@@ -1,0 +1,5 @@
+#!/home/tedlaz/venv_miles/bin/python2
+# -*- coding: utf-8 -*-
+from pymiles.sqlite.db_create import createmeta
+
+createmeta()

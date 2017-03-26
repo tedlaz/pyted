@@ -1,0 +1,105 @@
+{
+    "eid": {
+        "fields": {
+            "eidk": {
+                "lbl": "Κωδικός", 
+                "uq": 3
+            }, 
+            "eidp": {
+                "lbl": "Είδος", 
+                "uq": 3
+            }
+        }, 
+        "order": [
+            "id", 
+            "eidp", 
+            "eidk"
+        ], 
+        "rpr": "SELECT id, eidp as eid_rp FROM eid", 
+        "title": "Είδος", 
+        "titlep": "Είδη"
+    }, 
+    "inv": {
+        "fields": {
+            "idate": {
+                "lbl": "Ημ/νία", 
+                "qt": "date", 
+                "typ": "DATE", 
+                "uq": 2
+            }, 
+            "pno": {
+                "lbl": "Αριθμός", 
+                "uq": 2
+            }, 
+            "pro_id": {
+                "lbl": "Προμηθευτής", 
+                "typ": "INTEGER"
+            }
+        }, 
+        "order": [
+            "id", 
+            "idate", 
+            "pno", 
+            "pro_id"
+        ], 
+        "rpr": "SELECT id, idate || ' ' || pno as inv_rp FROM inv", 
+        "title": "Παραστατικό", 
+        "titlep": "Παραστατικά"
+    }, 
+    "invd": {
+        "fields": {
+            "ajia": {
+                "lbl": "Αξία", 
+                "qt": "num", 
+                "typ": "NUMERIC"
+            }, 
+            "eid_id": {
+                "lbl": "Είδος", 
+                "uq": 2
+            }, 
+            "inv_id": {
+                "lbl": "Παραστατικό", 
+                "uq": 2
+            }, 
+            "pos": {
+                "lbl": "Ποσότητα", 
+                "qt": "num", 
+                "typ": "NUMERIC"
+            }, 
+            "timm": {
+                "lbl": "Τιμή Μονάδας", 
+                "qt": "num", 
+                "typ": "NUMERIC"
+            }
+        }, 
+        "order": [
+            "id", 
+            "inv_id", 
+            "eid_id", 
+            "pos", 
+            "timm", 
+            "ajia"
+        ], 
+        "rpr": "SELECT id, eid_id as invd_rp FROM invd", 
+        "title": "", 
+        "titlep": ""
+    }, 
+    "pro": {
+        "fields": {
+            "pnam": {
+                "lbl": "Προμηθευτής"
+            }, 
+            "vat": {
+                "lbl": "ΑΦΜ"
+            }
+        }, 
+        "order": [
+            "id", 
+            "pnam", 
+            "vat"
+        ], 
+        "rpr": "SELECT id, pnam as pro_rp FROM pro", 
+        "title": "Προμηθευτής", 
+        "titlep": "Προμηθευτές"
+    }
+}

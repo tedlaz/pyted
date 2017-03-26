@@ -1,0 +1,139 @@
+#!/usr/bin/python2
+# *- coding: utf-8 -*
+# Δίνουμε ημερολόγιο εγγραφών εσόδων-εξόδων και μας επιστρέφει
+# sqlite database με τις εγγραφές έσοδα-έξοδα ανα ημέρα!!!
+import sqlite3
+
+sql_create = '''CREATE TABLE IF NOT EXISTS eet(
+hm DATE PRIMARY KEY,
+es NUMERIC NOT NULL DEFAULT 0,
+ej NUMERIC NOT NULL DEFAULT 0,
+vs NUMERIC NOT NULL DEFAULT 0,
+vj NUMERIC NOT NULL DEFAULT 0
+);
+'''
+sql_eet = u"INSERT INTO eet VALUES('%s', '%s', '%s', '%s', '%s');\n"
+
+
+def iso_number_from_greek(num):
+    num = num.strip()
+    num = num.replace('.', '')
+    num = num.replace(',', '.')
+    return num
+
+
+def iso_date_from_greek(dat):
+    day, month, year = dat.split('/')
+    return '%s-%s-%s' % (year, month, day)
+
+
+def remove_simple_quotes(strval):
+    retval = strval.strip()
+    retval = retval.replace("'", '')
+    return retval
+
+
+PIN_ERROR, DB_ERROR, NULL_VAL, ONE_VAL, MANY_VAL = range(5)
+
+
+def dbScript(pin):
+    '''
+    Generic sql script execution
+    input
+        script : one or many sql expressions divided by ;
+        db  : database name
+    output:
+        1 if no error , 0 if error
+        text message
+    '''
+    script = pin.get('script', None)
+    db = pin.get('db', None)
+
+    if (not script) or (not db):
+        return {'status': PIN_ERROR,
+                'msg': 'dbScript: script and/or db name are empty'}
+
+    try:
+        con = sqlite3.connect(db)  # @UndefinedVariable
+        cur = con.cursor()
+        cur.executescript(script)
+        con.commit()
+        status = NULL_VAL
+        msg = 'dbScript: Everything executed Fine !!'
+    except sqlite3.Error, e:  # @UndefinedVariable
+        if con:
+            con.rollback()
+        status = DB_ERROR
+        msg = 'dbScript: %s' % e
+    finally:
+        cur.close()
+        con.close()
+    return {'status': status, 'msg': msg}
+
+
+def parse(filename, encoding='WINDOWS-1253'):
+    hm = ''  # date for table eet
+    es = ''  # esoda for table eet
+    ej = ''  # ejoda for table eet
+    vs = ''  # fpa esodon
+    vj = ''  # fpa eksodon
+    a_eet = []
+    with open(filename) as afile:
+        for line in afile:
+            line = line.decode(encoding)
+            # first check if linesize > 152
+            if len(line) > 152:
+                if line[53:66] == u'Σύνολα Εσόδων':
+                    hm = iso_date_from_greek(line[31:41])
+                    es = iso_number_from_greek(line[96:113])
+                    vs = iso_number_from_greek(line[117:134])
+                    # print('%s %s' % (hm, es))
+                if line[53:66] == u'Σύνολα Εξόδων':
+                    ej = iso_number_from_greek(line[96:113])
+                    vj = iso_number_from_greek(line[117:134])
+                    # print('%s %s %s' % (hm, es, ej))
+                    a_eet.append((hm, es, ej, vs, vj))
+    return a_eet
+
+
+def array_to_sql(arr, sql_template):
+    sql = u''
+    for el in arr:
+        sql += sql_template % el
+    # print(sql)
+    return sql
+
+
+def create_sql(txtFileName):
+    a_eet = parse(txtFileName)
+    sql = u'BEGIN TRANSACTION;\n'
+    sql += array_to_sql(a_eet, sql_eet)
+    sql += 'COMMIT TRANSACTION;'
+    return sql
+
+
+def run(txtFileName, dbname=None):
+    if not dbname:
+        imerol = txtFileName.split('.')
+        dbname = '%s.sql3' % imerol[0]
+    ret1 = dbScript({'script': sql_create, 'db': dbname})
+    ret2 = dbScript({'script': create_sql(txtFileName), 'db': dbname})
+    return '%s\n%s' % (ret1, ret2)
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description='Parse text to sqlite3')
+    pars.add_argument('file', help='Text FILE to be parsed')
+    pars.add_argument('-o', '--Out', help='sqlite3 file name')
+    pars.add_argument('-v', '--verbose', action='store_true',
+                      help='output detailed messages')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.file):
+        print('No such file : %s' % args.file)
+    else:
+        ret = run(args.file, args.Out)
+        if args.verbose:
+            print(ret)

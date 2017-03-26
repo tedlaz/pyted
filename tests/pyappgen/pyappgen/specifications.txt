@@ -1,0 +1,26 @@
+Field names must have a specific first letter:
+
+
+Widgets
+  fldb b : True or False widget
+  fldi i : Integer values widget
+  fldn n : Numeric with two decimals field
+  flds s : It gets and sets string Values
+  fldj j : This is like flds but masked to take digits as text input. Specific for numeric text fields like social security number, VAT number, etc
+  fldt t : For text values. Widget consumes double width. 
+  fldz z : A Text field with a button. It gets two values one hidden is the foreign key id the other visible is the human readable representation of the foreign key's value. Clicking the button opens a find form to select (also insert or update) a key-humanReadable pair from foreign table.
+  fldc c : A combo box with a pair of values. The hidden one is the foreign key id, the visible one the human readable representation of the foreign key value. For selection only.
+  fldd d : Date field with drop down calendar 
+  flde e : Date or empty string with drop down calendar
+  fldf f : DateTime field not implemented yet
+  fldw w : Special field for weekdays selection . Value is an array with seven values either 0 or 1 each (eg [1,1,1,1,1,0,0] meaning 5 weekdays monday-friday except saturday, sunday)
+
+They all implement :
+getV, setV
+
+They have as members :
+self.lbl    : Label of field
+self.parent : From parent can get db, etc 
+
+Table names with last char = '_' mean master-detail relation
+eg inv, inv_

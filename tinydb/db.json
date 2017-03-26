@@ -1,0 +1,23 @@
+{
+"_default": {}, 
+"erg": {
+     "1": {"epo": "Lazaros", "ono": "Konstantinos", "val": 15}, 
+     "2": {"epo": "Lazaros", "ono": "Ted", "val": 15}, 
+     "3": {"epo": "Dazea", "ono": "Kalliopi"}, 
+     "4": {"epo": "Dazea", "ono": "Maria"}, 
+     "5": {"epo": "\u039c\u03b1\u03c1\u03b1\u03b2\u03ad\u03bb\u03b9\u03b1\u03c2", "ono": "\u03a3\u03c0\u03cd\u03c1\u03bf\u03c2"}, 
+     "6": {"epo": "\u0393\u03b5\u03c9\u03c1\u03b3\u03af\u03bf\u03c5", "ono": "\u0393\u03b5\u03c1\u03ac\u03c3\u03b9\u03bc\u03bf\u03c2"}, 
+     "7": {"epo": "Karelias", "ono": "Ilias"}, 
+     "8": {"epo": "Pappas", "ono": "Dimitris"}
+}, 
+"parartima": {
+     "1": {"address": "Anafis 44"}
+}, 
+"tst": {
+     "1": {"mis": {"erg_name": "Ted", "meres": 12}, "xrisi": 2015, "per": 1}
+}, 
+"par": {
+     "1": {"xrisi-per": "2015-1", "ergnoi": {"Popi": {"kan": 12}, "Ted": {"nyxta": 12, "kan": 10}}}
+}
+
+}

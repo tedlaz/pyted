@@ -1,0 +1,18 @@
+<RCC>
+  <qresource prefix="pr">
+    <file alias="fileOpen">images/fileOpen.png</file>
+    <file alias="m13">images/m13.png</file>
+    <file alias="fileNew">images/fileNew.png</file>
+    <file alias="print">images/print.png</file>
+    <file alias="newProsopo">images/newProsopo.png</file>
+    <file alias="find">images/icon_find.png</file>
+    <file alias="add">images/add.png</file>
+    <file alias="tst">images/balance.png</file>
+    <file alias="euro">images/euro.png</file>
+    <file alias="table">images/tabl.png</file>
+    <file alias="exit">images/exit.png</file>
+    <file alias="info">images/info.png</file>
+    <file alias="sql">images/sql.png</file>
+  </qresource>
+  
+</RCC>

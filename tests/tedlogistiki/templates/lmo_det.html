@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Καρτέλλα {{ onoma }}{% endblock %}
+
+{% block content %}
+<h1>{{ lm.code }} - {{ lm.per }}</h1>
+<table>
+<tr>
+<th>Ημερομηνία</th>
+<th>Περιγραφή</th>
+<th>Χρέωση</th>
+<th>Πίστωση</th>
+<th>Υπόλοιπο</th>
+</tr>
+{%  for lm in grammes  %}
+    <tr>
+    <td>{{ lm.imnia }}</td>
+    <td>{{ lm.per }}</td>
+    <td align="right">{{ lm.xr }}</td>
+    <td align="right">{{ lm.pi }}</td>
+    <td align="right">{{ lm.ytd }}</td>
+    <td ><a href={{ lm.id }}/>{{ lm.id }}</a></td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

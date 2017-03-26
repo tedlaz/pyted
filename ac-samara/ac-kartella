@@ -1,0 +1,135 @@
+#!/usr/bin/python
+# *- coding: utf-8 -*
+# Καρτέλλα λογαριασμών ανα ημερομηνία 
+import sqlite3
+import decimal
+
+sql = '''select tr.dat, tr.par, lmo.lmo, lmo.lmop, trd.xr, trd.pi
+from trd
+inner join tr on tr.id=trd.id_tr
+inner join lmo on lmo.id=trd.id_lmo
+where lmo.lmo like '%s%%'
+order by tr.dat, tr.par, lmo.lmo'''
+
+
+def dec(poso=0, decimals=2):
+    """ use : Given a number, it returns a decimal with a specific number
+        of decimals
+        input Parameters:
+            1.poso : The number for conversion in any format (e.g. string or
+                int ..)
+            2.decimals : The number of decimals (default 2)
+        output: A decimal number
+        """
+    def isNum(value):  # Einai to value arithmos, i den einai ?
+        try:
+            float(value)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    PLACES = decimal.Decimal(10) ** (-1 * decimals)
+    if isNum(poso):
+        tmp = decimal.Decimal(str(poso))
+    else:
+        tmp = decimal.Decimal('0')
+    return tmp.quantize(PLACES)
+
+
+def strGrDec(poso, decimals=2):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    def triades(txt, separator='.'):
+        '''
+        Help function to split digits to thousants ( 123456 becomes 123.456 )
+        '''
+        ltxt = len(txt)
+        rem = ltxt % 3
+        precSpace = 3 - rem
+        stxt = ' ' * precSpace + txt
+        a = []
+        while len(stxt) > 0:
+            a.append(stxt[:3])
+            stxt = stxt[3:]
+        a[0] = a[0].strip()
+        fval = ''
+        for el in a:
+            fval += el + separator
+        return fval[:-1]
+
+    prosimo = ''
+    strposo = str(poso)
+    if len(strposo) > 0:
+        if strposo[0] in '-':
+            prosimo = '-'
+            strposo = strposo[1:]
+    if dec(poso) == dec(0):
+        prosimo = ''
+    timi = '%s' % dec(strposo, decimals)
+    intpart, decpart = timi.split('.')
+    final = triades(intpart) + ',' + decpart
+    if final[0] == '.':
+        final = final[1:]
+    return prosimo + final
+
+
+def date_iso2gr(date):
+    '''
+    date : iso date yyyy-mm-dd
+    '''
+    def remove_zero(stra):
+        if len(stra) > 1 and stra[0] == '0':
+            return stra[1:]
+        else:
+            return stra
+    if not date:
+        return ''
+
+    year, month, day = date.split('-')
+    return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
+
+
+def select(dbpath, sql):
+    con = sqlite3.connect(dbpath)
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute(sql)
+    rows = cur.fetchall()
+    cur.close()
+    con.close()
+    return rows
+
+
+def run(db, lmo=''):
+    rows = select(db, sql % lmo)
+    lt = '%10s %-24s %12s %44s %12s %12s %12s'
+    rsum = 0
+
+    for row in rows:
+        dif = row['xr'] - row['pi']
+        rsum += dif
+        im = date_iso2gr(row['dat'])
+        pa = row['par']
+        xr = strGrDec(row['xr'])
+        pi = strGrDec(row['pi'])
+        ts = strGrDec(rsum)
+        print(lt % (im, pa, row['lmo'], row['lmop'], xr, pi, ts))
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description='Kartella omadas')
+    pars.add_argument('el', help='sqlite file for logistiki')
+    pars.add_argument('-o', '--Omada', help='Omada Logistikis')
+    pars.add_argument('--version', action='version', version='1.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.el):
+        print('No such file : %s' % args.el)
+    else:
+        if args.Omada:
+            ret = run(args.el, args.Omada)
+        else:
+            ret = run(args.el)
