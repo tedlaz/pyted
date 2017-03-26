@@ -6,4 +6,3 @@ Reports
 -------
 - Simple page **report**
 - Multiple page table report
-- Let me do it again [example](http://www.in.gr)
