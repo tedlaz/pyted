@@ -77,4 +77,5 @@ class ViewForm(Qw.QDialog):
         self.accept()
 
     def closeEvent(self, event):
-        self.saveit()
+        # self.saveit()
+        pass

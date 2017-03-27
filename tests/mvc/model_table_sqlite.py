@@ -48,6 +48,7 @@ class ModelTable(QtCore.QAbstractTableModel):
         cur.close()
         con.close()
         self.removeRows(idx, 1)
+        print("Deleted record with id=%s" % rowid)
 
     def isNull(self, idx):
         row = self.var2string(idx)
@@ -76,7 +77,7 @@ class ModelTable(QtCore.QAbstractTableModel):
             # record already exists so do an update
             ', '.join(flds)
             self._update(su % (self._table, ', '.join(vup), row[0]))
-            print('Record %s updated!!' % row[0])
+            print('Updated record with id=%s' % row[0])
         else:
             # Insert a new record
             sql = si % (self._table, ', '.join(flds), ', '.join(vals))
@@ -84,7 +85,7 @@ class ModelTable(QtCore.QAbstractTableModel):
             self.__data[idx] = list(self.__data[idx])
             self.__data[idx][0] = newid
             self.__data[idx] = tuple(self.__data[idx])
-            print('Record Saved with id=%s !!!!' % newid)
+            print('Saved record with id=%s !!!!' % newid)
 
     def _insert(self, sql):
         con = sqlite3.connect(self._db)
