@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""view_app module"""
 import sys
 import PyQt5.QtCore as Qc
-# import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
 from PyQt5.QtWidgets import QAction as Qa
 import view_grid as vgrid

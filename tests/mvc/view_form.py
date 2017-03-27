@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""viewform module"""
 import PyQt5.QtWidgets as Qw
 
 
