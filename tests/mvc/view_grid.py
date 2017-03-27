@@ -1,51 +1,53 @@
 # -*- coding: utf-8 -*-
-from PyQt4 import QtGui
+# from PyQt4 import QtGui
+import PyQt5.QtCore as Qc
+import PyQt5.QtGui as Qg
+import PyQt5.QtWidgets as Qw
 import view_form
 
 
-class ViewGrid(QtGui.QDialog):
+class ViewGrid(Qw.QDialog):
 
     def __init__(self, model, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        # Qw.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.setWindowTitle('ViewGrid')
         self.setMinimumWidth(500)
-        layout = QtGui.QVBoxLayout()
-        btnlayout = QtGui.QHBoxLayout()
+        layout = Qw.QVBoxLayout()
+        btnlayout = Qw.QHBoxLayout()
         self.setLayout(layout)
 
-        self.label = QtGui.QLabel(u'Δοκιμή ..')
-        font = QtGui.QFont()
+        self.label = Qw.QLabel(u'Δοκιμή ..')
+        font = Qg.QFont()
         font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
         layout.addWidget(self.label)
 
-        self.tblView = QtGui.QTableView()
+        self.tblView = Qw.QTableView()
         self.tblView.setAlternatingRowColors(True)
-        self.tblView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.tblView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.tblView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tblView.setSelectionMode(Qw.QAbstractItemView.SingleSelection)
+        self.tblView.setSelectionBehavior(Qw.QAbstractItemView.SelectRows)
+        self.tblView.setEditTriggers(Qw.QAbstractItemView.NoEditTriggers)
         # self.tblView.setSortingEnabled(True)
 
         layout.addWidget(self.tblView)
         layout.addLayout(btnlayout)
-        self.badd = QtGui.QPushButton('Add New Record')
+        self.badd = Qw.QPushButton('Add New Record')
         btnlayout.addWidget(self.badd)
         self.tblView.setModel(model)
         self.tblView.doubleClicked.connect(self.showViewForm)
         self.badd.clicked.connect(self.addNewRecord)
 
     def addNewRecord(self):
-        form = view_form.ViewForm(self)
+        form = view_form.ViewForm(None, self)
         form.insertr()
-        # self.tblView.clicked.connect(form.mi)
         form.show()
 
     def showViewForm(self):
-        form = view_form.ViewForm(self)
-        self.tblView.clicked.connect(form.mi)
+        form = view_form.ViewForm(self.tblView.currentIndex(), self)
         form.exec_()
 
     def model(self):

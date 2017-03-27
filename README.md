@@ -1,3 +1,3 @@
 # pyted
 
-Συλλογή απο προγράμματα
+A collection of projects.

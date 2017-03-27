@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 import sqlite3
 import os
 
@@ -76,7 +76,7 @@ class ModelTable(QtCore.QAbstractTableModel):
             # record already exists so do an update
             ', '.join(flds)
             self._update(su % (self._table, ', '.join(vup), row[0]))
-            print('Record updated!!')
+            print('Record %s updated!!' % row[0])
         else:
             # Insert a new record
             sql = si % (self._table, ', '.join(flds), ', '.join(vals))
@@ -84,7 +84,7 @@ class ModelTable(QtCore.QAbstractTableModel):
             self.__data[idx] = list(self.__data[idx])
             self.__data[idx][0] = newid
             self.__data[idx] = tuple(self.__data[idx])
-            print('Record Saved !!!!')
+            print('Record Saved with id=%s !!!!' % newid)
 
     def _insert(self, sql):
         con = sqlite3.connect(self._db)
@@ -168,7 +168,7 @@ class ModelTable(QtCore.QAbstractTableModel):
                 # column 0 is probably the id column
                 if column == 0:
                     return False
-                av = value.toString().trimmed()
+                av = value.strip()
                 self.__data[row][column] = av  # value
                 self.__data[row] = tuple(self.__data[row])
                 self.dataChanged.emit(index, index)

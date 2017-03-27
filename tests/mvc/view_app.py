@@ -1,25 +1,30 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+# from PyQt4 import QtGui
+# from PyQt4 import QtCore
+import PyQt5.QtCore as Qc
+import PyQt5.QtGui as Qg
+import PyQt5.QtWidgets as Qw
+from PyQt5.QtWidgets import QAction as Qa
 import view_grid as vgrid
 import model_table_sqlite as model_table
 import sqlite3
 
 
-class Main(QtGui.QMainWindow):
+class Main(Qw.QMainWindow):
 
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
-        self.settings = QtCore.QSettings()
+        super().__init__(parent)
+        # Qw.QMainWindow.__init__(self, parent)
+        self.settings = Qc.QSettings()
 
-        self.db = '%s' % self.settings.value("db", defaultValue='').toString()
-        frame = QtGui.QFrame(self)
+        self.db = self.settings.value("db", defaultValue='')
+        frame = Qw.QFrame(self)
         self.setCentralWidget(frame)
-        main_layout = QtGui.QVBoxLayout(frame)
-        hlayout = QtGui.QHBoxLayout()
-        self.list = QtGui.QListWidget(self)
+        main_layout = Qw.QVBoxLayout(frame)
+        hlayout = Qw.QHBoxLayout()
+        self.list = Qw.QListWidget(self)
         self.list.setMaximumWidth(150)
 
         hlayout.addWidget(self.list)
@@ -58,8 +63,8 @@ class Main(QtGui.QMainWindow):
         self.setWindowTitle(self.db)
 
     def createActions(self):
-        self.openAct = QtGui.QAction(u'Άνοιγμα αρχείου sqlite3', self)
-        self.closeAct = QtGui.QAction(u'Κλείσιμο εφαρμογής', self)
+        self.openAct = Qa(u'Άνοιγμα αρχείου sqlite3', self)
+        self.closeAct = Qa(u'Έξοδος', self)
         self.openAct.triggered.connect(self.open)
         self.closeAct.triggered.connect(self.close)
         self.fileMenu = self.menuBar().addMenu(u"Αρχείο")
@@ -82,7 +87,7 @@ class Main(QtGui.QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = Qw.QApplication(sys.argv)
     app.setOrganizationName("tedlaz")
     app.setOrganizationDomain("tedlaz")
     app.setApplicationName("mvc")

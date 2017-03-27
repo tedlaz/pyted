@@ -182,7 +182,6 @@ class Fedit(Qw.QDialog):
         for el in self.flds:
             d[el] = self.flds[el].get()
         d['zlines'] = []
-
         for i in range(self.tbl.rowCount()):
             # Εάν έχουμε μηδενική τιμή αγνοούμε τη γραμμή
             d1 = {}
@@ -193,7 +192,6 @@ class Fedit(Qw.QDialog):
                     d1['_d_'] = 1  # mark for deletion
                 else:
                     continue
-
             d1['lmo_id'] = self.tbl.cellWidget(i, 1).get()
             d1['per2'] = self.tbl.cellWidget(i, 2).get()
             d1['_xr'] = self.tbl.cellWidget(i, 3).get()
