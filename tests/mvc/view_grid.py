@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # from PyQt4 import QtGui
-import PyQt5.QtCore as Qc
+# import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
 import view_form

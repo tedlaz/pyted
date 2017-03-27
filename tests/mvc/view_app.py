@@ -2,7 +2,7 @@
 
 import sys
 import PyQt5.QtCore as Qc
-import PyQt5.QtGui as Qg
+# import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
 from PyQt5.QtWidgets import QAction as Qa
 import view_grid as vgrid
@@ -67,11 +67,17 @@ class Main(Qw.QMainWindow):
         self.fileMenu.addAction(self.closeAct)
 
     def open(self):
-        fname = QtGui.QFileDialog.getOpenFileName(self, u'Επιλογή Αρχείου',
-                                                  self.db, u"Αρχείο (*.*)")
+        fname = Qw.QFileDialog.getOpenFileName(self, u'Επιλογή Αρχείου',
+                                               self.db, u"Αρχείο (*.*)")
+        print(fname)
         old_db = self.db
-        if fname:
-            self.db = '%s' % fname
+        if fname[0] == self.db:
+            # filename is the same. Do nothing.
+            return
+        elif fname[0] == '':
+            return
+        else:
+            self.db = fname[0]
             try:
                 self.fill_list()
                 self.settings.setValue("db", self.db)
