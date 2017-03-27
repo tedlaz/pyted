@@ -41,8 +41,8 @@ class Main(Qw.QMainWindow):
 
     def fill_list(self):
         self.list.clear()
-        sqlt = "SELECT name AS tname FROM sqlite_master WHERE type='table' "
-        sqlt += "ORDER BY name"
+        sqlt = ("SELECT name AS tname FROM sqlite_master WHERE type='table' "
+                "ORDER BY name")
         con = sqlite3.connect(self.db)
         # con.row_factory = sqlite3.Row
         cur = con.cursor()
