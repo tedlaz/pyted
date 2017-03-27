@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 import os
 import sys
 from decimal import Decimal as deci
@@ -14,7 +13,6 @@ from tedutil import dec
 import qedit
 import isozygio as iso
 import kartella
-
 
 cpath = os.path.dirname(os.path.abspath(__file__))
 
@@ -63,13 +61,11 @@ class Fisozygio(Qw.QDialog):
                             Qw.QSizePolicy.Minimum)
         glay.addItem(sp, 0, 2)
         mainLayout.addLayout(glay)
-
         self.tbl = Qw.QTableWidget(self)
         self.tbl.verticalHeader().setVisible(False)
         self.tbl.setSelectionMode(Qw.QAbstractItemView.SingleSelection)
         self.tbl.setSelectionBehavior(Qw.QAbstractItemView.SelectRows)
         self.tbl.setAlternatingRowColors(True)
-
         mainLayout.addWidget(self.tbl)
         alr = Qc.Qt.AlignRight | Qc.Qt.AlignTrailing | Qc.Qt.AlignVCenter
         self.setLayout(mainLayout)

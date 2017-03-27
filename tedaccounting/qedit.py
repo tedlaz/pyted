@@ -13,10 +13,10 @@ import tedqt as tq
 
 CPATH = os.path.dirname(os.path.abspath(__file__))
 IM = [[1, u'Απογραφών/Ισολογισμών'], [2, u'Γενικό Ημερολόγιο']]
-s1 = "SELECT lmo || ' ' || lmop FROM lmo WHERE id='%s'"
-s9 = ("SELECT id, lmo || ' ' || lmop as val FROM lmo "
-      "WHERE grup(val) LIKE '%%%s%%' "
-      "ORDER BY val")
+SQL1 = "SELECT lmo || ' ' || lmop FROM lmo WHERE id='%s'"
+SQL9 = ("SELECT id, lmo || ' ' || lmop as val FROM lmo "
+        "WHERE grup(val) LIKE '%%%s%%' "
+        "ORDER BY val")
 
 
 class Fedit(Qw.QDialog):
@@ -30,10 +30,10 @@ class Fedit(Qw.QDialog):
         self._connections()
         if trid:
             self._setvals(trid)
-        elif templid:  # Use another recor as a template
+        elif templid:  # Use another record as template
             self._settmpl(templid)
         else:
-            # This is a new transaction so add at least two rows
+            # Add two rows to new transaction (Minimum one debit, one credit)
             self._addRow()
             self._addRow()
 
@@ -85,10 +85,6 @@ class Fedit(Qw.QDialog):
                             Qw.QSizePolicy.Minimum)
         flay.addItem(sp, 1, 3)
         self.bSave = Qw.QPushButton(u'Αποθήκευση')
-        # if self.idv:
-        #     self.bSame = Qw.QPushButton(u'Ίδια εγγραφή')
-        #     self.bSame.clicked.connect(self._addSame)
-        #     flay.addWidget(self.bSame, 0, 4)
         flay.addWidget(self.bSave, 1, 4)
         self.bAddLine.setFocusPolicy(Qc.Qt.NoFocus)
         self.bSave.setFocusPolicy(Qc.Qt.NoFocus)
@@ -109,7 +105,7 @@ class Fedit(Qw.QDialog):
         self.tbl.setRowCount(rid + 1)
 
         self.tbl.setCellWidget(rid, 0, tq.wIntSpin())
-        self.tbl.setCellWidget(rid, 1, tq.wTxtButton('', s1, s9, self.db,
+        self.tbl.setCellWidget(rid, 1, tq.wTxtButton('', SQL1, SQL9, self.db,
                                                      self.tbl))
         self.tbl.setCellWidget(rid, 2, tq.wTxtLine(parent=self.tbl))
         self.tbl.setCellWidget(rid, 3, tq.wNum(parent=self.tbl))

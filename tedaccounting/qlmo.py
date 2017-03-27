@@ -4,10 +4,7 @@ Form transaction edit (insert, update, delete)
 import os
 import sys
 import PyQt5.QtCore as Qc
-# import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
-
-# from tedutil.dec import dec
 from tedutil import db as tdb
 import tedqt as tq
 
