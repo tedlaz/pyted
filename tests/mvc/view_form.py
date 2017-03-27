@@ -58,7 +58,7 @@ class ViewForm(Qw.QDialog):
             self._model.removeRows(idx, 1)
             self.accept()
             return
-        print(self._model.save2db(idx))
+        self._model.save2db(idx)
         self.accept()
 
     def insertr(self):

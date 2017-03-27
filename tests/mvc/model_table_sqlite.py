@@ -142,17 +142,14 @@ class ModelTable(QtCore.QAbstractTableModel):
                 QtCore.Qt.ItemIsSelectable
 
     def data(self, index, role):
-
         if role == QtCore.Qt.EditRole:
             row = index.row()
             column = index.column()
             return self.__data[row][column]
-
         if role == QtCore.Qt.ToolTipRole:
             row = index.row()
             column = index.column()
             return u"Τιμή: %s" % self.__data[row][column]
-
         if role == QtCore.Qt.DisplayRole:
             row = index.row()
             column = index.column()

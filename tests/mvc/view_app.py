@@ -16,9 +16,7 @@ class Main(Qw.QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        # Qw.QMainWindow.__init__(self, parent)
         self.settings = Qc.QSettings()
-
         self.db = self.settings.value("db", defaultValue='')
         frame = Qw.QFrame(self)
         self.setCentralWidget(frame)
@@ -26,7 +24,6 @@ class Main(Qw.QMainWindow):
         hlayout = Qw.QHBoxLayout()
         self.list = Qw.QListWidget(self)
         self.list.setMaximumWidth(150)
-
         hlayout.addWidget(self.list)
         self.grid = vgrid.ViewGrid(None)
         hlayout.addWidget(self.grid)
