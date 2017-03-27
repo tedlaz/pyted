@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-# from PyQt4 import QtGui
-# from PyQt4 import QtCore
 import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
