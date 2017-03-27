@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""model_table_sqlite module"""
 from PyQt5 import QtCore
 import sqlite3
 import os
