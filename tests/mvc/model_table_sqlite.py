@@ -66,7 +66,6 @@ class ModelTable(QtCore.QAbstractTableModel):
         si = u"INSERT INTO %s (%s) VALUES (%s);"
         su = u"UPDATE %s SET %s WHERE id='%s';"
         sql = u''
-
         for i, fld in enumerate(self.__fields):
             if i == 0:
                 continue
