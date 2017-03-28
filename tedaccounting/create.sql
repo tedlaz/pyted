@@ -3,6 +3,8 @@ BEGIN TRANSACTION;
 PRAGMA user_version = 2017;
 PRAGMA application_id = 20170313;
 
+
+
 --ΚΙΝΟΥΜΕΝΟΙ ΛΟΓΑΡΙΑΣΜΟΙ ΛΟΓΙΣΤΙΚΟΥ ΣΧΕΔΙΟΥ
 CREATE TABLE IF NOT EXISTS lmo(
 id INTEGER PRIMARY KEY,
