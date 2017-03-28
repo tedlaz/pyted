@@ -1,15 +1,15 @@
 '''
-
+Module dbmanager.py
 '''
 FTYP = ['TXT', 'TXN', 'INT', 'NUM', 'DAT', 'FK']
 SQLTYP = {'TXT': 'TEXT NOT NULL', 'TXN': 'TEXT',
           'INT': 'INTEGER NOT NULL DEFAULT 0',
           'NUM': 'NUMERIC NOT NULL DEFAULT 0',
-          'DAT': 'DATE',
+          'DAT': 'DATE NOT NULL',
           'FK': 'INTEGER NOT NULL REFERENCES %s(id)'}
 
 
-class Dmanager_exception(Exception):
+class Dbmanager_exception(Exception):
     pass
 
 
@@ -19,6 +19,7 @@ class Dbmanager():
         self.app_id = app_id
         self._tables = {}
         self._fields = {}
+        self._fielda = {}  # Dictionary of array to keep field order
 
     def atable(self, tablename, label, labelp, ssql=''):
         '''
@@ -26,7 +27,7 @@ class Dbmanager():
         '''
         if tablename in self._tables:
             msg = 'Table %s already exists' % tablename
-            raise Dmanager_exception(msg)
+            raise Dbmanager_exception(msg)
         self._tables[tablename] = {'lbl': label, 'lblp': labelp, 'ssql': ssql}
 
     def afield(self, tablename, field, label, typ='TXT', unique=False):
@@ -35,14 +36,16 @@ class Dbmanager():
         '''
         if tablename not in self._tables:
             msg = 'Table %s must be added to tables first' % tablename
-            raise Dmanager_exception(msg)
+            raise Dbmanager_exception(msg)
         if tablename not in self._fields:
             self._fields[tablename] = {}
+            self._fielda[tablename] = []
         self._fields[tablename][field] = {'lbl': label,
                                           'typ': typ,
                                           'uni': unique}
+        self._fielda[tablename].append(field)
 
-    def lbls(self, table):
+    def get_labels(self, table):
         '''
         Get a dictionary with fields: labels of table
         '''
@@ -52,6 +55,20 @@ class Dbmanager():
         for field in self._fields[table]:
             tdic[field] = self._fields[table][field]['lbl']
         return tdic
+
+    def get_fields(self, table):
+        if table not in self._fields:
+            return []
+        tlist = ['id']
+        for field in self._fielda[table]:
+            tlist.append(field)
+        return tlist
+
+    def get_tables_fields(self):
+        dic_list = {}
+        for table in self._tables:
+            dic_list[table] = self.get_fields(table)
+        return dic_list
 
     def sql_create(self):
         '''
@@ -63,7 +80,7 @@ class Dbmanager():
         for tbl in sorted(self._fields):
             sql += "CREATE TABLE IF NOT EXISTS %s (\n" % tbl
             tar = ["id INTEGER PRIMARY KEY"]
-            for fld in sorted(self._fields[tbl]):
+            for fld in self._fielda[tbl]:
                 # Check if field is foreign key of the form table_id
                 if fld.endswith('_id'):
                     ftable = fld[:-3]  # Remove the _id part
@@ -106,6 +123,12 @@ if __name__ == "__main__":
     dbm.afield('erg', 'mit', 'Μητρώνυμο')
     dbm.afield('erg', 'bdat', 'Ημ/νία γέννησης', 'DAT')
     dbm.afield('erg', 'lmo_id', 'Λογαριασμός')
+    dbm.atable('trd', 'ΣΦΣΦ', 'Εργαζόσδσμενοι')
+    dbm.afield('trd', 'im_id', 'Ημερολόγιο')
+    dbm.afield('trd', 'lmo_id', 'Λογαριασμός')
+    dbm.afield('trd', 'per2', 'Περιγραφή')
+    dbm.afield('trd', '_xr', 'Χρέωση', 'NUM')
     print(dbm.sql_create())
-    print(dbm.lbls('erg'))
-    print(dbm)
+    print(dbm.get_labels('erg'))
+    print(dbm.get_tables_fields())
+    print(dbm.get_fields('trd'))
