@@ -14,6 +14,9 @@ class Dbmanager_exception(Exception):
 
 
 class Dbmanager():
+    '''
+    Dbmanager class
+    '''
     def __init__(self, version=2017, app_id=20170313):
         self.version = version
         self.app_id = app_id
@@ -21,33 +24,42 @@ class Dbmanager():
         self._fields = {}
         self._fielda = {}  # Dictionary of array to keep field order
 
-    def atable(self, tablename, label, labelp, ssql=''):
+    def atable(self, table, label, labelp, rpr=[], unifld=[]):
         '''
         Adds a new table
+        table : The table Name
+        label : The translated title of table
+        labelp : The translated plural title of table
+        rpr : List of table representation fields
+        unifld : List of fields to be unique
         '''
-        if tablename in self._tables:
-            msg = 'Table %s already exists' % tablename
+        if table in self._tables:
+            msg = 'Table %s already exists' % table
             raise Dbmanager_exception(msg)
-        self._tables[tablename] = {'lbl': label, 'lblp': labelp, 'ssql': ssql}
+        self._tables[table] = {'lbl': label,
+                               'lblp': labelp,
+                               'uniqfields': unifld}
 
-    def afield(self, tablename, field, label, typ='TXT', unique=False):
+    def afield(self, table, field, label, typ='TXT', unique=False):
         '''
         Adds a new field
         '''
-        if tablename not in self._tables:
-            msg = 'Table %s must be added to tables first' % tablename
+        if table not in self._tables:
+            msg = 'Table %s must be added to tables first' % table
             raise Dbmanager_exception(msg)
-        if tablename not in self._fields:
-            self._fields[tablename] = {}
-            self._fielda[tablename] = []
-        self._fields[tablename][field] = {'lbl': label,
-                                          'typ': typ,
-                                          'uni': unique}
-        self._fielda[tablename].append(field)
+        if table not in self._fields:
+            self._fields[table] = {}
+            self._fielda[table] = []
+        self._fields[table][field] = {'lbl': label,
+                                      'typ': typ,
+                                      'uni': unique}
+        self._fielda[table].append(field)
 
     def get_labels(self, table):
         '''
-        Get a dictionary with fields: labels of table
+        Returns a dictionary with fields: labels of table
+        {'fld1': 'lbl1', 'fld2': 'lbl2', ...}
+
         '''
         if table not in self._fields:
             return {}
@@ -57,6 +69,10 @@ class Dbmanager():
         return tdic
 
     def get_fields(self, table):
+        '''
+        Returns an ordered list with table fields
+        ['id', 'fld1', 'fld2', ...]
+        '''
         if table not in self._fields:
             return []
         tlist = ['id']
@@ -65,6 +81,10 @@ class Dbmanager():
         return tlist
 
     def get_tables_fields(self):
+        '''
+        Returns a dictionary of tables: ordered list of table fields
+        {'tabename': ['id', 'fld1', 'fld2', ...]}
+        '''
         dic_list = {}
         for table in self._tables:
             dic_list[table] = self.get_fields(table)
@@ -91,8 +111,9 @@ class Dbmanager():
                 if self._fields[tbl][fld]['uni']:
                     sqltyp += ' UNIQUE'
                 tar.append('\n%s %s' % (fld, sqltyp))
-            if self._tables[tbl]['ssql']:
-                tar.append('\n%s' % self._tables[tbl]['ssql'])
+            if self._tables[tbl]['uniqfields']:
+                unflds = self._tables[tbl]['uniqfields']
+                tar.append('\nUNIQUE (%s)' % ', '.join(unflds))
             sql += ','.join(tar)
             sql += "\n);\n\n"
         sql += "COMMIT;"
@@ -112,7 +133,7 @@ class Dbmanager():
 
 if __name__ == "__main__":
     dbm = Dbmanager()
-    dbm.atable('lmo', 'Λογαριασμός', 'Λογαριασμοί', 'UNIQUE (lmo, lmop)')
+    dbm.atable('lmo', 'Λογαριασμός', 'Λογαριασμοί', ['lmo', 'lmop'])
     dbm.afield('lmo', 'lmo', 'Λογαριασμός', unique=True)
     dbm.afield('lmo', 'lmop', 'Περιγραφή')
     dbm.atable('erg', 'Εργαζόμενος', 'Εργαζόμενοι')
