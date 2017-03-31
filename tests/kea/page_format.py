@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class Page(object):
     def __init__(self, format_name='a4', orientation='portrait'):
         if not isinstance(format_name, basestring):

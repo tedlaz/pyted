@@ -97,14 +97,14 @@ class Text_button(Qw.QLineEdit):
         self.button.setStyleSheet(
             'border: 0px; padding: 0px; background-color: rgba(0, 180, 0); '
             'color: rgb(255, 255, 255);')
-        self.button.setText('')
+        self.button.setText('...')
         self.isGreen = True
 
     def red(self):
         self.button.setStyleSheet(
             'border: 0px; padding: 0px; background-color: rgba(220, 50, 0); '
             'color: rgb(255, 255, 255);')
-        self.button.setText('')
+        self.button.setText('...')
         self.isGreen = False
 
     def keyPressEvent(self, ev):

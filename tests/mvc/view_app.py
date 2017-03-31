@@ -33,11 +33,14 @@ class Main(Qw.QMainWindow):
 
     def list_currentRowChanged(self, idx):
         try:
-            tbl = self.list.currentItem().text()
-            self.model = model_table.ModelTable(self.db, tbl)
-            self.grid.setModel(self.model)
+            list_current_tablename = self.list.currentItem().text()
+            self.set_model_to_grid(list_current_tablename)
         except:
             pass
+
+    def set_model_to_grid(self, tablename):
+        self.model = model_table.ModelTable(self.db, tablename)
+        self.grid.setModel(self.model)
 
     def fill_list(self):
         self.list.clear()
@@ -68,22 +71,25 @@ class Main(Qw.QMainWindow):
     def open(self):
         fname = Qw.QFileDialog.getOpenFileName(self, u'Επιλογή Αρχείου',
                                                self.db, u"Αρχείο (*.*)")
-        print(fname)
         old_db = self.db
         if fname[0] == self.db:
             # filename is the same. Do nothing.
+            print("Filename %s is the same with %s" % (fname[0], self.db))
             return
         elif fname[0] == '':
+            print('Filename is empty')
             return
         else:
             self.db = fname[0]
             try:
                 self.fill_list()
                 self.settings.setValue("db", self.db)
+                # Get the first element of the list
+                first_table_name = self.list.itemAt(0, 0).text()
+                self.set_model_to_grid(first_table_name)
             except:
                 self.db = old_db
                 self.fill_list()
-        print('file open code here!!')
 
 
 if __name__ == '__main__':
