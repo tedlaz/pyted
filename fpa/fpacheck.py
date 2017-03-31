@@ -9,17 +9,22 @@ def checkvat(lines, dfpa={}, threshold=0.2, lfpa='54.00'):
     '''
     def eql(vala, valb, fthres):
         '''Υπολογισμός αν η διαφορά δύο αριθμών υπερβαίνει ένα κατώφλι'''
-        if round(abs(vala - valb), 2) <= fthres:
-            return True
-        else:
-            return False
+        return round(abs(vala - valb), 2) <= fthres
     # Μετατροπή των γραμμών σε άρθρα
+    # Γραμμές της μορφής :
+    # id     lmo           val      dat
+    #  1  53.98.00.080  -15.12   2016-01-01
+    #  1  62.03.00.123   12.29   2016-01-01
+    #  1  54.00.29.023    2.83   2016-01-01
+    #
+    # Γίνονται : {1: {'53.98.00.080': -15.12,
+    #                 '62.03.00.123': 12.29,
+    #                 '54.00.29.023': 2.83}}
     dvals = {}
     for ele in lines:
         _id = ele['id']
         dvals[_id] = dvals.get(_id, {})
         dvals[_id][ele['lmo']] = ele['val']
-
     log = u''
     logok = u'Όλα τα άρθρα είναι οκ'
     loger = u'Άρθρα λογιστικής με διαφορά στο ΦΠΑ :\n'
@@ -30,34 +35,34 @@ def checkvat(lines, dfpa={}, threshold=0.2, lfpa='54.00'):
         lmopair = {}
         lmorev = []
         for lmo in dvals[arth]:
-            if lenArth == 2: # Αποκλείουμε τα συμψηφιστικά άρθρα (με 2 γραμμές)
+            # Αποκλείουμε τα συμψηφιστικά άρθρα (με 2 γραμμές)
+            if lenArth == 2:
                 continue
-            if lmo[:len(lfpa)] == lfpa:  # Ο λογαριασμός είναι φπα 54.00
-                # Έυρεση συντελεστή φπα 1.Απο λίστα και 2. απο τελευταία ψηφία
+            if lmo[:len(lfpa)] == lfpa:  # Ο λογαριασμός είναι φπα 54.00*
+                # Έυρεση συντελεστή φπα
+                # 1. Από λίστα και
+                # 2. Aπό τελευταία ψηφία
                 dk = list(dvals[arth].keys())
                 dkf = []
                 for el in dk:
                     if el[0] in '1267':
                         dkf.append(el)
                 simil = accountSimilar(lmo, dkf)
-
                 synt = dfpa.get(lmo, int(lmo[-2:]))
                 rev = round(dvals[arth][lmo] * 100.0 / synt, 2)
                 # print(lmo, synt, dvals[arth][lmo], rev)
-
                 for elmo in simil:
                     if elmo in lmorev:
                         # print('%s already exists' % elmo)
                         continue
-                    if eql(dvals[arth][elmo], rev, threshold * 100.0 / float(synt)):
+                    if eql(dvals[arth][elmo],
+                           rev,
+                           threshold * 100.0 / float(synt)):
                         lmopair[lmo] = elmo
                         lmorev.append(elmo)
                         break
-
-                        # print(elmo, dvals[arth][elmo], lmorev)
                 if lmo not in lmopair:
-                    log += '%s : %s ~> %s\n' % (arth, dvals[arth], lmo)
-
+                    log += '%s : %s ~> %s %s\n' % (arth, dvals[arth], lmo, rev)
         if lmopair:
             ignored += 1
             print(lmopair)
@@ -68,6 +73,7 @@ def checkvat(lines, dfpa={}, threshold=0.2, lfpa='54.00'):
         return loger + log
     else:
         return logok
+
 
 def accountSimilar(acc, acclist, aaf='54.00', splitp='.'):
     '''
@@ -91,10 +97,7 @@ def accountSimilar(acc, acclist, aaf='54.00', splitp='.'):
 
 
 def is_idio_prosimo(val1, val2):
-    if val1 * val2 >= 0:
-        return True
-    else:
-        return False
+    return val1 * val2 >= 0
 
 
 def find_similarities(lines, omosimoi=False, threshold=0):
@@ -114,14 +117,18 @@ def find_similarities(lines, omosimoi=False, threshold=0):
             for lmo2 in dvals[arth]:
                 if lmo != lmo2:
                     if omosimoi:
-                        if is_idio_prosimo(dvals[arth][lmo], dvals[arth][lmo2]):
+                        if is_idio_prosimo(dvals[arth][lmo],
+                                           dvals[arth][lmo2]):
                             tog[lmo][lmo2] = tog[lmo].get(lmo2, 0)
                             tog[lmo][lmo2] += 1
                     else:
                         tog[lmo][lmo2] = tog[lmo].get(lmo2, 0)
                         tog[lmo][lmo2] += 1
                     if lmo2[:5] == '54.00' and lmo[0] in '1267':
-                        print(arth, lmo2, lmo, dvals[arth][lmo2] / dvals[arth][lmo])
+                        print(arth,
+                              lmo2,
+                              lmo,
+                              dvals[arth][lmo2] / dvals[arth][lmo])
     ds = {}
     for lmo in tog:
         ds[lmo] = {}
@@ -141,6 +148,6 @@ if __name__ == '__main__':
     dbcon = Db(dbpath)
     # print('\n'.join(map(str,dbcon.rowsd(sql))))
     print(checkvat(dbcon.rowsd(sql), {}, 0.5))
-    #res , app = find_similarities(dbcon.rowsd(sql), True)
-    #for el in sorted(res):
-    #    print(el, app[el], res[el])
+    # res , app = find_similarities(dbcon.rowsd(sql), True)
+    # for el in sorted(res):
+    #     print(el, app[el], res[el])

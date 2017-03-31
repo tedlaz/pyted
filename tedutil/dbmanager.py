@@ -38,6 +38,7 @@ class Dbmanager():
             raise Dbmanager_exception(msg)
         self._tables[table] = {'lbl': label,
                                'lblp': labelp,
+                               'rpr': rpr,
                                'uniqfields': unifld}
 
     def afield(self, table, field, label, typ='TXT', unique=False):
@@ -55,11 +56,47 @@ class Dbmanager():
                                       'uni': unique}
         self._fielda[table].append(field)
 
+    def get_joined_fields(self, table, only_rpr=False):
+        joiner = " || ' ' || "
+        rprfields = self._tables[table]['rpr']
+        tblfields = self.get_fields(table, with_id=False)
+        if only_rpr:
+            if rprfields:
+                for field in tblfields:
+                    if field not in tblfields:
+                        msg = 'Field %s not in table %s' % (field, table)
+                        raise Dbmanager_exception(msg)
+            else:
+                rprfields = tblfields
+        else:
+            rprfields = tblfields
+        return joiner.join(rprfields)
+
+    def rpr(self, table):
+        '''
+        Get sql of table representation
+        '''
+        if table not in self._tables:
+            return ''
+        rprfields = self._tables[table]['rpr']
+        tblfields = self.get_fields(table, with_id=False)
+        if rprfields:
+            # Just check that exist
+            for field in rprfields:
+                if field not in tblfields:
+                    msg = 'Field %s not in table %s' % (field, table)
+                    raise Dbmanager_exception(msg)
+        else:
+            rprfields = tblfields
+        sqlt = 'SELECT id, %s AS rpr FROM %s '
+        sql = sqlt % (" || ' ' || ".join(rprfields), table)
+        sql += "WHERE id=%s"
+        return sql
+
     def get_labels(self, table):
         '''
         Returns a dictionary with fields: labels of table
         {'fld1': 'lbl1', 'fld2': 'lbl2', ...}
-
         '''
         if table not in self._fields:
             return {}
@@ -68,14 +105,17 @@ class Dbmanager():
             tdic[field] = self._fields[table][field]['lbl']
         return tdic
 
-    def get_fields(self, table):
+    def get_fields(self, table, with_id=True):
         '''
         Returns an ordered list with table fields
-        ['id', 'fld1', 'fld2', ...]
+            with_id=True  : ['id', 'fld1', 'fld2', ...]
+            with_id=False : ['fld1', 'fld2', ...]
         '''
         if table not in self._fields:
             return []
-        tlist = ['id']
+        tlist = []
+        if with_id:
+            tlist.append('id')
         for field in self._fielda[table]:
             tlist.append(field)
         return tlist
@@ -136,7 +176,7 @@ if __name__ == "__main__":
     dbm.atable('lmo', 'Λογαριασμός', 'Λογαριασμοί', ['lmo', 'lmop'])
     dbm.afield('lmo', 'lmo', 'Λογαριασμός', unique=True)
     dbm.afield('lmo', 'lmop', 'Περιγραφή')
-    dbm.atable('erg', 'Εργαζόμενος', 'Εργαζόμενοι')
+    dbm.atable('erg', 'Εργαζόμενος', 'Εργαζόμενοι', ['epo', 'ono'])
     dbm.afield('erg', 'epo', 'Επώνυμο', 'TXN')
     dbm.afield('erg', 'ono', 'Όνομα')
     dbm.afield('erg', 'poso', 'Ποσό', 'NUM')
@@ -144,12 +184,13 @@ if __name__ == "__main__":
     dbm.afield('erg', 'mit', 'Μητρώνυμο')
     dbm.afield('erg', 'bdat', 'Ημ/νία γέννησης', 'DAT')
     dbm.afield('erg', 'lmo_id', 'Λογαριασμός')
-    dbm.atable('trd', 'ΣΦΣΦ', 'Εργαζόσδσμενοι')
+    dbm.atable('trd', 'ΣΦΣΦ', 'Εργαζόμενοι')
     dbm.afield('trd', 'im_id', 'Ημερολόγιο')
     dbm.afield('trd', 'lmo_id', 'Λογαριασμός')
     dbm.afield('trd', 'per2', 'Περιγραφή')
     dbm.afield('trd', '_xr', 'Χρέωση', 'NUM')
-    print(dbm.sql_create())
-    print(dbm.get_labels('erg'))
-    print(dbm.get_tables_fields())
-    print(dbm.get_fields('trd'))
+    # print(dbm.sql_create())
+    # print(dbm.get_labels('erg'))
+    # print(dbm.get_tables_fields())
+    # print(dbm.get_fields('trd'))
+    print(dbm.get_joined_fields('erg', only_rpr=True))
