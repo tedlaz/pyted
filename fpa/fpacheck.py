@@ -100,7 +100,7 @@ def is_idio_prosimo(val1, val2):
     return val1 * val2 >= 0
 
 
-def find_similarities(lines, omosimoi=False, threshold=0):
+def find_similarities2(lines, omosimoi=False, threshold=0):
     '''Μετατροπή των γραμμών σε άρθρα'''
     dvals = {}
     for el in lines:
