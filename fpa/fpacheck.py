@@ -100,7 +100,7 @@ def is_idio_prosimo(val1, val2):
     return val1 * val2 >= 0
 
 
-def find_similarities2(lines, omosimoi=False, threshold=0):
+def find_similarities(lines, omosimoi=False, threshold=0):
     '''Μετατροπή των γραμμών σε άρθρα'''
     dvals = {}
     for el in lines:
@@ -140,14 +140,14 @@ def find_similarities2(lines, omosimoi=False, threshold=0):
 
 
 if __name__ == '__main__':
-    dbpath = '/home/tedlaz/tedfiles/prj/samaras2016d/2016.sql3'
+    dbpath = '/home/tedlaz/tedfiles/prj/2017/2017a.sql3'
     sql = ("SELECT tr.id, lmo.lmo, trd.xr - trd.pi as val, tr.dat "
            "FROM tr "
            "INNER JOIN trd ON tr.id=trd.id_tr "
            "INNER JOIN lmo ON lmo.id=trd.id_lmo;")
     dbcon = Db(dbpath)
-    # print('\n'.join(map(str,dbcon.rowsd(sql))))
+    # print('\n'.join(map(str, dbcon.rowsd(sql))))
     print(checkvat(dbcon.rowsd(sql), {}, 0.5))
-    # res , app = find_similarities(dbcon.rowsd(sql), True)
-    # for el in sorted(res):
-    #     print(el, app[el], res[el])
+    res, app = find_similarities(dbcon.rowsd(sql), True)
+    for el in sorted(res):
+        print(el, app[el], res[el])

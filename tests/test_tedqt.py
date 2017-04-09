@@ -4,7 +4,13 @@ import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
 import sys
+import os
+PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+if PATH not in sys.path:
+    sys.path.append(PATH)
+print(PATH)
 import tedqt as tqt
+from tedutil.dec import dec
 
 
 class Test(Qw.QDialog):
@@ -52,7 +58,7 @@ class Test(Qw.QDialog):
 
 
 if __name__ == '__main__':
-    a = tqt.dec.dec('2356.00')
+    a = dec('2356.00')
     dbf = '/home/tedlaz/pyted/tederp/tst.db'
     sq1 = ''
     sq9 = ''

@@ -1,3 +1,6 @@
+'''
+This is obsolete. 
+'''
 import sqlite3
 import os
 import logging
@@ -179,20 +182,4 @@ def md2sql(tmaster, tdetail, adic, id_at_end=True):
             el[fkey % tmaster] = adic['id']
         sql += sql_ins_upd(tdetail, el) + '\n'
     return 'BEGIN TRANSACTION;\n' + sql + 'COMMIT;\n'
-
-
-if __name__ == '__main__':
-    DBFILE = '/home/tedlaz/pyted/tederp/tst.db'
-    print(db2dic(DBFILE, 10, 'ki', 'kid'))
-    adic = {'epo': 'Laz', 'ono': 'Ted',
-            'zlines': [{'v': 1, 'k': 2}, {'v': 4, 'k': 5}]}
-    print(md2sql('tm', 'tmd', adic))
-    bdic = {'id': 65, 'epo': 'Laz', 'ono': 'Ted',
-            'zlines': [{'v': 1, 'k': 2}, {'v': 4, 'k': 5}]}
-    print(md2sql('tm', 'tmd', bdic))
-    cdic = {'id': 85, 'epo': 'Laz', 'ono': 'Ted',
-            'zlines': [{'id': 34, 'v': 1, 'k': 2, '_d_': 1}, {'v': 4, 'k': 5}]}
-    print(md2sql('tm', 'tmd', cdic))
-    # print(rowst(DBFILE, 'SELECT * from ki', True))
-    # print(rowsd(DBFILE, 'SELECT * from kid'))
 
