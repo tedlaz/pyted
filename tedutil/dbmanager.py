@@ -1,6 +1,8 @@
 '''
 Module dbmanager.py
 '''
+QT = ['s', ]
+QTFIELDS = {'s': 'textline', }
 FTYP = ['TXT', 'TXN', 'INT', 'NUM', 'DAT', 'FK']
 SQLTYP = {'TXT': 'TEXT NOT NULL', 'TXN': 'TEXT',
           'INT': 'INTEGER NOT NULL DEFAULT 0',
@@ -17,14 +19,14 @@ class Dbmanager():
     '''
     Dbmanager class
     '''
-    def __init__(self, version=2017, app_id=20170313):
-        self.version = version
-        self.app_id = app_id
+    def __init__(self, user_version, application_id):
+        self.user_version = user_version
+        self.application_id = application_id
         self._tables = {}
         self._fields = {}
         self._fielda = {}  # Dictionary of array to keep field order
 
-    def atable(self, table, label, labelp, rpr=[], unifld=[]):
+    def add_table(self, table, label, labelp, rpr=[], unifld=[]):
         '''
         Adds a new table
         table : The table Name
@@ -41,7 +43,7 @@ class Dbmanager():
                                'rpr': rpr,
                                'uniqfields': unifld}
 
-    def afield(self, table, field, label, typ='TXT', unique=False):
+    def add_field(self, table, field, label, typ='TXT', qt='s', unique=False):
         '''
         Adds a new field
         '''
@@ -135,8 +137,8 @@ class Dbmanager():
         Returns sql script for database creation
         '''
         sql = "BEGIN TRANSACTION;\n\n"
-        sql += "PRAGMA user_version = %s;\n" % self.version
-        sql += "PRAGMA application_id = %s;\n\n" % self.app_id
+        sql += "PRAGMA user_version = %s;\n" % self.user_version
+        sql += "PRAGMA application_id = %s;\n\n" % self.application_id
         for tbl in sorted(self._fields):
             sql += "CREATE TABLE IF NOT EXISTS %s (\n" % tbl
             tar = ["id INTEGER PRIMARY KEY"]
@@ -172,25 +174,26 @@ class Dbmanager():
 
 
 if __name__ == "__main__":
-    dbm = Dbmanager()
-    dbm.atable('lmo', 'Λογαριασμός', 'Λογαριασμοί', ['lmo', 'lmop'])
-    dbm.afield('lmo', 'lmo', 'Λογαριασμός', unique=True)
-    dbm.afield('lmo', 'lmop', 'Περιγραφή')
-    dbm.atable('erg', 'Εργαζόμενος', 'Εργαζόμενοι', ['epo', 'ono'])
-    dbm.afield('erg', 'epo', 'Επώνυμο', 'TXN')
-    dbm.afield('erg', 'ono', 'Όνομα')
-    dbm.afield('erg', 'poso', 'Ποσό', 'NUM')
-    dbm.afield('erg', 'pat', 'Πατρώνυμο')
-    dbm.afield('erg', 'mit', 'Μητρώνυμο')
-    dbm.afield('erg', 'bdat', 'Ημ/νία γέννησης', 'DAT')
-    dbm.afield('erg', 'lmo_id', 'Λογαριασμός')
-    dbm.atable('trd', 'ΣΦΣΦ', 'Εργαζόμενοι')
-    dbm.afield('trd', 'im_id', 'Ημερολόγιο')
-    dbm.afield('trd', 'lmo_id', 'Λογαριασμός')
-    dbm.afield('trd', 'per2', 'Περιγραφή')
-    dbm.afield('trd', '_xr', 'Χρέωση', 'NUM')
+    dbm = Dbmanager(user_version=2017, application_id=20170313)
+    dbm.add_table('lmo', 'Λογαριασμός', 'Λογαριασμοί', ['lmo', 'lmop'])
+    dbm.add_field('lmo', 'lmo', 'Λογαριασμός', unique=True)
+    dbm.add_field('lmo', 'lmop', 'Περιγραφή')
+    dbm.add_table('erg', 'Εργαζόμενος', 'Εργαζόμενοι', ['epo', 'ono'])
+    dbm.add_field('erg', 'epo', 'Επώνυμο', 'TXN')
+    dbm.add_field('erg', 'ono', 'Όνομα')
+    dbm.add_field('erg', 'poso', 'Ποσό', 'NUM')
+    dbm.add_field('erg', 'pat', 'Πατρώνυμο')
+    dbm.add_field('erg', 'mit', 'Μητρώνυμο')
+    dbm.add_field('erg', 'bdat', 'Ημ/νία γέννησης', 'DAT')
+    dbm.add_field('erg', 'lmo_id', 'Λογαριασμός')
+    dbm.add_table('trd', 'Κίνηση', 'Κινήσεις')
+    dbm.add_field('trd', 'im_id', 'Ημερολόγιο')
+    dbm.add_field('trd', 'lmo_id', 'Λογαριασμός')
+    dbm.add_field('trd', 'per2', 'Περιγραφή')
+    dbm.add_field('trd', 'xr', 'Χρέωση', 'NUM')
     # print(dbm.sql_create())
     # print(dbm.get_labels('erg'))
     # print(dbm.get_tables_fields())
     # print(dbm.get_fields('trd'))
     print(dbm.get_joined_fields('erg', only_rpr=True))
+    print(dbm.sql_create())

@@ -7,15 +7,15 @@ fdir = os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == '__main__':
     epon = u'Σαμαράς ΟΕ'
-    db = '/home/tedlaz/tedfiles/prj/samaras2016d/2016.sql3'
+    db = '/home/tedlaz/tedfiles/prj/2017/2017a.sql3'
     htmlf = '/home/tedlaz/f2_tst.html'
     tmplfile = os.path.join(fdir, '1tmpl.txt')
     lmoifile = os.path.join(fdir, '2lmoi.txt')
     fis = os.path.join(fdir, './3is.sql')
     ffp = os.path.join(fdir, '4fpa.sql')
     f2run.run(epon,
-              '2016-10-01',
-              '2016-12-31',
+              '2017-01-01',
+              '2017-03-31',
               db,
               htmlf,
               tmplfile,

@@ -58,7 +58,8 @@ def checkDictionaries(tmplfile, lmoifile):
     print(lmoi)
 
 
-def run(epon, apo, eos, db, htmlfile, tmplfile, lmoifile, sqlisf, sqlfpaf, pisyp=0):
+def run(epon, apo, eos, db, htmlfile, tmplfile, lmoifile,
+        sqlisf, sqlfpaf, pisyp=0):
     '''
     epon      : Επωνυμία εταιρείας
     apo       : Ημερομήνία iso από
@@ -71,12 +72,15 @@ def run(epon, apo, eos, db, htmlfile, tmplfile, lmoifile, sqlisf, sqlfpaf, pisyp
     sqlfpaf   : Το sql αρχείο που αφορά το υπόλοιπο ΦΠΑ
     pisyp     : Εάν υπάρχει το πιστωτικό υπόλοιπο προηγούμενης περιόδου
     '''
-    #db = '/home/tedlaz/prj/samaras16b/el2016.sql3'
+    # db = '/home/tedlaz/prj/samaras16b/el2016.sql3'
 
     pdata = {'apo': apo, 'eos': eos, 'epon': epon}
     sqlis = loadsql(sqlisf)
     sql54 = loadsql(sqlfpaf)
     isoz = f2.getisoz(sqlis.format(**pdata), db)
+    if not isoz:
+        print('No Data Found. Please check Dates')
+        return
     ypfpa = f2.get5400(sql54.format(**pdata), db)
     pisyp = pisyp
     tmpl = loadtmpl(tmplfile)
