@@ -26,6 +26,8 @@ def dec(poso=0, decimals=2):
             2.decimals : The number of decimals (default 2)
         output: A decimal number
         """
+    if poso is None:
+        poso = 0
     PLACES = decimal.Decimal(10) ** (-1 * decimals)
     if isNum(poso):
         tmp = decimal.Decimal(str(poso))

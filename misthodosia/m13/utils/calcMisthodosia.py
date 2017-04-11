@@ -6,7 +6,7 @@ from osyk import osyk
 import fmy as fmyp1
 def isNum(value): # Einai to value arithmos, i den einai ?
     """ use: Returns False if value is not a number , True otherwise
-        input parameters : 
+        input parameters :
             1.value : the value to check against.
         output: True or False
     """
@@ -17,12 +17,12 @@ def isNum(value): # Einai to value arithmos, i den einai ?
     else: return True
 
 def d(poso , dekadika=2 ):
-    """ 
+    """
     use : Given a number, it returns a decimal with a specific number of decimal digits
     input Parameters:
           1.poso     : The number for conversion in any format (e.g. string or int ..)
           2.dekadika : The number of decimals (default 2)
-    output: A decimal number     
+    output: A decimal number
     """
     PLACES = decimal.Decimal(10) ** (-1 * dekadika)
     if isNum(poso):
@@ -34,7 +34,7 @@ def d(poso , dekadika=2 ):
 def makeDecimalFromString(strNumber):
     g = "".join(strNumber.split())
     return d(g.replace(",","."))
-    
+
 sql = '''
 SELECT  m12_pro.id, m12_coy.kad, m12_eid.keid, m12_pro.apod, sum(m12_parf.kerg) as s, m12_pro.prod, m12_fpr.epon,m12_fpr.onom,m12_eid.eidp
 FROM m12_parf
@@ -49,7 +49,7 @@ group by  m12_pro.id
 ORDER BY m12_parf.id
 '''
 sql2 = '''
-SELECT  m12_pro.id, m12_coy.kad, m12_eid.keid, m12_pro.apod, 
+SELECT  m12_pro.id, m12_coy.kad, m12_eid.keid, m12_pro.apod,
 sum( case when m12_pard.ptyp_id=1 then  m12_pard.pos end) as taktApod,
 sum( case when m12_pard.ptyp_id=10 then  m12_pard.pos end) as kyriakes,
 sum( case when m12_pard.ptyp_id=2 then  m12_pard.pos end) as kanAd,
@@ -61,7 +61,8 @@ sum( case when m12_pard.ptyp_id=7 then  m12_pard.pos end) as asmor3,
 sum( case when m12_pard.ptyp_id=8 then  m12_pard.pos end) as yperor,
 sum( case when m12_pard.ptyp_id=9 then  m12_pard.pos end) as ypererg,
 sum( case when m12_pard.ptyp_id=11 then  m12_pard.pos end) as nyxtPros,
-m12_pro.prod, m12_fpr.epon,m12_fpr.onom,m12_eid.eidp,m12_pard.ptyp_id
+m12_pro.prod, m12_fpr.epon,m12_fpr.onom,m12_eid.eidp,m12_pard.ptyp_id,
+m12_pro.aptyp_id
 FROM m12_pard
 INNER JOIN m12_par on m12_par.id=m12_pard.par_id
 INNER JOIN m12_xrisi on m12_xrisi.id=m12_par.xrisi_id
@@ -82,7 +83,7 @@ def getParousies(xr,per,db,pereos=None):
         sq = sql2 % (xr,per,pereos)
     else:
         sq = sql2 % (xr,per,per)
-    con = sqlite3.connect(db) 
+    con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute(sq)
     rows = cur.fetchall()
@@ -91,7 +92,7 @@ def getParousies(xr,per,db,pereos=None):
     return rows
 
 def getSingleVal(sql,db):
-    con = sqlite3.connect(db) 
+    con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute(sql)
     val = cur.fetchone()
@@ -104,12 +105,12 @@ def nullToZero(val):
         return val
     else:
         return 0
-    
+
 def makeMis(xrid,perid,mistid,dat,db):
     from collections import OrderedDict
     xrisip  = getSingleVal("SELECT xrisi from m12_xrisi WHERE id=%s" % xrid,db)
     perno   = getSingleVal("SELECT period from m12_period WHERE id=%s" % perid,db)
-    
+
     perid = int(perid)
     mistid = int(mistid)
     bar = 1
@@ -127,13 +128,13 @@ def makeMis(xrid,perid,mistid,dat,db):
         par   = getParousies(xrid,1,db,12)
     if not par:
         return False
-            
+
     xrisiper= xrisip + perno
-    
+
     sql1 = "INSERT INTO m12_mis(xrisi_id,period_id,mist_id,imnia) VALUES (%s,%s,%s,'%s')" % (xrid,perid,mistid,dat)
-    sql2 = "INSERT INTO m12_misd(mis_id,pro_id,mist_id,mtyp_id,val) VALUES(%s,%s,%s,%s,%s)" 
-    
-    con  = sqlite3.connect(db) 
+    sql2 = "INSERT INTO m12_misd(mis_id,pro_id,mist_id,mtyp_id,val) VALUES(%s,%s,%s,%s,%s)"
+
+    con  = sqlite3.connect(db)
     cur  = con.cursor()
     curd = con.cursor()
     cur.execute(sql1)
@@ -169,19 +170,19 @@ def makeMis(xrid,perid,mistid,dat,db):
             vals[110] = d(0)
 
         apod  = misim * meres
-        
+
         if mistid == 1:
             prosKyr = d(kyriakes * misim * d(0.75))
             apod = apod + prosKyr
-            
+
         if mistid == 4:
             pros = d(1.041666,6)
             apod = d(apod * pros)
-            
+
         if mistid == 3:
             pros = d(1.041666,6)
-            apod = d(apod * pros) 
-                   
+            apod = d(apod * pros)
+
         vals[200] = d(apod,2)
         ikaer = d(apod * penos / d(100))
         vals[500] = ikaer
@@ -189,17 +190,17 @@ def makeMis(xrid,perid,mistid,dat,db):
         vals[502] = ika
         ikaet = ika - ikaer
         vals[501] = ikaet
-        
+
         forol = apod - ikaer
-        
-        vals[503] = mistid  
-                
+
+        vals[503] = mistid
+
         vals[504]  = kpkno
         vals[505]  = penos
         vals[506]  = pika
-        
+
         vals[599] = forol
-        
+
         fmy   = d(0)
         fpar  = d(0)
         fmy, fpar = fmyp1.fpXrisis(forol, bar, int(xrisip))
@@ -234,7 +235,7 @@ def tst():
     for row in par:
         for col in row:
             print col,
-        print ''   
+        print ''
 if __name__ == "__main__":
     #print makeMis(2,12)
     tst()
