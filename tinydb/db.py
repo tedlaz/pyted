@@ -1,5 +1,5 @@
 
-#pip install tinydb
+# pip install tinydb
 from tinydb import TinyDB, Query
 db = TinyDB('db.json')
 terg = db.table('erg')
