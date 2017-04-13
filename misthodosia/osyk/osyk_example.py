@@ -10,6 +10,7 @@ def print_arr(arr):
     print(txt)
 
 if __name__ == "__main__":
+    import os
     import osyk as ok
     # import sys
     # python_version = sys.version[0]
@@ -26,15 +27,18 @@ if __name__ == "__main__":
     print(ok.split_strip('this|is|it'))
     print(ok.kadeidkpk_find('5530', '913240', per))
     sa = ok.kpk_find(ok.kadeidkpk_find('5540', '913230', per), per)
-    for e in sa:
-        for i in e:
-            print('%s' % i)
-        print('')
+    # for e in sa:
+    #     for i in e:
+    #         print('%s' % i)
+    #     print('')
     a = ok.kad_list('335')
     for l in a:
         print('%s %s' % (l[0], l[1]))
-    gg = ok.eid_kad_listFilteredDouble('5530')
-    for el in gg:
-        print('%s %s' % (el[0], el[1]))
+    # gg = ok.eid_kad_listFilteredDouble('5530')
+    # for el in gg:
+    #     print('%s %s' % (el[0], el[1]))
     # for el in ika_list():
     #    print el[0],el[1]
+    print(os.path.dirname(os.path.realpath(__file__)))
+    dirfile = os.path.dirname(__file__)
+    print(os.path.exists(os.path.join(dirfile, 'osyk.zip')))

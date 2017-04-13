@@ -8,8 +8,8 @@ import zipfile
 import os
 
 
-def get_file_data(fname):
-    osykfile = os.path.join(os.path.dirname(__file__), 'osyk.zip')
+def get_file_data(fname, zipfname='osyk.zip'):
+    osykfile = os.path.join(os.path.dirname(__file__), zipfname)
     with zipfile.ZipFile(osykfile) as osyk:
         with osyk.open(fname) as eidf:
             osyk = eidf.read().decode('CP1253')  # Εναλλακτικά ISO8859-7
