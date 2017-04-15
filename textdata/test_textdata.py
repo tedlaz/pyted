@@ -41,3 +41,6 @@ class Test_textdata(unittest.TestCase):
         te.write(fil, strr)
         print(te.read(fil))
         os.remove(fil)
+
+    def test_a2(self):
+        self.assertEqual(len('abc'), 3)
