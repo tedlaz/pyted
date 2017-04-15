@@ -46,7 +46,7 @@ dtypos = {0: 'text left',
           2: 'number',  # Always aligned right
           3: 'date',
           4: 'integer'
-          }
+         }
 
 
 class Field:
@@ -190,30 +190,3 @@ class Text_data:
     def write(self, filename, lines):
         with open(filename, 'w') as f:
             f.write(lines)
-
-
-if __name__ == '__main__':
-    lerg = Linetype('erg', 1)
-    lerg.add_field(Field('epo', TL, 30))
-    lerg.add_field(Field('ono', TL, 30))
-    print(lerg)
-    lerd = Linetype('ergd', 2)
-    lerd.add_field(Field('apo', D, 10))
-    lerd.add_field(Field('eos', D, 10))
-    lerd.add_field(Field('poso', N, 12))
-    lerd.add_field(Field('fmy', N, 12))
-    print(lerd)
-    eof = Linetype('End', 'EOF')
-    td = Text_data()
-    td.add_linetype(lerg)
-    td.add_linetype(lerd)
-    td.add_linetype(eof)
-    strr = ''
-    strr += '%s\n' % td.add_txtline(1, ['ted', 'laz'])
-    strr += '%s\n' % td.add_txtline(2, ['01/01/2016', '31/01/2016', 100.32, 10])
-    strr += '%s\n' % td.add_txtline(2, ['01/01/2016', '31/01/2016', 365, 11.11])
-    strr += '%s\n' % td.add_txtline('EOF', [])
-    print(strr)
-    fil = '/home/tedlaz/tst.txt'
-    td.write(fil, strr)
-    print(td.read(fil))
