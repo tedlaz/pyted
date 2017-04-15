@@ -41,7 +41,3 @@ class Test_textdata(unittest.TestCase):
         te.write(fil, strr)
         print(te.read(fil))
         os.remove(fil)
-
-
-if __name__ == '__main__':
-    unittest.main()
