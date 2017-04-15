@@ -2,6 +2,7 @@
 Tests here
 """
 import unittest
+import os
 import textdata as td
 
 
@@ -10,7 +11,7 @@ def setUpModule():
 
 
 def tearDownModule():
-    pass
+    print('edo telos')
 
 
 class Test_textdata(unittest.TestCase):
@@ -39,6 +40,7 @@ class Test_textdata(unittest.TestCase):
         fil = '/home/tedlaz/tst.txt'
         te.write(fil, strr)
         print(te.read(fil))
+        os.remove(fil)
 
 
 if __name__ == '__main__':
