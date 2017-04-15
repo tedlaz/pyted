@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ted_sqlite as tsql
+from tedutil_old import ted_sqlite as tsql
 import unittest
 import os
 

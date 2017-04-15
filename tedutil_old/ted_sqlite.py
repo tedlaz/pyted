@@ -3,7 +3,7 @@ import sqlite3
 import os
 import sys
 import json
-import ted_util as tsq
+from tedutil_old import ted_util as tsq
 
 pyver = sys.version_info.major
 

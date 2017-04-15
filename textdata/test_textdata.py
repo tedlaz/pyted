@@ -3,7 +3,7 @@ Tests here
 """
 import unittest
 import os
-import textdata as td
+from textdata import textdata as td
 
 
 def setUpModule():

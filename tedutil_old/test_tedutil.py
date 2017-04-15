@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ted_util as tu
+from tedutil_old import ted_util as tu
 import unittest
 
 
