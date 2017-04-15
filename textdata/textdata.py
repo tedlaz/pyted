@@ -194,39 +194,3 @@ class Text_data:
     def write(self, filename, lines):
         with open(filename, 'w') as f:
             f.write(lines)
-<<<<<<< HEAD
-
-
-def test():
-    lerg = Linetype('erg', 1)
-    lerg.add_field(Field('ono', TL, 30))
-    lerg.add_field(Field('epo', TL, 30))
-    print(lerg)
-    lerd = Linetype('ergd', 2)
-    lerd.add_field(Field('apo', D, 10))
-    lerd.add_field(Field('eos', D, 10))
-    lerd.add_field(Field('poso', N, 12))
-    lerd.add_field(Field('fmy', N, 12))
-    print(lerd)
-    eof = Linetype('End', 'EOF')
-    td = Text_data()
-    td.add_linetype(lerg)
-    td.add_linetype(lerd)
-    td.add_linetype(eof)
-    strr = ''
-    strr += '%s\n' % td.add_txtline(1, ['ted', 'laz'])
-    strr += '%s\n' % td.add_txtline(2, ['2016-01-01', '2016-01-31', 100.32, 10])
-    strr += '%s\n' % td.add_txtline(2, ['2016-02-01', '2016-02-28', 365, 11.11])
-    strr += '%s\n' % td.add_txtline(1, ['popi', 'dazea'])
-    strr += '%s\n' % td.add_txtline(2, ['2016-01-01', '2016-01-31', 14.37, 8])
-    strr += '%s\n' % td.add_txtline(2, ['2016-02-01', '2016-02-28', 4.59, 2.47])
-    strr += '%s\n' % td.add_txtline('EOF', [])
-    print(strr)
-    fil = '/home/tedlaz/tst.txt'
-    td.write(fil, strr)
-    print(td.read(fil))
-
-if __name__ == '__main__':
-    test()
-=======
->>>>>>> 89e223707f48269be447dbc0f88c1990e576ebe2
