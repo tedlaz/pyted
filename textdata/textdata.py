@@ -58,7 +58,7 @@ class Field:
         if self.fixed_val:
             assert self.size == len(str(self.fixed_val))
         if self.typos == D:
-            self.size = 10
+            self.size = 8
 
     def __repr__(self):
         tmpl = 'Field : %s, Type : %s, Size : %s'
@@ -72,13 +72,12 @@ class Field:
             return str(self.fixed_val)
         str_val = str(val)
         len_val = len(str_val)
+        if self.typos == D:
+            len_val = len(str_val.replace('-', ''))
         # Προσοχή γιατί η len_dif δεν είναι σωστά εδώ ...
         len_dif = self.size - len_val
         if len_dif < 0:
             raise Text_exception('Value size is bigger than field size')
-        if self.typos == D:
-            if len_val != 10:
-                raise Text_exception('Date values are always 10 size')
         if self.typos == TL:
             return str_val + (' ' * len_dif)
         elif self.typos == TR:
@@ -89,7 +88,10 @@ class Field:
             dif = self.size - len(str_val)
             return ('0' * dif) + str_val
         elif self.typos == D:
-            return str_val
+            if len_val != 8:
+                raise Text_exception('ISO Date values are always 8 size')
+            yyyy, mm, dd = str_val.split('-')
+            return '%s%s%s' % (dd, mm, yyyy)
         elif self.typos == I:
             return ('0' * len_dif) + str_val
 
@@ -101,6 +103,8 @@ class Field:
             return dec('.'.join([integer, decimal]))
         elif self.typos == I:
             return int(text)
+        elif self.typos == D:
+            return '%s-%s-%s' % (text[-4:], text[2:4], text[:2])
         else:
             return text.strip()
 
@@ -192,10 +196,10 @@ class Text_data:
             f.write(lines)
 
 
-if __name__ == '__main__':
+def test():
     lerg = Linetype('erg', 1)
-    lerg.add_field(Field('epo', TL, 30))
     lerg.add_field(Field('ono', TL, 30))
+    lerg.add_field(Field('epo', TL, 30))
     print(lerg)
     lerd = Linetype('ergd', 2)
     lerd.add_field(Field('apo', D, 10))
@@ -210,10 +214,16 @@ if __name__ == '__main__':
     td.add_linetype(eof)
     strr = ''
     strr += '%s\n' % td.add_txtline(1, ['ted', 'laz'])
-    strr += '%s\n' % td.add_txtline(2, ['01/01/2016', '31/01/2016', 100.32, 10])
-    strr += '%s\n' % td.add_txtline(2, ['01/01/2016', '31/01/2016', 365, 11.11])
+    strr += '%s\n' % td.add_txtline(2, ['2016-01-01', '2016-01-31', 100.32, 10])
+    strr += '%s\n' % td.add_txtline(2, ['2016-02-01', '2016-02-28', 365, 11.11])
+    strr += '%s\n' % td.add_txtline(1, ['popi', 'dazea'])
+    strr += '%s\n' % td.add_txtline(2, ['2016-01-01', '2016-01-31', 14.37, 8])
+    strr += '%s\n' % td.add_txtline(2, ['2016-02-01', '2016-02-28', 4.59, 2.47])
     strr += '%s\n' % td.add_txtline('EOF', [])
     print(strr)
     fil = '/home/tedlaz/tst.txt'
     td.write(fil, strr)
     print(td.read(fil))
+
+if __name__ == '__main__':
+    test()
