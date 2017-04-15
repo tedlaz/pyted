@@ -46,7 +46,7 @@ dtypos = {0: 'text left',
           2: 'number',  # Always aligned right
           3: 'date',
           4: 'integer'
-          }
+         }
 
 
 class Field:
@@ -194,6 +194,7 @@ class Text_data:
     def write(self, filename, lines):
         with open(filename, 'w') as f:
             f.write(lines)
+<<<<<<< HEAD
 
 
 def test():
@@ -227,3 +228,5 @@ def test():
 
 if __name__ == '__main__':
     test()
+=======
+>>>>>>> 89e223707f48269be447dbc0f88c1990e576ebe2
