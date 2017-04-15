@@ -32,8 +32,8 @@ class Test_textdata(unittest.TestCase):
         te.add_linetype(eof)
         strr = ''
         strr += '%s\n' % te.add_txtline(1, ['ted', 'laz'])
-        strr += '%s\n' % te.add_txtline(2, ['01/01/2016', '31/01/2016', 100.32, 10])
-        strr += '%s\n' % te.add_txtline(2, ['01/01/2016', '31/01/2016', 365, 11.11])
+        strr += '%s\n' % te.add_txtline(2, ['2016-01-01', '2016-01-31', 100.32, 10])
+        strr += '%s\n' % te.add_txtline(2, ['2016-01-01', '2016-01-31', 365, 11.11])
         strr += '%s\n' % te.add_txtline('EOF', [])
         print(strr)
         fil = '/home/tedlaz/tst.txt'

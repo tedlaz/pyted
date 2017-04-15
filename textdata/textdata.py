@@ -88,6 +88,7 @@ class Field:
             dif = self.size - len(str_val)
             return ('0' * dif) + str_val
         elif self.typos == D:
+            len_val = len(str_val.replace('-', ''))
             if len_val != 8:
                 raise Text_exception('ISO Date values are always 8 size')
             yyyy, mm, dd = str_val.split('-')
