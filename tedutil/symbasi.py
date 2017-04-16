@@ -4,7 +4,8 @@ symbasi.py : Κλάση που αντιπροσωπεύει τη Σύμβαση 
 """
 
 
-class Symbasi_exception(Exception):
+class SymbasiException(Exception):
+    """Exception"""
     pass
 
 PROS_NYXTA = 0.25
@@ -15,6 +16,7 @@ EJAIMERO = 6.0
 IKA_DAYS_MONTH_MISTHOTOS = 25.0
 IKA_DAYS_MONTH_IMEROMIST = 26.0
 IKA_HOURS_WEEK = 40.0
+IKA_HOURS_DAY = round(IKA_HOURS_WEEK / EJAIMERO, 3)
 IKA_MISTHOS = 586.08
 IKA_WEEK_TO_MONTH = round(IKA_DAYS_MONTH_IMEROMIST / EJAIMERO, 3)
 IKA_IMEROMISTHIO_MISTHOTOY = round(IKA_MISTHOS / IKA_DAYS_MONTH_MISTHOTOS, 2)
@@ -24,10 +26,13 @@ MISTHOS, IMEROMISTHIO, OROMISTHIO = range(3)
 ATYPOS = {0: 'Μισθωτός', 1: 'Ημερομίσθιος', 2: 'Ωρομίσθιος'}
 AORISTOY, ORISMENOY, ERGOY = range(3)
 STYPOS = {0: 'Αορίστου Χρόνου', 1: 'Ορισμένου Χρόνου', 2: 'Εργου'}
+PLIRIS, MERIKI, EKPERITROPIS = range(3)
+STYP = {0: 'Πλήρης', 1: 'Μερική απασχόληση', 2: 'Έκ περιτροπής'}
 
 
 class Symbasi:
     """Σύμβαση εργασίας"""
+    # pylint: disable=too-many-instance-attributes
     def __init__(self,
                  stypos,
                  typos,
@@ -42,6 +47,7 @@ class Symbasi:
         wdays : Working days per week
         whour : Working hours per week
         """
+        # pylint: disable=too-many-arguments
         self.stypos = stypos
         self.typos = typos
         self.apod = apod
@@ -60,19 +66,29 @@ class Symbasi:
         elif typos == OROMISTHIO:
             self.oromisthio = apod
         else:
-            raise Symbasi_exception('Impossible typos')
+            raise SymbasiException('Impossible typos')
+
+    def styp(self):
+        """Τύπος σύμβασης"""
+        if self.wores >= IKA_HOURS_WEEK:
+            return STYP[PLIRIS]
+        if self.wdays >= PENTHIMERO:
+            return STYP[MERIKI]
+        if self.wdays < PENTHIMERO and self.dores >= IKA_HOURS_DAY:
+            return STYP[EKPERITROPIS]
+        return STYP[MERIKI]
 
     def check(self):
         """Έλεγχος με βάση τη Γενική συλλογική σύμβαση"""
         if self.typos == MISTHOS:
             if self.imeromisthio < IKA_IMEROMISTHIO_MISTHOTOY:
-                raise Symbasi_exception('Μισθός κάτω από τον προβλεπόμενο')
+                raise SymbasiException('Μισθός κάτω από τον προβλεπόμενο')
         elif self.typos == IMEROMISTHIO:
             if self.imeromisthio < IKA_IMEROMISTHIO:
-                raise Symbasi_exception('Ημερομίσθιο κάτω από το προβλεπόμενο')
+                raise SymbasiException('Ημερομίσθιο κάτω από το προβλεπόμενο')
         elif self.typos == OROMISTHIO:
             if self.oromisthio < IKA_OROMISTHIO:
-                raise Symbasi_exception('Ωρομίσθιο κάτω από το προβλεπόμενο')
+                raise SymbasiException('Ωρομίσθιο κάτω από το προβλεπόμενο')
 
     def atypos(self):
         """Τύπος σύμβασης"""
@@ -103,10 +119,18 @@ class Symbasi:
         elif self.typos == OROMISTHIO:
             return self.oromisthio * ores
         else:
-            raise Symbasi_exception('Impossible type')
+            raise SymbasiException('Impossible type')
+
+    def calc_misthos(self, wdays, wores):
+        """Υπολογισμός ελάχιστου νόμιμου μισθού"""
+        pass
+
+    def calc_imsthio(self, wdays, wores):
+        """Υπολογισμός ελάχιστου νόμιμου ημερομισθίου"""
+        pass
 
     def __repr__(self):
-        ast = "Σύμβαση εργασίας %s\n" % self.diarkeia()
+        ast = "Σύμβαση εργασίας %s %s\n" % (self.diarkeia(), self.styp())
         ast += "Τύπος              : %s\n" % self.atypos()
         ast += "Αποδοχές           : %s\n" % self.apod
         ast += "Ημέρες ανά βδομάδα : %s\n" % self.wdays
@@ -115,9 +139,9 @@ class Symbasi:
         return ast
 
 if __name__ == "__main__":
-    sym1 = Symbasi(AORISTOY, MISTHOS, 344.52)
-    print(sym1)
-    sym2 = Symbasi(AORISTOY, IMEROMISTHIO, 26.17)
-    print(sym2)
-    print(sym2.calc_apod(10))
-    sym2.check()
+    SYM1 = Symbasi(AORISTOY, MISTHOS, 344.52)
+    print(SYM1)
+    SYM2 = Symbasi(AORISTOY, IMEROMISTHIO, 26.18, 3, 21)
+    print(SYM2)
+    print(SYM2.calc_apod(10))
+    SYM2.check()
