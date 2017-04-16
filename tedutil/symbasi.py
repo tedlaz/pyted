@@ -121,9 +121,9 @@ class Symbasi:
         else:
             raise SymbasiException('Impossible type')
 
-    def calc_misthos(self, wdays, wores):
+    def calc_misthos(self, wores):
         """Υπολογισμός ελάχιστου νόμιμου μισθού"""
-        pass
+        return round(IKA_OROMISTHIO * wores * IKA_WEEK_TO_MONTH, 2)
 
     def calc_imsthio(self, wdays, wores):
         """Υπολογισμός ελάχιστου νόμιμου ημερομισθίου"""
@@ -137,11 +137,3 @@ class Symbasi:
         ast += "Ώρες ανά βδομάδα   : %s\n" % self.wores
         ast += "Ώρες ανά ημέρα     : %s\n" % self.dores
         return ast
-
-if __name__ == "__main__":
-    SYM1 = Symbasi(AORISTOY, MISTHOS, 344.52)
-    print(SYM1)
-    SYM2 = Symbasi(AORISTOY, IMEROMISTHIO, 26.18, 3, 21)
-    print(SYM2)
-    print(SYM2.calc_apod(10))
-    SYM2.check()

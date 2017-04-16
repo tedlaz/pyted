@@ -45,8 +45,7 @@ dtypos = {0: 'text left',
           1: 'text right',
           2: 'number',  # Always aligned right
           3: 'date',
-          4: 'integer'
-         }
+          4: 'integer'}
 
 
 class Field:
