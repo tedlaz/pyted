@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Module dategr.py"""
+import datetime
 
 
 def date2gr(date, removezero=False):
@@ -7,13 +9,13 @@ def date2gr(date, removezero=False):
     returns date: dd/mm/yyyy
     '''
     def remove_zero(stra):
+        """Remove trailing zeros"""
         if len(stra) > 1 and stra[0] == '0':
             return stra[1:]
         else:
             return stra
     if not date:
         return ''
-
     year, month, day = date.split('-')
     if removezero:
         return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
@@ -21,13 +23,16 @@ def date2gr(date, removezero=False):
         return '%s/%s/%s' % (day, month, year)
 
 
-def grdate2iso(grdate):
-    dd, mm, yyyy = grdate.split('/')
-    if len(dd) == 1:
-        dd = '0%s' % dd
-    if len(mm) == 1:
-        mm = '0%s' % mm
-    return '%s-%s-%s' % (yyyy, mm, dd)
+def grdate2iso(greek_date):
+    """Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)"""
+    assert len(greek_date) in (8, 9, 10)
+    assert len(greek_date.replace('/', '')) + 2 == len(greek_date)
+    day, month, year = greek_date.split('/')
+    if len(day) == 1:
+        day = '0%s' % day
+    if len(month) == 1:
+        month = '0%s' % month
+    return '%s-%s-%s' % (year, month, day)
 
 
 def getymd_from_iso(isodate):
@@ -36,33 +41,34 @@ def getymd_from_iso(isodate):
     '''
     assert isodate[4] == '-'
     assert isodate[7] == '-'
-    y, m, d = isodate.split('-')
-    return int(y), int(m), int(d)
+    year, month, date = isodate.split('-')
+    return int(year), int(month), int(date)
 
 
-def saizon(dat, startmonth=10):
+def saizon(iso_date, startmonth=10):
     '''
     Επιστρέφει ετήσιο διάστημα από μήνα
     dat : Ημερομηνία
     startmonth : Μήνας που αρχίζει η σαιζόν
     '''
+    startmonth = int(startmonth)  # Make sure startmonth is integer
     assert startmonth <= 12
-    y, m, d = getymd_from_iso(dat)
-    if m >= startmonth:
-        return '%s-%s(%s)' % (y, y+1, startmonth)
+    year, month, _ = getymd_from_iso(iso_date)
+    if int(month) >= startmonth:
+        return '%s-%s(%s)' % (year, year+1, startmonth)
     else:
-        return '%s-%s(%s)' % (y-1, y, startmonth)
+        return '%s-%s(%s)' % (year-1, year, startmonth)
 
 
-def week(dat):
+def week(iso_date):
     '''
     returns year-weekNumber
     '''
-    y, m, d = getymd_from_iso(dat)
-    wn = '%s' % datetime.date(y, m, d).isocalendar()[1]
-    if len(wn) == 1:
-        wn = '0' + wn
-    return '%s-%s' % (y, wn)
+    year, month, day = getymd_from_iso(iso_date)
+    week_number = '%s' % datetime.date(year, month, day).isocalendar()[1]
+    if len(week_number) == 1:
+        week_number = '0' + week_number
+    return '%sw%s' % (year, week_number)
 
 
 def period(date, diast=2):
@@ -73,14 +79,15 @@ def period(date, diast=2):
     dval = {2: u'οΔίμ', 3: u'οΤρίμ', 4: u'οΤετρ', 6: u'οΕξάμ'}
     year, month, date = getymd_from_iso(date)
     imonth = int(month)
-    period = imonth // diast
+    aperiod = imonth // diast
     ypoloipo = imonth % diast
     if ypoloipo > 0:
-        period += 1
-    return '%s-%s%s' % (year, period, dval[diast])
+        aperiod += 1
+    return '%s-%s%s' % (year, aperiod, dval[diast])
 
 
 def group_selector(adate, per='m'):
+    """Selector"""
     if per == 'd':  # Όλη η ημερομηνία
         dat = adate[:10]
     elif per == 'm':  # Έτος + μήνας ####-##
@@ -102,12 +109,3 @@ def group_selector(adate, per='m'):
     else:  # Default is Year
         dat = adate[:4]
     return dat
-
-
-if __name__ == '__main__':
-    isod = '2016-05-01'
-    grd1 = date2gr(isod)
-    grd2 = date2gr(isod, True)
-    iso1 = grdate2iso(grd1)
-    iso2 = grdate2iso(grd2)
-    print(isod, grd1, grd2, iso1, iso2)

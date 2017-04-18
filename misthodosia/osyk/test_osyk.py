@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-
+"""Module test_osyk.py"""
 import unittest
 import osyk as ok
 
 
-class Tests_osyk(unittest.TestCase):
+class TestsOsyk(unittest.TestCase):
+    """Test cases"""
 
     def test_split_strip(self):
         self.assertEqual(ok.split_strip('ep|on|pat'), ['ep', 'on', 'pat'])

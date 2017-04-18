@@ -110,6 +110,7 @@ class Field:
 
 
 class Linetype:
+    """Class Linetype"""
     def __init__(self, name, idv):
         self.name = name
         self.id = idv

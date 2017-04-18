@@ -24,7 +24,7 @@ if __name__ == "__main__":
     print(ok.kad_find('5540'))
     print(ok.eid_find('913230'))
     print(ok.kad_find('5540'))
-    print(ok.split_strip('this|is|it'))
+    print(ok.kads('this|is|it'))
     print(ok.kadeidkpk_find('5530', '913240', per))
     sa = ok.kpk_find(ok.kadeidkpk_find('5540', '913230', per), per)
     # for e in sa:

@@ -11,15 +11,16 @@ Created on 11 Δεκ 2012
 import sys
 import os
 import hashlib
-python_version = sys.version[0]
+PYTHON_VERSION = sys.version[0]
+BUF_SIZE = 65536
 
 
 def fsha1(file):
-    BUF_SIZE = 65536
+    """Check sha1 of the file"""
     sha1 = hashlib.sha1()
-    with open(file, 'rb') as f:
+    with open(file, 'rb') as fil:
         while True:
-            data = f.read(BUF_SIZE)
+            data = fil.read(BUF_SIZE)
             if not data:
                 break
             sha1.update(data)
@@ -27,6 +28,7 @@ def fsha1(file):
 
 
 def download(url, directory=None):
+    """Download file url from imternet"""
     if not directory:
         directory = os.path.dirname(__file__)
     filename = url.split('/')[-1]
@@ -38,7 +40,7 @@ def download(url, directory=None):
     if os.path.exists(dirfile):
         os.rename(dirfile, olddirfile)
         print(fsha1(olddirfile))
-    if python_version == '2':
+    if PYTHON_VERSION == '2':
         import urllib as ur
     else:
         import urllib.request as ur
@@ -47,6 +49,6 @@ def download(url, directory=None):
 
 
 if __name__ == '__main__':
-    urlfile = "http://www.ika.gr/gr/infopages/downloads/osyk.zip"
-    download(urlfile)
+    URLF = "http://www.ika.gr/gr/infopages/downloads/osyk.zip"
+    download(URLF)
     print('file Downloaded')

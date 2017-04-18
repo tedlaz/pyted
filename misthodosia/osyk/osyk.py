@@ -6,17 +6,22 @@ http://www.ika.gr/gr/infopages/downloads/home.cfm#down2
 '''
 import zipfile
 import os
+import download_osyk as dos
+URLF = "http://www.ika.gr/gr/infopages/downloads/osyk.zip"
 
 
 def get_file_data(fname, zipfname='osyk.zip'):
+    """Returns"""
     osykfile = os.path.join(os.path.dirname(__file__), zipfname)
+    if not os.path.exists(osykfile):
+        dos.download(URLF)
     with zipfile.ZipFile(osykfile) as osyk:
         with osyk.open(fname) as eidf:
             osyk = eidf.read().decode('CP1253')  # Εναλλακτικά ISO8859-7
     return osyk
 
 
-def split_strip(txt, se='|'):
+def split_strip(txt, sep='|'):
     '''Χωρίζει κείμενο σε λίστα με βάση ένα χαρακτήρα διαχωρισμού (Default το |)
 
     input parameters
@@ -25,10 +30,10 @@ def split_strip(txt, se='|'):
     returns
       List [] with splited and striped text elements
     '''
-    sp = txt.split(se)
-    for i in range(len(sp)):
-        sp[i] = sp[i].strip()
-    return sp
+    splited = txt.split(sep)
+    for i, _ in enumerate(splited):
+        splited[i] = splited[i].strip()
+    return splited
 
 
 def eid_find(eid, fname='dn_eid.txt'):
@@ -40,10 +45,11 @@ def eid_find(eid, fname='dn_eid.txt'):
     returns
       tuple (Κωδικός ειδικότητας, περιγραφή ειδικότητας)
     '''
+    eid = '%s' % eid
     for lin in get_file_data(fname).split('\n'):
-        sp = split_strip(lin)
-        if eid == sp[0]:
-            return (sp[0], sp[1])
+        sps = split_strip(lin)
+        if eid == sps[0]:
+            return (sps[0], sps[1])
     return None
 
 
@@ -59,13 +65,13 @@ def kad_find(kad, fname='dn_kad.txt'):
     Finds and returns record with given no
     '''
     for lin in get_file_data(fname).split("\n"):
-        sp = split_strip(lin)
-        if kad == sp[0]:
-            return (sp[0], sp[1])
+        sps = split_strip(lin)
+        if kad == sps[0]:
+            return (sps[0], sps[1])
     return None
 
 
-def kad_list(no='', fname='dn_kad.txt'):
+def kad_list(kadno='', fname='dn_kad.txt'):
     '''
     input parameters
       kad=Κωδικός Αριθμός δραστηριότητας
@@ -73,16 +79,18 @@ def kad_list(no='', fname='dn_kad.txt'):
     returns
       List [[kad1, kadper1], [kad2, kadper2], ..]
     '''
-    no = '%s' % no
-    valArr = []
+    kadno = '%s' % kadno
+    kads = []
     for line in get_file_data(fname).split("\n"):
-        sp = split_strip(line)
-        if no == '':
-            valArr.append(sp)
+        if len(line) < 6:
+            continue
+        sps = split_strip(line)
+        if kadno == '':
+            kads.append(sps)
         else:
-            if sp[0].startswith(no):
-                valArr.append(sp)
-    return valArr
+            if sps[0].startswith(kadno):
+                kads.append(sps)
+    return kads
 
 
 def eid_kad_list(kad, per, fname='dn_kadeidkpk.txt'):
@@ -98,20 +106,32 @@ def eid_kad_list(kad, per, fname='dn_kadeidkpk.txt'):
     με αποτέλεσμα να υπάρχουν για ΚΑΔ, ΕΙΔ, περίοδο διπλές εγγραφές.
     Λύση προς το παρόν είναι η επιλογή μόνο της πρώτης εγγραφής.
     '''
+    kad = '%s' % kad  # Make sure kad is string
+    per = int(per)  # Make sure per is integer for comparison
     arr = []
     chck = {}
     i = 0
     for lin in get_file_data(fname).split("\n"):
-        sp = split_strip(lin)
-        if kad == sp[0]:
-            if per >= sp[3] and per <= sp[4]:
-                ckv = '%s%s' % (sp[0], sp[1])
+        sps = split_strip(lin)
+        if kad == sps[0]:
+            # Here we compaire
+            if per >= int(sps[3]) and per <= int(sps[4]):
+                ckv = '%s%s' % (sps[0], sps[1])
                 if ckv not in chck:
-                    eidcode, eidp = eid_find(sp[1])
-                    arr.append([sp[0], sp[1], sp[3], sp[2], sp[4], eidp])
+                    _, eidp = eid_find(sps[1])
+                    arr.append([sps[0], sps[1], sps[2], sps[3], sps[4], eidp])
                     chck[ckv] = i
                     i = i + 1
     return arr
+
+
+def eid_kad_string(kad, period):
+    """Print eids"""
+    tmpl = '%6s %3s %s\n'
+    tsr = 'Ειδικότητες εργασίας για τον %s την περίοδο %s\n' % (kad, period)
+    for eid in eid_kad_list(kad, period):
+        tsr += tmpl % (eid[1], eid[2], eid[5])
+    return tsr
 
 
 def kpk_find(kpk, per, fname='dn_kpk.txt'):
@@ -122,11 +142,13 @@ def kpk_find(kpk, per, fname='dn_kpk.txt'):
     returns
       tuple (ΚΠΚ, Περιγραφή, Εργ%, Εργοδότης%, Σύνολο%, περίοδος ισχύος)
     '''
+    kpk = '%s' % kpk  # Make sure kpk is text
+    per = int(per)
     for lin in get_file_data(fname).split("\n"):
-        sp = split_strip(lin)
-        if kpk == sp[0]:
-            if per >= sp[5]:
-                return (sp[0], sp[1], sp[2], sp[3], sp[4], sp[5])
+        sps = split_strip(lin)
+        if kpk == sps[0]:
+            if per >= int(sps[5]):
+                return (sps[0], sps[1], sps[2], sps[3], sps[4], sps[5])
     return None
 
 
@@ -138,15 +160,19 @@ def kadeidkpk_find(kad, eid, per, fname='dn_kadeidkpk.txt'):
     returns
       tuple (ΚΑΔ, ΕΙΔ, Περίοδος, ΚΠΚ, tuple(kpk_find))
     '''
+    kad = str(kad)  # Make sure kad is string
+    eid = str(eid)  # Make sure eid is string
+    per = int(per)  # Make sure per is integer for comparison
     for lin in get_file_data(fname).split("\n"):
-        sp = split_strip(lin)
-        if kad == sp[0] and eid == sp[1]:
-            if per >= sp[3] and per <= sp[4]:
-                return (kad, eid, per, sp[2], kpk_find(sp[2], per))
+        sps = split_strip(lin)
+        if kad == sps[0] and eid == sps[1]:
+            if per >= int(sps[3]) and per <= int(sps[4]):
+                return (kad, eid, per, sps[2], kpk_find(sps[2], per))
     return None
 
 
 def doy_list(fname='doy.txt'):
+    """Returns a list with doys"""
     arr = []
     with open(fname) as fil:
         for lin in fil:
@@ -157,6 +183,7 @@ def doy_list(fname='doy.txt'):
 
 
 def ika_list(fname='ika.txt'):
+    """Returns a list with ika ypokatastimata"""
     arr = []
     with open(fname) as fil:
         for lin in fil:
@@ -164,3 +191,11 @@ def ika_list(fname='ika.txt'):
             txt = u'%s' % lin.rstrip('\n')
             arr.append(txt.split('-'))
     return arr
+
+
+if __name__ == "__main__":
+    PER = 201602
+    # print(eid_kad_string(5540, PER))
+    print(eid_find(311400))
+    print(kadeidkpk_find(5540, 311400, PER))
+    # print(kad_list())
