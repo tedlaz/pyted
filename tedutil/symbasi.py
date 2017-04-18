@@ -58,7 +58,7 @@ class Symbasi:
         self.dores = round(self.wores / self.wdays, 3)
         if typos == MISTHOS:
             self.misthos = apod
-            self.imeromisthio = apod / self.wdays
+            self.imeromisthio = apod / self.mdays
             self.oromisthio = self.imeromisthio * self.wdays / self.wores
         elif typos == IMEROMISTHIO:
             self.imeromisthio = apod

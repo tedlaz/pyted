@@ -5,8 +5,8 @@ def grup(txtVal):
     '''
     Trasforms a string to uppercase special for Greek comparison
     '''
-    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΊκλμνξοόΌπρσςτυύΎφχψωώΏ"
-    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΦΧΨΩΩΩ"
+    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΐΊκλμνξοόΌπρσςτυύϋΰΎφχψωώΏ"
+    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΪΪΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΫΫΥΦΧΨΩΩΩ"
     ftxt = u''
     for letter in txtVal:
         if letter in ar1:
