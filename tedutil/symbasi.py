@@ -127,7 +127,7 @@ class Symbasi:
 
     def calc_imsthio(self, wdays, wores):
         """Υπολογισμός ελάχιστου νόμιμου ημερομισθίου"""
-        pass
+        return 10
 
     def __repr__(self):
         ast = "Σύμβαση εργασίας %s %s\n" % (self.diarkeia(), self.styp())

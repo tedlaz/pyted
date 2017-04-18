@@ -1,5 +1,5 @@
 '''
-This is obsolete. 
+This is obsolete.
 '''
 import sqlite3
 import os
@@ -182,4 +182,3 @@ def md2sql(tmaster, tdetail, adic, id_at_end=True):
             el[fkey % tmaster] = adic['id']
         sql += sql_ins_upd(tdetail, el) + '\n'
     return 'BEGIN TRANSACTION;\n' + sql + 'COMMIT;\n'
-

@@ -10,14 +10,14 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 print(PATH)
 
 
-def grup(txtVal):
+def grup(txtv):
     '''
     Trasforms a string to uppercase special for Greek comparison
     '''
     ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΊκλμνξοόΌπρσςτυύΎφχψωώΏ"
     ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΦΧΨΩΩΩ"
     ftxt = u''
-    for letter in txtVal:
+    for letter in txtv:
         if letter in ar1:
             ftxt += ar2[ar1.index(letter)]
         else:
@@ -25,7 +25,7 @@ def grup(txtVal):
     return ftxt
 
 
-class Open_sqlite:
+class OpenSqlite:
     '''
     Context manager class
     Use it as:
@@ -33,11 +33,13 @@ class Open_sqlite:
         your code here ...
     '''
     def __init__(self, dbfile):
-        self.db = dbfile
+        self.dbf = dbfile
         self.active = False
+        self.con = None
+        self.cur = None
 
     def __enter__(self):
-        self.con = sqlite3.connect(self.db)
+        self.con = sqlite3.connect(self.dbf)
         self.con.create_function("grup", 1, grup)
         self.cur = self.con.cursor()
         self.active = True
@@ -49,6 +51,7 @@ class Open_sqlite:
             self.con.close()
 
     def script(self, sqlscript):
+        """Execute an sql script against self.dbf"""
         self.con.executescript(sqlscript)
         return True
 
@@ -61,9 +64,9 @@ class Open_sqlite:
         except:
             return -9
 
-    def set_application_id(self, id):
+    def set_application_id(self, idv):
         '''Set application_id to database file'''
-        self.execute_script('PRAGMA application_id = %s;' % id)
+        self.script('PRAGMA application_id = %s;' % idv)
 
     def user_version(self):
         '''Get user_version from database file'''
@@ -76,7 +79,7 @@ class Open_sqlite:
 
     def set_user_version(self, version):
         '''Set user_version to database file'''
-        self.execute_script('PRAGMA user_version = %s;' % version)
+        self.script('PRAGMA user_version = %s;' % version)
 
     def select(self, sql):
         '''Get a list of tuples with data'''
@@ -96,17 +99,16 @@ class Open_sqlite:
         self.cur.execute(sql)
         column_names = [t[0] for t in self.cur.description]
         rows = self.cur.fetchall()
-        arrayOfDictionaries = []
+        diclist = []
         for row in rows:
             dic = {}
             for i, col in enumerate(row):
                 dic[column_names[i]] = col
-            arrayOfDictionaries.append(dic)
-        diclen = len(arrayOfDictionaries)
+            diclist.append(dic)
+        diclen = len(diclist)
         if diclen > 0:
-            return arrayOfDictionaries
-        else:
-            return [{}]
+            return diclist
+        return [{}]
 
     def select_master_detail_as_dic(self,
                                     idv,
@@ -131,19 +133,20 @@ class Open_sqlite:
         sql1 = "SELECT * FROM %s WHERE id='%s'" % (tablemaster, idv)
         sql2 = "SELECT * FROM %s WHERE %s='%s'" % (tabledetail, id_field, idv)
         dic = self.select_as_dict(sql1)[0]
-        if len(dic) == 0:
+        ldic = len(dic)
+        if ldic == 0:
             return dic
         if tabledetail:
             dic['zlines'] = self.select_as_dict(sql2)
             # Remove id_field key
-            for el in dic['zlines']:
-                del el[id_field]
+            for elm in dic['zlines']:
+                del elm[id_field]
         return dic
 
 
 if __name__ == '__main__':
-    dbpath = '/home/tedlaz/tedfiles/prj/2017/2017a.sql3'
-    with Open_sqlite(dbpath) as db:
+    DBPATH = '/home/tedlaz/tedfiles/prj/2017/2017a.sql3'
+    with OpenSqlite(DBPATH) as db:
         print(db.select('select * from lmo limit 2;'))
         print(db.select_as_dict('select * from vtr_trd limit 10;'))
         print(db.select_with_names('select * from lmo limit 2;'))
