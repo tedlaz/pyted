@@ -2,26 +2,26 @@
 import f2run
 import os
 
-fdir = os.path.dirname(os.path.abspath(__file__))
+FDIR = os.path.dirname(os.path.abspath(__file__))
 
 
 if __name__ == '__main__':
-    epon = u'Σαμαράς ΟΕ'
-    db = '/home/tedlaz/pelates/2017/2017a.sql3'
-    htmlf = '/home/tedlaz/f2_tst.html'
-    tmplfile = os.path.join(fdir, '1tmpl.txt')
-    lmoifile = os.path.join(fdir, '2lmoi.txt')
-    fis = os.path.join(fdir, './3is.sql')
-    ffp = os.path.join(fdir, '4fpa.sql')
-    f2run.run(epon,
+    EPON = u'Σαμαράς ΟΕ'
+    DBF = '/home/tedlaz/pelates/2017/2017a.sql3'
+    HTMLF = '/home/tedlaz/f2_tst.html'
+    TMPLF = os.path.join(FDIR, '1tmpl.txt')
+    LMOIF = os.path.join(FDIR, '2lmoi.txt')
+    FIS = os.path.join(FDIR, './3is.sql')
+    FFP = os.path.join(FDIR, '4fpa.sql')
+    f2run.run(EPON,
               '2017-01-01',
               '2017-03-31',
-              db,
-              htmlf,
-              tmplfile,
-              lmoifile,
-              fis,
-              ffp)
-    f2run.checkDictionaries(tmplfile, lmoifile)
+              DBF,
+              HTMLF,
+              TMPLF,
+              LMOIF,
+              FIS,
+              FFP)
+    f2run.checkDictionaries(TMPLF, LMOIF)
     import webbrowser
-    webbrowser.get('chromium %s').open(htmlf)
+    webbrowser.get('chromium %s').open(HTMLF)

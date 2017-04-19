@@ -382,15 +382,15 @@ def ek_ee(poso, paidia=0, oldposo=0, oldprokataboli=0, tep=False):
     else:
         poso = dec(poso)
     if oldposo == 0:
-        posoGiaAsfalisi = poso
+        asfalisteo = poso
     else:
-        posoGiaAsfalisi = oldposo
+        asfalisteo = oldposo
     if tep:
         tel = dec(650)
     else:
         tel = dec(0)
 
-    asfalisi = oaee_etisio(posoGiaAsfalisi)
+    asfalisi = oaee_etisio(asfalisteo)
     katharo = poso - asfalisi
     foros = foros_eis(float(katharo), paidia, False)
     prokataboli = foros
