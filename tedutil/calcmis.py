@@ -3,7 +3,7 @@ Module calcmis.py
 Calculate Greek Payroll system.
 Για τον υπολογισμό της μισθοδοσίας έχουμε:
 Χρειάζεται να έχει γίνει εισαγωγή παρουσιών των εργαζομένων της περιόδου
-Ο κάθε εργαζόμενος καλύπτεται από μια σύμβαση εργασίας που περιγράφει 
+Ο κάθε εργαζόμενος καλύπτεται από μια σύμβαση εργασίας που περιγράφει
 αναλυτικά τα εξής:
 1.Ειδικότητα εργασίας
 2.Περιοχή απασχόλησης
@@ -76,16 +76,18 @@ aptyp = {'minas': 1, 'mera': 2, 'ora': 3}
 
 
 def get_paroysies(dbf, xrisi_id, period_apo_id, period_eos_id=None):
+    """Παρουσίες εργαζομένου από database"""
     if period_eos_id:
         sql = sql_paroysies_tmpl % (xrisi_id, period_apo_id, period_eos_id)
     else:
         sql = sql_paroysies_tmpl % (xrisi_id, period_apo_id, period_apo_id)
-    with Open_sqlite(dbf) as db:
-        rows = db.select_as_dict(sql)
+    with Open_sqlite(dbf) as dbase:
+        rows = dbase.select_as_dict(sql)
     return rows
 
 
 def calc_mis(dbf, xrisi_id, per_id, mis_id, mdate):
+    """Υπολογισμός μισθοδοσίας"""
     mis_id = int(mis_id)
     md = {'xrisi_id': xrisi_id, 'period_id': per_id, 'mist_id': mis_id,
           'imnia': mdate, 'zlines': []}

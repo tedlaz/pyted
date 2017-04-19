@@ -7,7 +7,7 @@ fdir = os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == '__main__':
     epon = u'Σαμαράς ΟΕ'
-    db = '/home/tedlaz/tedfiles/prj/2017/2017a.sql3'
+    db = '/home/tedlaz/pelates/2017/2017a.sql3'
     htmlf = '/home/tedlaz/f2_tst.html'
     tmplfile = os.path.join(fdir, '1tmpl.txt')
     lmoifile = os.path.join(fdir, '2lmoi.txt')
@@ -24,4 +24,4 @@ if __name__ == '__main__':
               ffp)
     f2run.checkDictionaries(tmplfile, lmoifile)
     import webbrowser
-    webbrowser.get('/usr/bin/google-chrome-stable %s').open(htmlf)
+    webbrowser.get('chromium %s').open(htmlf)
