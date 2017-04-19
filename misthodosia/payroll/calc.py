@@ -440,4 +440,7 @@ def printfor(apo, eos, bima=100, mis=False):
         fri = foros_eis
     dea = foros_ea
     for i in range(apo, eos + bima, bima):
-        print(ast % (i, fri(i, 0, mis), fri(i, 1, mis), fri(i, 2, mis), fri(i, 3, mis), dea(i)))
+        print(ast % (i, fri(i, 0, mis),
+                     fri(i, 1, mis),
+                     fri(i, 2, mis),
+                     fri(i, 3, mis), dea(i)))

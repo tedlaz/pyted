@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+"""Module calc_example.py"""
 
 
 if __name__ == '__main__':
     import calc as c
-    b105 = c.Erg(50, 45.66, 18.95, False)
-    b101 = c.Erg(40, 40.06, 15.5, False)
+    B105 = c.Erg(50, 45.66, 18.95, False)
+    B101 = c.Erg(40, 40.06, 15.5, False)
 
     # -----------------------------------------------
     # Nea pososta IKA
@@ -20,7 +21,6 @@ if __name__ == '__main__':
     # ===============================================
     # Synolo & epikoyriko 12.72       21.38     34.10
     # -----------------------------------------------
-
     # bnew = Erg(40, 27.1, 9.22, False)
     # print(doro_pasxa(20, 38, False))
     # par = Parousies(10)
@@ -32,5 +32,5 @@ if __name__ == '__main__':
     # print(foros_ea(23000))
     # print(oaee_etisio(24000))
     c.ek_ee(200000, 0, 0, 0, True)
-    print(c.foros_eis(15052.8, 0 , True))
-    print(c.foros_eispar(15052.8, 0 , True))
+    print(c.foros_eis(15052.8, 0, True))
+    print(c.foros_eispar(15052.8, 0, True))
