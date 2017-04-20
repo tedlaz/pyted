@@ -5,10 +5,8 @@ Ted Lazaros
 """
 
 from PyQt4 import QtCore, QtGui
-
 import sys
 import os
-
 from qtdb import dbforms as dbf
 from qtdb import f_about
 from qtdb import qtree as qtr
