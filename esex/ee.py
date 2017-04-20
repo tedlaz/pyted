@@ -237,7 +237,7 @@ class fMain(QtGui.QMainWindow):
 
         elif self.pfiles[selection][1] == 'frm':
             exestr = 'dlg = %s' % self.pfiles[selection][0]
-            exec exestr
+            exec(exestr)
 
         elif self.pfiles[selection][1] == 'rpt':
             sql = self.pfiles[selection][2]
@@ -272,7 +272,7 @@ class fMain(QtGui.QMainWindow):
             self.db = fname
             self.settings.setValue("db_path", self.db)
             self.onStartOrFileOpen()
-            print self.db
+            print(self.db)
 
     def openForm1(self):
         # import f_dialogTemplate
