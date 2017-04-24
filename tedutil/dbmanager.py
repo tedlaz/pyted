@@ -11,7 +11,8 @@ SQLTYP = {'TXT': 'TEXT NOT NULL', 'TXN': 'TEXT',
           'FK': 'INTEGER NOT NULL REFERENCES %s(id)'}
 
 
-class Dbmanager_exception(Exception):
+class DbmanagerException(Exception):
+    """Exception to use with class Dbmanager"""
     pass
 
 
@@ -37,7 +38,7 @@ class Dbmanager():
         '''
         if table in self._tables:
             msg = 'Table %s already exists' % table
-            raise Dbmanager_exception(msg)
+            raise DbmanagerException(msg)
         self._tables[table] = {'lbl': label,
                                'lblp': labelp,
                                'rpr': rpr,
@@ -49,7 +50,7 @@ class Dbmanager():
         '''
         if table not in self._tables:
             msg = 'Table %s must be added to tables first' % table
-            raise Dbmanager_exception(msg)
+            raise DbmanagerException(msg)
         if table not in self._fields:
             self._fields[table] = {}
             self._fielda[table] = []
@@ -59,6 +60,9 @@ class Dbmanager():
         self._fielda[table].append(field)
 
     def get_joined_fields(self, table, only_rpr=False):
+        """
+        Returns string with joined fields
+        """
         joiner = " || ' ' || "
         rprfields = self._tables[table]['rpr']
         tblfields = self.get_fields(table, with_id=False)
@@ -67,7 +71,7 @@ class Dbmanager():
                 for field in tblfields:
                     if field not in tblfields:
                         msg = 'Field %s not in table %s' % (field, table)
-                        raise Dbmanager_exception(msg)
+                        raise DbmanagerException(msg)
             else:
                 rprfields = tblfields
         else:
@@ -87,7 +91,7 @@ class Dbmanager():
             for field in rprfields:
                 if field not in tblfields:
                     msg = 'Field %s not in table %s' % (field, table)
-                    raise Dbmanager_exception(msg)
+                    raise DbmanagerException(msg)
         else:
             rprfields = tblfields
         sqlt = 'SELECT id, %s AS rpr FROM %s '
