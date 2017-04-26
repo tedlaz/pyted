@@ -120,7 +120,7 @@ class Esex:
 if __name__ == '__main__':
     pe24 = LineType('Πωλήσεις εμπορευμάτων 24%', 24.0)
     pe13 = LineType('Πωλήσεις εμπορευμάτων 13%', 13.0)
-    ese = Esex()
+    ese = Esex('2017-01-01', 'ΤΔΑ23')
     ese.new_line(EsexLine(pe24, 100))
     ese.new_line(EsexLine(pe13, 100))
     print(ese)
