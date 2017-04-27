@@ -136,7 +136,8 @@ INNER JOIN typgr on typgr.id=ee.typgr_id
 INNER JOIN syn on syn.afm=ee.syn_afm
 INNER JOIN eed on ee.id=eed.ee_id
 INNER JOIN typln on typln.id=eed.typeln_id
-GROUP BY ee.id, ee.cop_id, ee.typee_id, ee.typcd_id, ee.typgr_id, ee.syn_afm, ee.imnia, ee.par
+GROUP BY ee.id, ee.cop_id, ee.typee_id, ee.typcd_id,
+         ee.typgr_id, ee.syn_afm, ee.imnia, ee.par
 ;
 
 CREATE VIEW biblio AS
@@ -147,7 +148,8 @@ case when ekpiptei = 0 then
 	case when typcd.typcd='Credit' then val * -1 + fpa * -1 else val + fpa end
 	else case when typcd.typcd='Credit' then val * -1 else val end
 	end as bval,
-case when typcd.typcd='Credit' then fpa * -1 * typln.ekpiptei else fpa * typln.ekpiptei end as bfpa
+case when typcd.typcd='Credit' then fpa * -1 * typln.ekpiptei
+                               else fpa * typln.ekpiptei end as bfpa
 FROM ee
 INNER JOIN cop on cop.id=ee.cop_id
 INNER JOIN typee on typee.id=ee.typee_id
