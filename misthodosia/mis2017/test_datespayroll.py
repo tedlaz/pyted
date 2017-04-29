@@ -16,12 +16,17 @@ class Tests(unittest.TestCase):
         with self.assertRaises(dpay.DatespayException):
             prot = dpay.WeekDays((4, 4, 4, 0, 0,))
 
+    def test_month_days(self):
+        self.assertEqual(dpay.month_days(2017, 4), [4, 4, 4, 4, 4, 5, 5])
+
 
 if __name__ == '__main__':
     wdays = dpay.WeekDays((0, 0, 0, 0, 0, 7, 8))
     print(wdays)
     print(dpay.WeekDays())
-    print(dpay.month_days(2017, 4))
     print(wdays.working_month_days(2017, 5))
     full = dpay.WeekDays()
     print(full.working_month_days(2017, 4))
+    print(full.working_days_between('2017-04-07', '2017-04-30'))
+    print(dpay.month_days(2017, 4))
+    print(dpay.timespace_days('2001-04-18', '2017-04-30'))

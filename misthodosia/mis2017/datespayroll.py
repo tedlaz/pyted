@@ -3,6 +3,7 @@ Module dates payroll.py
 Managing dates for payroll purposes
 """
 import calendar
+import datetime
 
 
 def month_days(year, month):
@@ -16,6 +17,30 @@ def month_days(year, month):
             if day > 0:
                 weekdays[i] += 1
     return weekdays
+
+
+def timespace_days(dateapo, dateeos):
+    """
+    :param dateapo: From iso date
+    :param dateeos: To iso date
+    :return: list with number of days in time interval
+    """
+    assert dateeos >= dateapo
+    flist = [0, 0, 0, 0, 0, 0, 0]
+    ayear, amonth, aday = dateapo.split('-')
+    eyear, emonth, eday = dateeos.split('-')
+    dapo = datetime.date(int(ayear), int(amonth), int(aday))
+    deos = datetime.date(int(eyear), int(emonth), int(eday))
+    # Find the first day
+    first_day = dapo.weekday()
+    # Find the days from first to last
+    # Divide with 7 and get the rest
+    delta = deos - dapo
+    days = delta.days + 1
+    for i in range(days):
+        tday = (first_day + i) % 7
+        flist[tday] += 1
+    return flist
 
 
 class DatespayException(Exception):
@@ -45,6 +70,16 @@ class WeekDays:
     def working_month_days(self, year, month):
         """Βρες τις εργάσιμες ημέρες του έτους/μήνα"""
         weekdays = month_days(year, month)
+        for i, _ in enumerate(weekdays):
+            if self.dlist[i] == 0:
+                weekdays[i] = 0
+        return sum(weekdays)
+
+    def working_days_between(self, dateapo, dateeos):
+        """Βρες τις εργάσιμες ημέρες ανάμεσα σε δύο ημερομηνίες
+        Συμπεριλαμβάνεται η αρχική και η τελική ημερομηνία
+        """
+        weekdays = timespace_days(dateapo, dateeos)
         for i, _ in enumerate(weekdays):
             if self.dlist[i] == 0:
                 weekdays[i] = 0
