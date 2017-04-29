@@ -21,5 +21,7 @@ if __name__ == '__main__':
     wdays = dpay.WeekDays((0, 0, 0, 0, 0, 7, 8))
     print(wdays)
     print(dpay.WeekDays())
-    print(dpay.month_days(2017, 5))
+    print(dpay.month_days(2017, 4))
     print(wdays.working_month_days(2017, 5))
+    full = dpay.WeekDays()
+    print(full.working_month_days(2017, 4))
