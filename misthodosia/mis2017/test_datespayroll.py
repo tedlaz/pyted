@@ -37,6 +37,15 @@ class Tests(unittest.TestCase):
         wdays = dpay.WeekDays((0, 4, 4, 4, 4, 4, 0))
         self.assertEqual(wdays.working_month_days(2017, 5), 22)
 
+    def test_07(self):
+        """Μικτή εισαγωγή δεδομένων"""
+        ats = dpay.WeekDays(({}, 4, 4, 4, 4,
+                             {'10:00': 2, '20:00': 4}, 0), '07:00')
+        val = [{}, {'07:00': 4}, {'07:00': 4}, {'07:00': 4}, {'07:00': 4},
+               {'10:00': 2, '20:00': 4}, {}]
+        self.assertEqual(ats.ddict, val)
+        self.assertEqual(ats.dlist, [0, 4, 4, 4, 4, 6, 0])
+
 
 if __name__ == '__main__':
     unittest.main()

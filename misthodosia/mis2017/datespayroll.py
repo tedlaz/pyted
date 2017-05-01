@@ -23,7 +23,8 @@ def timespace_days(dateapo, dateeos):
     """
     :param dateapo: From iso date
     :param dateeos: To iso date
-    :return: list with number of days in time interval
+    :return: list with number of days in time interval of the form:
+             [Δε, Τρ, Τε, Πε, Πα, Σα, Κυ]
     """
     assert dateeos >= dateapo
     flist = [0, 0, 0, 0, 0, 0, 0]
@@ -53,16 +54,41 @@ class WeekDays:
     grdays = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πεμπτη',
               'Παρασκευή', 'Σάββατο', 'Κυριακή']
 
-    def __init__(self, dlist=(8, 8, 8, 8, 8, 0, 0)):
+    def __init__(self, dlist=(8, 8, 8, 8, 8, 0, 0), start='08:00'):
         """
         :param dlist: [1, 1, 1, 1, 1, 0, 0]
-                       Δ,Τρ,Τε,Πε,Πα,Σα,Κυ
-                       [8, 8, 8, 8, 8, 0, 0]
+                      Δε,Τρ,Τε,Πε,Πα,Σα,Κυ
+                      [8, 8, 8, 8, 8, 0, 0]
+        Το dlist έχει 7 στοιχεία, ένα για κάθε ημέρα
+        Το κάθε στοιχείο μπορεί να είναι είτε αριθμός που αντιπροσωπεύει τις
+        ώρες εργασίας της ημέρας είτε dictionary με keys την ώρα έναρξης της
+        εργασίας και values τις ώρες εργασίας. Σε μια ημέρα μπορεί ο εργαζόμενος
+        να προσέλθει για εργασία πάνω από μια φορά. Άρα το dictionary μπορεί
+        να έχει τουλάχιστον μία ή παραπάνω τιμές.
+        :param start: Default hour to start working
         :return: new class
+        dlist = [{'10:00': 8}, {'10:00': 8}, {'10:00': 8}, {'10:00': 8},
+                 {'10:00': 8}, {'10:00': 8}, {'10:00': 8}]
         """
         if len(dlist) != 7:
             raise DatespayException('Not a proper dlist')
-        self.dlist = dlist
+        self.dlist = []
+        self.ddict = []
+        for elm in dlist:
+            if isinstance(elm, (int, float)):
+                self.dlist.append(elm)
+                if elm == 0:
+                    self.ddict.append({})
+                else:
+                    self.ddict.append({start: elm})
+            elif isinstance(elm, dict):
+                thours = 0
+                for key in elm:
+                    thours += elm[key]
+                self.ddict.append(elm)
+                self.dlist.append(thours)
+            else:
+                raise DatespayException('Wrong parameter days')
 
     def week_hours(self):
         """:return: working week hours"""
