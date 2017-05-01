@@ -44,6 +44,7 @@ def timespace_days(dateapo, dateeos):
 
 
 class DatespayException(Exception):
+    """Exceptions"""
     pass
 
 
@@ -75,7 +76,7 @@ class WeekDays:
                 weekdays[i] = 0
         return sum(weekdays)
 
-    def working_days_between(self, dateapo, dateeos):
+    def working_days(self, dateapo, dateeos):
         """Βρες τις εργάσιμες ημέρες ανάμεσα σε δύο ημερομηνίες
         Συμπεριλαμβάνεται η αρχική και η τελική ημερομηνία
         """
@@ -101,7 +102,8 @@ class WeekDays:
 
 
 class Programa:
-    def __init__(self, tst):
+    """Not implemented yet"""
+    def __init__(self):
         self.weekdays = 5
         self.weekhour = 40
         self.weekdaya = [1, 1, 1, 1, 1, 0, 0]
