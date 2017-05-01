@@ -36,3 +36,7 @@ class Tests(unittest.TestCase):
         """Μερική απασχόληση"""
         wdays = dpay.WeekDays((0, 4, 4, 4, 4, 4, 0))
         self.assertEqual(wdays.working_month_days(2017, 5), 22)
+
+
+if __name__ == '__main__':
+    unittest.main()
