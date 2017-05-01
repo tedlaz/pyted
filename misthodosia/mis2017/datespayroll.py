@@ -6,10 +6,21 @@ import calendar
 import datetime
 
 
+class DatespayException(Exception):
+    """Exceptions"""
+    pass
+
+
 def month_days(year, month):
     """
     :return: list with number of days per year/month
     """
+    if not isinstance(year, int):
+        raise DatespayException('Year must be integer')
+    if not isinstance(month, int):
+        raise DatespayException('Month must be integer')
+    if month < 1 or month > 12:
+        raise DatespayException('Month must be integer between 1 and 12')
     alst = calendar.monthcalendar(year, month)
     weekdays = [0, 0, 0, 0, 0, 0, 0]
     for week in alst:
@@ -26,7 +37,8 @@ def timespace_days(dateapo, dateeos):
     :return: list with number of days in time interval of the form:
              [Δε, Τρ, Τε, Πε, Πα, Σα, Κυ]
     """
-    assert dateeos >= dateapo
+    if not dateeos >= dateapo:
+        raise DatespayException('dateeos must be >= to dateapo')
     flist = [0, 0, 0, 0, 0, 0, 0]
     ayear, amonth, aday = dateapo.split('-')
     eyear, emonth, eday = dateeos.split('-')
@@ -44,9 +56,30 @@ def timespace_days(dateapo, dateeos):
     return flist
 
 
-class DatespayException(Exception):
-    """Exceptions"""
-    pass
+def checkhour(tstart, duration, dur_limit=16):
+    """Check hour
+    :param hstart: Ώρα έναρξης σε μορφή 'hh:mm'
+    :param duration: Διάρκεια σε ώρες
+    :return: list with two elements : [normal_time, night_time]
+    """
+    night = (0, 1, 2, 3, 4, 5, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+    hstart, mstart = tstart.split(':')
+    hstart = int(hstart)
+    mstart = int(mstart)
+    if hstart > 24 or hstart < 0:
+        raise DatespayException('Hour must be between 0 and 24')
+    if mstart > 59 or mstart < 0:
+        raise DatespayException('Minute must be between 0 and 59')
+    if duration > dur_limit:
+        raise DatespayException('Work time limit exceeded')
+    hend = hstart + duration
+    fval = [0, 0]
+    for hour in range(hstart, hend):
+        if hour in night:
+            fval[1] += 1
+        else:
+            fval[0] += 1
+    return tuple(fval)
 
 
 class WeekDays:

@@ -46,6 +46,18 @@ class Tests(unittest.TestCase):
         self.assertEqual(ats.ddict, val)
         self.assertEqual(ats.dlist, [0, 4, 4, 4, 4, 6, 0])
 
+    def test_08(self):
+        """Έλεγχος ημερήσιας/νυχτερινής ώρας"""
+        self.assertEqual(dpay.checkhour('01:00', 8), (3, 5))
+        self.assertEqual(dpay.checkhour('17:00', 8), (5, 3))
+        self.assertEqual(dpay.checkhour('19:00', 8), (3, 5))
+        self.assertEqual(dpay.checkhour('08:00', 8), (8, 0))
+        self.assertEqual(dpay.checkhour('22:00', 8), (0, 8))
+        self.assertEqual(dpay.checkhour('06:00', 8), (8, 0))
+        self.assertEqual(dpay.checkhour('00:00', 8), (2, 6))
+        self.assertEqual(dpay.checkhour('00:00', 12), (6, 6))
+        self.assertEqual(dpay.checkhour('12:00', 8), (8, 0))
+
 
 if __name__ == '__main__':
     unittest.main()
