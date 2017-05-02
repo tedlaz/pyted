@@ -65,26 +65,40 @@ def checkhour(tstart, duration, dur_limit=16):
     night = (0, 1, 2, 3, 4, 5, 22, 23, 24, 25, 26, 27, 28, 29, 30)
     hstart, mstart = tstart.split(':')
     hstart = int(hstart)
-    mstart = int(mstart)
+    mstart = int(mstart) / 60.0
     if hstart > 24 or hstart < 0:
         raise DatespayException('Hour must be between 0 and 24')
     if mstart > 59 or mstart < 0:
         raise DatespayException('Minute must be between 0 and 59')
     if duration > dur_limit:
         raise DatespayException('Work time limit exceeded')
-    hend = hstart + duration
+    hmend = hstart + mstart + duration
+    hend = int(hmend // 1)
+    mend = hmend % 1
     fval = [0, 0]
     for hour in range(hstart, hend):
         if hour in night:
             fval[1] += 1
         else:
             fval[0] += 1
-    return tuple(fval)
+    # remove from first hour decimal mstart
+    if hstart in night:
+        fval[1] -= mstart
+    else:
+        fval[0] -= mstart
+    # add to last hour
+    if hend in night:
+        fval[1] += mend
+    else:
+        fval[0] += mend
+    normal_hours = round(fval[0], 2)
+    night_hours = round(duration - normal_hours, 2)
+    return (normal_hours, night_hours)
 
 
 class WeekDays:
     """Week days"""
-    grdays = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πεμπτη',
+    grdays = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη',
               'Παρασκευή', 'Σάββατο', 'Κυριακή']
 
     def __init__(self, dlist=(8, 8, 8, 8, 8, 0, 0), start='08:00'):
@@ -123,6 +137,62 @@ class WeekDays:
             else:
                 raise DatespayException('Wrong parameter days')
 
+    def week_hours_di(self):
+        """Κατανομή ωρών εργασίας ανα κανονικές/νυχτερινές"""
+        tnormal = 0
+        tnight = 0
+        for day in self.ddict:
+            for key in day:
+                htuple = checkhour(key, day[key])
+                tnormal += htuple[0]
+                tnight += htuple[1]
+        return (tnormal, tnight)
+
+    def week_hours_tupl(self):
+        """Return a tuple ((0, 0), (), ...)"""
+        flist = []
+        for day in self.ddict:
+            normal = 0
+            night = 0
+            for key in day:
+                htuple = checkhour(key, day[key])
+                normal += htuple[0]
+                night += htuple[1]
+            flist.append((normal, night))
+        return tuple(flist)
+
+    def week_hours_analysis(self):
+        """Analysis"""
+        tmpl = '%-10s %-6s %6s %6s %6s\n'
+        dlin = '-' * 39 + '\n'
+        ast = '\nΕβδομαδιαίο πρόγραμμα εργασίας\n\n'
+        ast += tmpl % ('', 'Έναρξη', 'Ημέρα', 'Νύχτα', 'Σύνολο')
+        ast += dlin
+        tnormal = 0.0
+        tnight = 0.0
+        meres_apasxolisis = 0
+        for i, day in enumerate(self.ddict):
+            nday = self.grdays[i]
+            if day == {}:
+                ast += tmpl % (nday, '', '', '', '')
+            else:
+                meres_apasxolisis += 1
+                for key in day:
+                    htu = checkhour(key, day[key])
+                    fno = '%.2f' % htu[0]
+                    fni = '%.2f' % htu[1]
+                    fto = '%.2f' % sum(htu)
+                    ast += tmpl % (nday, key, fno, fni, fto)
+                    tnormal += htu[0]
+                    tnight += htu[1]
+        ast += dlin
+        tno = '%.2f' % tnormal
+        tni = '%.2f' % tnight
+        tto = '%.2f' % (tnormal + tnight)
+        ast += tmpl % ('Σύνολα', '', tno, tni, tto)
+        ast += '\nΗμέρες εβδομαδιαίας απασχόλησης : %s\n' % meres_apasxolisis
+        return ast
+
     def week_hours(self):
         """:return: working week hours"""
         return sum(self.dlist)
@@ -133,7 +203,7 @@ class WeekDays:
         for i, _ in enumerate(weekdays):
             if self.dlist[i] == 0:
                 weekdays[i] = 0
-        return sum(weekdays)
+        return tuple(weekdays)
 
     def working_days(self, dateapo, dateeos):
         """Βρες τις εργάσιμες ημέρες ανάμεσα σε δύο ημερομηνίες
@@ -143,7 +213,36 @@ class WeekDays:
         for i, _ in enumerate(weekdays):
             if self.dlist[i] == 0:
                 weekdays[i] = 0
-        return sum(weekdays)
+        return tuple(weekdays)
+
+    def working_days_analysis(self, dateapo, dateeos):
+        """Αναλυτική εκτύπωση"""
+        wdays = self.working_days(dateapo, dateeos)
+        ast = 'Ανάλυση Ημερών εργασίας από %s έως %s\n' % (dateapo, dateeos)
+        tml = '%-10s %5s %6s %6s %7s %7s %7s\n'
+        ast += tml % ('', 'ΜΕΡΕΣ', 'ΜΕΡΑ', 'ΝΥΧΤΑ', 'ΣΜΕΡΑ', 'ΣΝΥΧΤΑ', 'ΣΥΝΟΛΟ')
+        wkh = self.week_hours_tupl()
+        ttme = 0
+        ttny = 0
+        ttda = 0
+        ttto = 0
+        for i, day in enumerate(wdays):
+            wda = self.grdays[i]
+            if day == 0:
+                ast += tml % (wda, '', '', '', '', '', '')
+            else:
+                mer = wkh[i][0]
+                nyx = wkh[i][1]
+                tmer = mer * day
+                tnyx = nyx * day
+                ttot = tmer + tnyx
+                ttme += tmer
+                ttny += tnyx
+                ttda += day
+                ttto += ttot
+                ast += tml % (wda, day, mer, nyx, tmer, tnyx, ttot)
+        ast += tml % ('ΣΥΝΟΛΑ', ttda, '', '', ttme, ttny, ttto)
+        return ast
 
     def __repr__(self):
         sep = '-' * 32 + '\n'
