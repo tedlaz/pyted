@@ -218,9 +218,10 @@ class WeekDays:
     def working_days_analysis(self, dateapo, dateeos):
         """Αναλυτική εκτύπωση"""
         wdays = self.working_days(dateapo, dateeos)
-        ast = 'Ανάλυση Ημερών εργασίας από %s έως %s\n' % (dateapo, dateeos)
+        ast = '\nΑνάλυση Ημερών εργασίας από %s έως %s\n' % (dateapo, dateeos)
         tml = '%-10s %5s %6s %6s %7s %7s %7s\n'
-        ast += tml % ('', 'ΜΕΡΕΣ', 'ΜΕΡΑ', 'ΝΥΧΤΑ', 'ΣΜΕΡΑ', 'ΣΝΥΧΤΑ', 'ΣΥΝΟΛΟ')
+        ast += tml % ('', 'ΜΕΡΕΣ', 'ΜΕΡΑ', 'ΝΥΧΤΑ', 'ΣΜΕΡΑ', 'ΣΝΥΧΤΑ',
+                      'ΣΥΝΟΛΟ')
         wkh = self.week_hours_tupl()
         ttme = 0
         ttny = 0
@@ -257,11 +258,3 @@ class WeekDays:
         ast += sep
         ast += tmpl % ('Σύνολο', self.week_hours())
         return ast % tdays
-
-
-class Programa:
-    """Not implemented yet"""
-    def __init__(self):
-        self.weekdays = 5
-        self.weekhour = 40
-        self.weekdaya = [1, 1, 1, 1, 1, 0, 0]
