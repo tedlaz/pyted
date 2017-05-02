@@ -75,5 +75,5 @@ if __name__ == '__main__':
     print(fu2.working_month_days(2017, 5))
     print(fu2.working_days('2017-04-07', '2017-04-30'))
     print(fu2.working_days_analysis('2017-05-01', '2017-05-31'))
-    print(dpay.timespace_days('2017-01-01', '2017-04-30'))
+    print(dpay.timespace_days('2017-01-01', '2017-12-31'))
     unittest.main()
