@@ -23,7 +23,8 @@ setup(name='ted17',
       license='MIT',
       packages=['ted17'],
       install_requires=[
-          'markdown',
+          'PyQt5',
+
       ],
-      include_package_data=True
+      include_package_data=True,
       zip_safe=False)
