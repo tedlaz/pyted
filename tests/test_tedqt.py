@@ -13,6 +13,10 @@ import tedqt as tqt
 from tedutil.dec import dec
 
 
+def qfl(label, widget):
+    return [Qw.QLabel(label), widget]
+
+
 class Test(Qw.QDialog):
     def __init__(self, db, parent=None):
         super().__init__()
@@ -21,20 +25,20 @@ class Test(Qw.QDialog):
         self.db = db
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
         self.setWindowTitle(u'Δοκιμή qted')
-        self.flds = [[Qw.QLabel('CheckBox'), tqt.wChekcBox(2, self)],
-                     [Qw.QLabel('Date'), tqt.wDat('', self)],
-                     [Qw.QLabel('DateEmpty'), tqt.wDatEmpty('', self)],
-                     [Qw.QLabel('Integer'), tqt.wInt(145, self)],
-                     [Qw.QLabel('Integer Spin'), tqt.wIntSpin(12, self)],
-                     [Qw.QLabel('Numeric'), tqt.wNum(123.45, self)],
-                     [Qw.QLabel('NumericSpin'), tqt.wNumOld(11.23, self)],
-                     [Qw.QLabel('Text'), tqt.wText('This is just text', self)],
-                     [Qw.QLabel('TextButton'), tqt.wTxtButton('', sq1, sq9, self.db, self)],
-                     [Qw.QLabel('Combo'), tqt.wTxtCombo(3, [[1,u'Ενα'], [3, u'Τρία']], self)],
-                     [Qw.QLabel('TextLine'), tqt.wTxtLine('Ted Lazaros', self)],
-                     [Qw.QLabel('TextLineNumbers'), tqt.wTxtLineNum(123123123, self)],
-                     [Qw.QLabel('WeekDays'), tqt.wWeekdays([1,1,1,0,0,0,1], self)],
-                     [Qw.QLabel('YesNo'), tqt.wYesNo(False, [u'Όχι', u'Ναί'], self)],
+        self.flds = [qfl('CheckBox', tqt.wChekcBox(2, self)),
+                     qfl('Date', tqt.wDat('', self)),
+                     qfl('DateEmpty', tqt.wDatEmpty('', self)),
+                     qfl('Integer', tqt.wInt(145, self)),
+                     qfl('Integer Spin', tqt.wIntSpin(12, self)),
+                     qfl('Numeric', tqt.wNum(123.45, self)),
+                     qfl('NumericSpin', tqt.wNumOld(11.23, self)),
+                     qfl('Text', tqt.wText('This is just text', self)),
+                     qfl('TextButton', tqt.wTxtButton('', sq1, sq9, self.db, self)),
+                     qfl('Combo', tqt.wTxtCombo(3, [[1,u'Ενα'], [3, u'Τρία']], self)),
+                     qfl('TextLine', tqt.wTxtLine('Ted Lazaros', self)),
+                     qfl('TextLineNumbers', tqt.wTxtLineNum(123123123, self)),
+                     qfl('WeekDays', tqt.wWeekdays([1,1,1,0,0,0,1], self)),
+                     qfl('YesNo', tqt.wYesNo(False, [u'Όχι', u'Ναί'], self))
                     ]
         layout = Qw.QFormLayout()
         for el in self.flds:
