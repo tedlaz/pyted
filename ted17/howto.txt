@@ -1,2 +1,17 @@
 To create package run:
 python setup.py bdist sdist bdist_wheel
+
+To create sphinx documentation install sphinx and run from project root:
+	# set ted17/tests to exlude tests from documentation
+	sphinx-apidoc -F -o docs ted17 ted17/tests
+
+cd docs
+in conf.py: 
+	uncomment:
+		import sys
+	set next line as:
+		sys.path.insert(0, '..')
+	change theme to 'nature' or 'classic'
+
+make html
+

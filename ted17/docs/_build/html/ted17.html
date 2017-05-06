@@ -1,0 +1,1246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17 package &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to ted17’s documentation!" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ted17’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ted17 0.01 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ted17-package">
+<h1>ted17 package<a class="headerlink" href="#ted17-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ted17.dategr">
+<span id="ted17-dategr-module"></span><h2>ted17.dategr module<a class="headerlink" href="#module-ted17.dategr" title="Permalink to this headline">¶</a></h2>
+<p>Module dategr.py</p>
+<dl class="function">
+<dt id="ted17.dategr.date2gr">
+<code class="descclassname">ted17.dategr.</code><code class="descname">date2gr</code><span class="sig-paren">(</span><em>date</em>, <em>removezero=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#date2gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.date2gr" title="Permalink to this definition">¶</a></dt>
+<dd><p>date : iso date yyyy-mm-dd
+returns date: dd/mm/yyyy</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dategr.getymd_from_iso">
+<code class="descclassname">ted17.dategr.</code><code class="descname">getymd_from_iso</code><span class="sig-paren">(</span><em>isodate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#getymd_from_iso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.getymd_from_iso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Year, month, date From isodate</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dategr.grdate2iso">
+<code class="descclassname">ted17.dategr.</code><code class="descname">grdate2iso</code><span class="sig-paren">(</span><em>greek_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#grdate2iso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.grdate2iso" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dategr.group_selector">
+<code class="descclassname">ted17.dategr.</code><code class="descname">group_selector</code><span class="sig-paren">(</span><em>adate</em>, <em>per='m'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#group_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.group_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selector</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dategr.period">
+<code class="descclassname">ted17.dategr.</code><code class="descname">period</code><span class="sig-paren">(</span><em>date</em>, <em>diast=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#period"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>επιστρέφει δίμηνο, τρίμηνο, τετράμηνο, εξάμηνο</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dategr.saizon">
+<code class="descclassname">ted17.dategr.</code><code class="descname">saizon</code><span class="sig-paren">(</span><em>iso_date</em>, <em>startmonth=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#saizon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.saizon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Επιστρέφει ετήσιο διάστημα από μήνα
+dat : Ημερομηνία
+startmonth : Μήνας που αρχίζει η σαιζόν</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dategr.week">
+<code class="descclassname">ted17.dategr.</code><code class="descname">week</code><span class="sig-paren">(</span><em>iso_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#week"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.week" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns year-weekNumber</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.db">
+<span id="ted17-db-module"></span><h2>ted17.db module<a class="headerlink" href="#module-ted17.db" title="Permalink to this headline">¶</a></h2>
+<p>This is obsolete.</p>
+<dl class="function">
+<dt id="ted17.db.app_id">
+<code class="descclassname">ted17.db.</code><code class="descname">app_id</code><span class="sig-paren">(</span><em>dbf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#app_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.app_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get application_id</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.dataFromDB">
+<code class="descclassname">ted17.db.</code><code class="descname">dataFromDB</code><span class="sig-paren">(</span><em>dbf</em>, <em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#dataFromDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.dataFromDB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.db2dic">
+<code class="descclassname">ted17.db.</code><code class="descname">db2dic</code><span class="sig-paren">(</span><em>dbf</em>, <em>idv</em>, <em>tablemaster</em>, <em>tabledetail=None</em>, <em>key=None</em>, <em>remove_parent_id=True</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#db2dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.db2dic" title="Permalink to this definition">¶</a></dt>
+<dd><p>dbf : sqlite database file path
+idv : id value of record
+tablemaster : Master table name
+tabledetail : Detail table name
+key : Foreign key Field in detail table that connects to mastertable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.execute_script">
+<code class="descclassname">ted17.db.</code><code class="descname">execute_script</code><span class="sig-paren">(</span><em>dbf</em>, <em>sqlscript</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#execute_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.execute_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute script</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.md2sql">
+<code class="descclassname">ted17.db.</code><code class="descname">md2sql</code><span class="sig-paren">(</span><em>tmaster</em>, <em>tdetail</em>, <em>adic</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#md2sql"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.md2sql" title="Permalink to this definition">¶</a></dt>
+<dd><p>Master-Detail to sql
+tmaster : master table name
+tdetail : detail table name
+adic    : dictionary to translate to sql. Keys represent</p>
+<blockquote>
+<div>table fields</div></blockquote>
+<dl class="docutils">
+<dt>id_at_end <span class="classifier-delimiter">:</span> <span class="classifier">if foreign key looks like id_* then False</span></dt>
+<dd>if foreign key looks like <a href="#id1"><span class="problematic" id="id2">*</span></a>_id then True</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.rowsd">
+<code class="descclassname">ted17.db.</code><code class="descname">rowsd</code><span class="sig-paren">(</span><em>dbf</em>, <em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#rowsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.rowsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of dictionaries [{}, {}, ...]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.rowst">
+<code class="descclassname">ted17.db.</code><code class="descname">rowst</code><span class="sig-paren">(</span><em>dbf</em>, <em>sql</em>, <em>with_column_names=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#rowst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.rowst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of tuples of rows [(), (), ...]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db.sql_ins_upd">
+<code class="descclassname">ted17.db.</code><code class="descname">sql_ins_upd</code><span class="sig-paren">(</span><em>table</em>, <em>adic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#sql_ins_upd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.sql_ins_upd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns update or insert sql according id
+if id = 0 returns insert sql
+if id &lt;&gt; 0 returns update sql</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.db_context_manager">
+<span id="ted17-db-context-manager-module"></span><h2>ted17.db_context_manager module<a class="headerlink" href="#module-ted17.db_context_manager" title="Permalink to this headline">¶</a></h2>
+<p>Module db_context_manager.py
+Connect to sqlite database and perform crud functions</p>
+<dl class="class">
+<dt id="ted17.db_context_manager.OpenSqlite">
+<em class="property">class </em><code class="descclassname">ted17.db_context_manager.</code><code class="descname">OpenSqlite</code><span class="sig-paren">(</span><em>dbfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Context manager class
+Use it as:
+with Open_sqlite(dbfilename) as db:</p>
+<blockquote>
+<div>your code here ...</div></blockquote>
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.application_id">
+<code class="descname">application_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.application_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.application_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get application_id from database file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.script">
+<code class="descname">script</code><span class="sig-paren">(</span><em>sqlscript</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute an sql script against self.dbf</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.select">
+<code class="descname">select</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of tuples with data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.select_as_dict">
+<code class="descname">select_as_dict</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.select_as_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.select_as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of dictionaries</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; The sql to execute</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[{}, {}, ...]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.select_master_detail_as_dic">
+<code class="descname">select_master_detail_as_dic</code><span class="sig-paren">(</span><em>idv</em>, <em>tablemaster</em>, <em>tabledetail=None</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.select_master_detail_as_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.select_master_detail_as_dic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a specific record from table tablemaster.
+If we pass it a tabledetail value, it gets detail records too.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>idv</strong> &#8211; id value of record</li>
+<li><strong>tablemaster</strong> &#8211; Master table name</li>
+<li><strong>tabledetail</strong> &#8211; Detail table name</li>
+<li><strong>id_at_end</strong> &#8211; If True Foreign key is like tablemaster_id
+else is like id_mastertable</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionary with values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.select_with_names">
+<code class="descname">select_with_names</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.select_with_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.select_with_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple with column names and a list of tuples with data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; The sql to execute</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(columnNam1, ...) [(dataLine1), (dataLine2), ...]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.set_application_id">
+<code class="descname">set_application_id</code><span class="sig-paren">(</span><em>idv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.set_application_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.set_application_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set application_id to database file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.set_user_version">
+<code class="descname">set_user_version</code><span class="sig-paren">(</span><em>version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.set_user_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.set_user_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set user_version to database file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db_context_manager.OpenSqlite.user_version">
+<code class="descname">user_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.user_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.user_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get user_version from database file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.db_sql_create">
+<span id="ted17-db-sql-create-module"></span><h2>ted17.db_sql_create module<a class="headerlink" href="#module-ted17.db_sql_create" title="Permalink to this headline">¶</a></h2>
+<p>Module db_sql_create.py
+Creates insert, update, delete sql from dictionaries</p>
+<dl class="function">
+<dt id="ted17.db_sql_create.dic2sql">
+<code class="descclassname">ted17.db_sql_create.</code><code class="descname">dic2sql</code><span class="sig-paren">(</span><em>table</em>, <em>adic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_sql_create.html#dic2sql"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_sql_create.dic2sql" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sql (insert, update, delete)
+table : The table name
+adic  : dictionary with key names same with table field names
+Returns :</p>
+<blockquote>
+<div>if id  = 0, insert sql
+if id != 0, update sql
+if there is a key in adic with name _d_(value unimportant) delete sql</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.db_sql_create.dic2sql_md">
+<code class="descclassname">ted17.db_sql_create.</code><code class="descname">dic2sql_md</code><span class="sig-paren">(</span><em>tmaster</em>, <em>tdetail</em>, <em>adic</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_sql_create.html#dic2sql_md"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_sql_create.dic2sql_md" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns sql inside transaction (insert, update, delete)</dt>
+<dd>for master-detail tables. It uses dic2sql</dd>
+</dl>
+<p>tmaster : master table name
+tdetail : detail table name
+adic    : dictionary to translate to sql. Keys represent</p>
+<blockquote>
+<div>table fields</div></blockquote>
+<dl class="docutils">
+<dt>id_at_end <span class="classifier-delimiter">:</span> <span class="classifier">if foreign key looks like id_* then False</span></dt>
+<dd>if foreign key looks like <a href="#id3"><span class="problematic" id="id4">*</span></a>_id then True</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.dbmanager">
+<span id="ted17-dbmanager-module"></span><h2>ted17.dbmanager module<a class="headerlink" href="#module-ted17.dbmanager" title="Permalink to this headline">¶</a></h2>
+<p>Module dbmanager.py</p>
+<dl class="class">
+<dt id="ted17.dbmanager.Dbmanager">
+<em class="property">class </em><code class="descclassname">ted17.dbmanager.</code><code class="descname">Dbmanager</code><span class="sig-paren">(</span><em>user_version</em>, <em>application_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Dbmanager class</p>
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.add_field">
+<code class="descname">add_field</code><span class="sig-paren">(</span><em>table</em>, <em>field</em>, <em>label</em>, <em>typ='TXT'</em>, <em>qt='s'</em>, <em>unique=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.add_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.add_table">
+<code class="descname">add_table</code><span class="sig-paren">(</span><em>table</em>, <em>label</em>, <em>labelp</em>, <em>rpr=[]</em>, <em>unifld=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.add_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.add_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new table
+table : The table Name
+label : The translated title of table
+labelp : The translated plural title of table
+rpr : List of table representation fields
+unifld : List of fields to be unique</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.get_fields">
+<code class="descname">get_fields</code><span class="sig-paren">(</span><em>table</em>, <em>with_id=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.get_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.get_fields" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns an ordered list with table fields</dt>
+<dd>with_id=True  : [&#8216;id&#8217;, &#8216;fld1&#8217;, &#8216;fld2&#8217;, ...]
+with_id=False : [&#8216;fld1&#8217;, &#8216;fld2&#8217;, ...]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.get_joined_fields">
+<code class="descname">get_joined_fields</code><span class="sig-paren">(</span><em>table</em>, <em>only_rpr=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.get_joined_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.get_joined_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns string with joined fields</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.get_labels">
+<code class="descname">get_labels</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.get_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.get_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary with fields: labels of table
+{&#8216;fld1&#8217;: &#8216;lbl1&#8217;, &#8216;fld2&#8217;: &#8216;lbl2&#8217;, ...}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.get_tables_fields">
+<code class="descname">get_tables_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.get_tables_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.get_tables_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of tables: ordered list of table fields
+{&#8216;tabename&#8217;: [&#8216;id&#8217;, &#8216;fld1&#8217;, &#8216;fld2&#8217;, ...]}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.rpr">
+<code class="descname">rpr</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.rpr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.rpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get sql of table representation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbmanager.sql_create">
+<code class="descname">sql_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sql script for database creation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="ted17.dbmanager.DbmanagerException">
+<em class="property">exception </em><code class="descclassname">ted17.dbmanager.</code><code class="descname">DbmanagerException</code><a class="reference internal" href="_modules/ted17/dbmanager.html#DbmanagerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.DbmanagerException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>Exception to use with class Dbmanager</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.dec">
+<span id="ted17-dec-module"></span><h2>ted17.dec module<a class="headerlink" href="#module-ted17.dec" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.dec.Ddi">
+<em class="property">class </em><code class="descclassname">ted17.dec.</code><code class="descname">Ddi</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#Ddi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.Ddi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></p>
+<p>Dictionary of decimals or text values</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.dec.Ddict">
+<em class="property">class </em><code class="descclassname">ted17.dec.</code><code class="descname">Ddict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#Ddict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.Ddict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></p>
+<p>Dictionary of decimals only</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.dec.Dordict">
+<em class="property">class </em><code class="descclassname">ted17.dec.</code><code class="descname">Dordict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#Dordict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.Dordict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.OrderedDict</span></code></p>
+<p>Ordered Dictionary of decimals</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.dec">
+<code class="descclassname">ted17.dec.</code><code class="descname">dec</code><span class="sig-paren">(</span><em>poso=0</em>, <em>decimals=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec" title="Permalink to this definition">¶</a></dt>
+<dd><p>use : Given a number, it returns a decimal with a specific number
+of decimals
+input Parameters:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>1.poso <span class="classifier-delimiter">:</span> <span class="classifier">The number for conversion in any format (e.g. string or</span></dt>
+<dd>int ..)</dd>
+</dl>
+<p>2.decimals : The number of decimals (default 2)</p>
+</div></blockquote>
+<p>output: A decimal number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.dec2gr">
+<code class="descclassname">ted17.dec.</code><code class="descname">dec2gr</code><span class="sig-paren">(</span><em>poso</em>, <em>decimals=2</em>, <em>zeroasnull=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec2gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec2gr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.dec2gr2">
+<code class="descclassname">ted17.dec.</code><code class="descname">dec2gr2</code><span class="sig-paren">(</span><em>poso</em>, <em>decimals=2</em>, <em>zeroAsSpace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec2gr2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec2gr2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.distribute">
+<code class="descclassname">ted17.dec.</code><code class="descname">distribute</code><span class="sig-paren">(</span><em>val</em>, <em>distArray</em>, <em>decimals=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.distribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>input parameters:
+val       : Decimal value for distribution
+distArray : Distribution Array
+decimals  : Number of decimal digits</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.gr2dec">
+<code class="descclassname">ted17.dec.</code><code class="descname">gr2dec</code><span class="sig-paren">(</span><em>poso</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#gr2dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.gr2dec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns decimal (12.345,67 becomes 12345.67)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.isNum">
+<code class="descclassname">ted17.dec.</code><code class="descname">isNum</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#isNum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.isNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>use: Returns False if val is not a number , True otherwise
+input parameters :</p>
+<blockquote>
+<div>1.val : the value to check against.</div></blockquote>
+<p>output: True or False</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.nul2DecimalZero">
+<code class="descclassname">ted17.dec.</code><code class="descname">nul2DecimalZero</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#nul2DecimalZero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.nul2DecimalZero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instead of null returns 0.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.nul2z">
+<code class="descclassname">ted17.dec.</code><code class="descname">nul2z</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#nul2z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.nul2z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instead of null returns 0. For sqlite use.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.dec.triades">
+<code class="descclassname">ted17.dec.</code><code class="descname">triades</code><span class="sig-paren">(</span><em>txt</em>, <em>separator='.'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#triades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.triades" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help function to split digits to thousants ( 123456 becomes 123.456 )</p>
+</dd></dl>
+
+</div>
+<div class="section" id="ted17-f-find-module">
+<h2>ted17.f_find module<a class="headerlink" href="#ted17-f-find-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ted17.f_table">
+<span id="ted17-f-table-module"></span><h2>ted17.f_table module<a class="headerlink" href="#module-ted17.f_table" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.f_table.Form_find">
+<em class="property">class </em><code class="descclassname">ted17.f_table.</code><code class="descname">Form_find</code><span class="sig-paren">(</span><em>lbls</em>, <em>rws</em>, <em>title</em>, <em>parent=None</em>, <em>selectAndClose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_table.html#Form_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_table.Form_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dl class="method">
+<dt id="ted17.f_table.Form_find.keyPressEvent">
+<code class="descname">keyPressEvent</code><span class="sig-paren">(</span><em>ev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_table.html#Form_find.keyPressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_table.Form_find.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>use enter or return for fast selection nad form close ...</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ted17.f_table.Form_find.valselected">
+<code class="descname">valselected</code><a class="headerlink" href="#ted17.f_table.Form_find.valselected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.f_table.Table_widget">
+<em class="property">class </em><code class="descclassname">ted17.f_table.</code><code class="descname">Table_widget</code><span class="sig-paren">(</span><em>labels=[], rows=[[]], parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_table.html#Table_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_table.Table_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QTableWidget</span></code></p>
+<dl class="method">
+<dt id="ted17.f_table.Table_widget.populate">
+<code class="descname">populate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_table.html#Table_widget.populate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_table.Table_widget.populate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.f_table.sortWidgetItem">
+<em class="property">class </em><code class="descclassname">ted17.f_table.</code><code class="descname">sortWidgetItem</code><span class="sig-paren">(</span><em>text</em>, <em>sortKey</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_table.html#sortWidgetItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_table.sortWidgetItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QTableWidgetItem</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.grup">
+<span id="ted17-grup-module"></span><h2>ted17.grup module<a class="headerlink" href="#module-ted17.grup" title="Permalink to this headline">¶</a></h2>
+<p>Module grup</p>
+<dl class="function">
+<dt id="ted17.grup.grup">
+<code class="descclassname">ted17.grup.</code><code class="descname">grup</code><span class="sig-paren">(</span><em>txtval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/grup.html#grup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.grup.grup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trasforms a string to uppercase special for Greek comparison</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.parameters">
+<span id="ted17-parameters-module"></span><h2>ted17.parameters module<a class="headerlink" href="#module-ted17.parameters" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ted17.rpt_html">
+<span id="ted17-rpt-html-module"></span><h2>ted17.rpt_html module<a class="headerlink" href="#module-ted17.rpt_html" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5 Μαρ 2013
+Updated on 26 Mar 2017
+&#64;author: tedlaz</p>
+<dl class="class">
+<dt id="ted17.rpt_html.Window">
+<em class="property">class </em><code class="descclassname">ted17.rpt_html.</code><code class="descname">Window</code><span class="sig-paren">(</span><em>template</em>, <em>value_array</em>, <em>pdf_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<dl class="method">
+<dt id="ted17.rpt_html.Window.handleOpen">
+<code class="descname">handleOpen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window.handleOpen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window.handleOpen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.rpt_html.Window.handlePreview">
+<code class="descname">handlePreview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window.handlePreview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window.handlePreview" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.rpt_html.Window.handlePrint">
+<code class="descname">handlePrint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window.handlePrint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window.handlePrint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.rpt_html.Window.handleTextChanged">
+<code class="descname">handleTextChanged</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window.handleTextChanged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window.handleTextChanged" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.rpt_html.Window.saveAsOdt">
+<code class="descname">saveAsOdt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window.saveAsOdt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window.saveAsOdt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.rpt_html.Window.tstPrintPdf">
+<code class="descname">tstPrintPdf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_html.html#Window.tstPrintPdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_html.Window.tstPrintPdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="ted17-rpt-tbl-module">
+<h2>ted17.rpt_tbl module<a class="headerlink" href="#ted17-rpt-tbl-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ted17-rpt-tbl-tst-module">
+<h2>ted17.rpt_tbl_tst module<a class="headerlink" href="#ted17-rpt-tbl-tst-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ted17-selector-module">
+<h2>ted17.selector module<a class="headerlink" href="#ted17-selector-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ted17.w_checkbox">
+<span id="ted17-w-checkbox-module"></span><h2>ted17.w_checkbox module<a class="headerlink" href="#module-ted17.w_checkbox" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_checkbox.Checkbox">
+<em class="property">class </em><code class="descclassname">ted17.w_checkbox.</code><code class="descname">Checkbox</code><span class="sig-paren">(</span><em>val=False</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_checkbox.html#Checkbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_checkbox.Checkbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QCheckBox</span></code></p>
+<p>True or False field
+Gets / Sets two values : 0 for unchecked , 2 for checked</p>
+<dl class="method">
+<dt id="ted17.w_checkbox.Checkbox.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_checkbox.html#Checkbox.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_checkbox.Checkbox.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_checkbox.Checkbox.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>txtVal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_checkbox.html#Checkbox.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_checkbox.Checkbox.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_date">
+<span id="ted17-w-date-module"></span><h2>ted17.w_date module<a class="headerlink" href="#module-ted17.w_date" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_date.Date">
+<em class="property">class </em><code class="descclassname">ted17.w_date.</code><code class="descname">Date</code><span class="sig-paren">(</span><em>val=None</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date.html#Date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDateEdit</span></code></p>
+<p>Date values for most cases</p>
+<dl class="method">
+<dt id="ted17.w_date.Date.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date.html#Date.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date.Date.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_date.Date.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>sqliteDate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date.html#Date.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date.Date.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_date_or_empty">
+<span id="ted17-w-date-or-empty-module"></span><h2>ted17.w_date_or_empty module<a class="headerlink" href="#module-ted17.w_date_or_empty" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_date_or_empty.Date_or_empty">
+<em class="property">class </em><code class="descclassname">ted17.w_date_or_empty.</code><code class="descname">Date_or_empty</code><span class="sig-paren">(</span><em>val=None</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date_or_empty.html#Date_or_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date_or_empty.Date_or_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QToolButton</span></code></p>
+<p>Date or empty string values</p>
+<dl class="method">
+<dt id="ted17.w_date_or_empty.Date_or_empty.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date_or_empty.html#Date_or_empty.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date_or_empty.Date_or_empty.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_date_or_empty.Date_or_empty.menu_calendar">
+<code class="descname">menu_calendar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date_or_empty.html#Date_or_empty.menu_calendar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date_or_empty.Date_or_empty.menu_calendar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_date_or_empty.Date_or_empty.mousePressEvent">
+<code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date_or_empty.html#Date_or_empty.mousePressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date_or_empty.Date_or_empty.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_date_or_empty.Date_or_empty.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>iso_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_date_or_empty.html#Date_or_empty.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_date_or_empty.Date_or_empty.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_integer">
+<span id="ted17-w-integer-module"></span><h2>ted17.w_integer module<a class="headerlink" href="#module-ted17.w_integer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_integer.Integer">
+<em class="property">class </em><code class="descclassname">ted17.w_integer.</code><code class="descname">Integer</code><span class="sig-paren">(</span><em>val=''</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_integer.html#Integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_integer.Integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ted17.w_textline.Text_line" title="ted17.w_textline.Text_line"><code class="xref py py-class docutils literal"><span class="pre">ted17.w_textline.Text_line</span></code></a></p>
+<p>Text field with numeric chars only left aligned.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_integer_spin">
+<span id="ted17-w-integer-spin-module"></span><h2>ted17.w_integer_spin module<a class="headerlink" href="#module-ted17.w_integer_spin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_integer_spin.Integer_spin">
+<em class="property">class </em><code class="descclassname">ted17.w_integer_spin.</code><code class="descname">Integer_spin</code><span class="sig-paren">(</span><em>val=0</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_integer_spin.html#Integer_spin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_integer_spin.Integer_spin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QSpinBox</span></code></p>
+<p>Integer values (eg 123)</p>
+<dl class="method">
+<dt id="ted17.w_integer_spin.Integer_spin.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_integer_spin.html#Integer_spin.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_integer_spin.Integer_spin.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_integer_spin.Integer_spin.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_integer_spin.html#Integer_spin.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_integer_spin.Integer_spin.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_numeric_old">
+<span id="ted17-w-numeric-old-module"></span><h2>ted17.w_numeric_old module<a class="headerlink" href="#module-ted17.w_numeric_old" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_numeric_old.Numeric">
+<em class="property">class </em><code class="descclassname">ted17.w_numeric_old.</code><code class="descname">Numeric</code><span class="sig-paren">(</span><em>val='0'</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_old.html#Numeric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_old.Numeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QLineEdit</span></code></p>
+<p>Text field with numeric chars only.</p>
+<dl class="method">
+<dt id="ted17.w_numeric_old.Numeric.focusOutEvent">
+<code class="descname">focusOutEvent</code><span class="sig-paren">(</span><em>ev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_old.html#Numeric.focusOutEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_old.Numeric.focusOutEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_numeric_old.Numeric.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_old.html#Numeric.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_old.Numeric.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_numeric_old.Numeric.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>txt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_old.html#Numeric.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_old.Numeric.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_numeric_spin">
+<span id="ted17-w-numeric-spin-module"></span><h2>ted17.w_numeric_spin module<a class="headerlink" href="#module-ted17.w_numeric_spin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_numeric_spin.Numeric_spin">
+<em class="property">class </em><code class="descclassname">ted17.w_numeric_spin.</code><code class="descname">Numeric_spin</code><span class="sig-paren">(</span><em>val=0</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_spin.html#Numeric_spin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_spin.Numeric_spin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDoubleSpinBox</span></code></p>
+<p>Numeric (decimal 2 ) values (eg 999,99)</p>
+<dl class="method">
+<dt id="ted17.w_numeric_spin.Numeric_spin.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_spin.html#Numeric_spin.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_spin.Numeric_spin.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_numeric_spin.Numeric_spin.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_numeric_spin.html#Numeric_spin.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_numeric_spin.Numeric_spin.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_text">
+<span id="ted17-w-text-module"></span><h2>ted17.w_text module<a class="headerlink" href="#module-ted17.w_text" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_text.Text">
+<em class="property">class </em><code class="descclassname">ted17.w_text.</code><code class="descname">Text</code><span class="sig-paren">(</span><em>val=''</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text.html#Text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QTextEdit</span></code></p>
+<p>Text field</p>
+<dl class="method">
+<dt id="ted17.w_text.Text.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text.html#Text.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text.Text.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text.Text.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>txt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text.html#Text.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text.Text.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_text_button">
+<span id="ted17-w-text-button-module"></span><h2>ted17.w_text_button module<a class="headerlink" href="#module-ted17.w_text_button" title="Permalink to this headline">¶</a></h2>
+<p>Created on Nov 25, 2014</p>
+<p>&#64;author: tedlaz.</p>
+<dl class="class">
+<dt id="ted17.w_text_button.Text_button">
+<em class="property">class </em><code class="descclassname">ted17.w_text_button.</code><code class="descname">Text_button</code><span class="sig-paren">(</span><em>val</em>, <em>qu1</em>, <em>qu9</em>, <em>dbf</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p>Button text class</p>
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.button_clicked">
+<code class="descname">button_clicked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.button_clicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.button_clicked" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.find" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.green">
+<code class="descname">green</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.green"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.keyPressEvent">
+<code class="descname">keyPressEvent</code><span class="sig-paren">(</span><em>ev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.keyPressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.red">
+<code class="descname">red</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.red"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.text_changed">
+<code class="descname">text_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.text_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.text_changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ted17.w_text_button.Text_button.valNotFound">
+<code class="descname">valNotFound</code><a class="headerlink" href="#ted17.w_text_button.Text_button.valNotFound" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_text_button_old">
+<span id="ted17-w-text-button-old-module"></span><h2>ted17.w_text_button_old module<a class="headerlink" href="#module-ted17.w_text_button_old" title="Permalink to this headline">¶</a></h2>
+<p>Created on Nov 25, 2014</p>
+<p>&#64;author: tedlaz.</p>
+<dl class="class">
+<dt id="ted17.w_text_button_old.Text_button">
+<em class="property">class </em><code class="descclassname">ted17.w_text_button_old.</code><code class="descname">Text_button</code><span class="sig-paren">(</span><em>val</em>, <em>qu1</em>, <em>qu9</em>, <em>db</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QLineEdit</span></code></p>
+<p>Button text class</p>
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.buttonClicked">
+<code class="descname">buttonClicked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.buttonClicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.buttonClicked" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.edChanged">
+<code class="descname">edChanged</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.edChanged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.edChanged" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.find">
+<code class="descname">find</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.find" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.green">
+<code class="descname">green</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.green"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.keyPressEvent">
+<code class="descname">keyPressEvent</code><span class="sig-paren">(</span><em>ev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.keyPressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.red">
+<code class="descname">red</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.red"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.resizeEvent">
+<code class="descname">resizeEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.resizeEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.resizeEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button_old.Text_button.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ted17.w_text_button_old.Text_button.valNotFound">
+<code class="descname">valNotFound</code><a class="headerlink" href="#ted17.w_text_button_old.Text_button.valNotFound" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_text_combo">
+<span id="ted17-w-text-combo-module"></span><h2>ted17.w_text_combo module<a class="headerlink" href="#module-ted17.w_text_combo" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_text_combo.Combo">
+<em class="property">class </em><code class="descclassname">ted17.w_text_combo.</code><code class="descname">Combo</code><span class="sig-paren">(</span><em>val=0</em>, <em>vlist=[]</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_combo.html#Combo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_combo.Combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QComboBox</span></code></p>
+<dl class="method">
+<dt id="ted17.w_text_combo.Combo.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_combo.html#Combo.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_combo.Combo.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_combo.Combo.populate">
+<code class="descname">populate</code><span class="sig-paren">(</span><em>vlist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_combo.html#Combo.populate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_combo.Combo.populate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here we
+1.get values from Database
+2.fill Combo
+3.set current index to initial value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_combo.Combo.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_combo.html#Combo.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_combo.Combo.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_textline">
+<span id="ted17-w-textline-module"></span><h2>ted17.w_textline module<a class="headerlink" href="#module-ted17.w_textline" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_textline.Text_line">
+<em class="property">class </em><code class="descclassname">ted17.w_textline.</code><code class="descname">Text_line</code><span class="sig-paren">(</span><em>val=''</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_textline.html#Text_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_textline.Text_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QLineEdit</span></code></p>
+<p>Text Line Class</p>
+<dl class="method">
+<dt id="ted17.w_textline.Text_line.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_textline.html#Text_line.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_textline.Text_line.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_textline.Text_line.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>txt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_textline.html#Text_line.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_textline.Text_line.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_textline_numbers_only">
+<span id="ted17-w-textline-numbers-only-module"></span><h2>ted17.w_textline_numbers_only module<a class="headerlink" href="#module-ted17.w_textline_numbers_only" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_textline_numbers_only.Textline_numbers_only">
+<em class="property">class </em><code class="descclassname">ted17.w_textline_numbers_only.</code><code class="descname">Textline_numbers_only</code><span class="sig-paren">(</span><em>val=''</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_textline_numbers_only.html#Textline_numbers_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_textline_numbers_only.Textline_numbers_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ted17.w_textline.Text_line" title="ted17.w_textline.Text_line"><code class="xref py py-class docutils literal"><span class="pre">ted17.w_textline.Text_line</span></code></a></p>
+<p>Text field with numeric chars only left aligned.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_tree">
+<span id="ted17-w-tree-module"></span><h2>ted17.w_tree module<a class="headerlink" href="#module-ted17.w_tree" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_tree.Foo">
+<em class="property">class </em><code class="descclassname">ted17.w_tree.</code><code class="descname">Foo</code><span class="sig-paren">(</span><em>**args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Foo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Foo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ted17.w_tree.Foo.todic">
+<code class="descname">todic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Foo.todic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Foo.todic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.w_tree.Node">
+<em class="property">class </em><code class="descclassname">ted17.w_tree.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>name</em>, <em>parent</em>, <em>txtfields</em>, <em>vals</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ted17.w_tree.Node.add_child">
+<code class="descname">add_child</code><span class="sig-paren">(</span><em>child</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.add_child"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.add_child" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.child">
+<code class="descname">child</code><span class="sig-paren">(</span><em>row</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.child"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.child" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.child_count">
+<code class="descname">child_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.child_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.child_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.name">
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.parent">
+<code class="descname">parent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.row">
+<code class="descname">row</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.set_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.set_value">
+<code class="descname">set_value</code><span class="sig-paren">(</span><em>value</em>, <em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.set_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.type_info">
+<code class="descname">type_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.type_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.type_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.update_parent">
+<code class="descname">update_parent</code><span class="sig-paren">(</span><em>cols</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.update_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.update_parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.value">
+<code class="descname">value</code><span class="sig-paren">(</span><em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Node.value_formated">
+<code class="descname">value_formated</code><span class="sig-paren">(</span><em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Node.value_formated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Node.value_formated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.w_tree.Treedata">
+<em class="property">class </em><code class="descclassname">ted17.w_tree.</code><code class="descname">Treedata</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treedata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treedata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QTreeView</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.w_tree.Treemodel">
+<em class="property">class </em><code class="descclassname">ted17.w_tree.</code><code class="descname">Treemodel</code><span class="sig-paren">(</span><em>root</em>, <em>headers</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtCore.QAbstractItemModel</span></code></p>
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.columnCount">
+<code class="descname">columnCount</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.columnCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.columnCount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.data">
+<code class="descname">data</code><span class="sig-paren">(</span><em>index</em>, <em>role</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.flags">
+<code class="descname">flags</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.flags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.getNode">
+<code class="descname">getNode</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.getNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.getNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.headerData">
+<code class="descname">headerData</code><span class="sig-paren">(</span><em>section</em>, <em>orientation</em>, <em>role</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.headerData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.headerData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>row</em>, <em>column</em>, <em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.parent">
+<code class="descname">parent</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_tree.Treemodel.rowCount">
+<code class="descname">rowCount</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#Treemodel.rowCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.Treemodel.rowCount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.w_tree.lmo_hierarchy">
+<code class="descclassname">ted17.w_tree.</code><code class="descname">lmo_hierarchy</code><span class="sig-paren">(</span><em>lmos</em>, <em>split_char='.'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#lmo_hierarchy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.lmo_hierarchy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Δίνοντας ένα λογαριασμό της μορφής x2.34.56
+επιστρέφει [&#8216;x&#8217;, &#8216;x2&#8217;, &#8216;x2.34&#8217;, &#8216;x2.34.56&#8217;, &#8216;t&#8217;, &lt;&#8217;t267&#8217; ή &#8216;t35&#8217;&gt;]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.w_tree.nc">
+<code class="descclassname">ted17.w_tree.</code><code class="descname">nc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#nc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.nc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.w_tree.tst">
+<code class="descclassname">ted17.w_tree.</code><code class="descname">tst</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_tree.html#tst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_tree.tst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_weekdays">
+<span id="ted17-w-weekdays-module"></span><h2>ted17.w_weekdays module<a class="headerlink" href="#module-ted17.w_weekdays" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_weekdays.Weekdays">
+<em class="property">class </em><code class="descclassname">ted17.w_weekdays.</code><code class="descname">Weekdays</code><span class="sig-paren">(</span><em>val=[1, 1, 1, 1, 1, 0, 0], parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p>Weekdays selection ( [1,1,1,1,1,0,0] 7 values 0 or 1, one per weekday)</p>
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>strVal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.mousePressEvent">
+<code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.mousePressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.paintEvent">
+<code class="descname">paintEvent</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.paintEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.paintEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set everything to Null</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>darr=[0, 0, 0, 0, 0, 0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.set5days">
+<code class="descname">set5days</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.set5days"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.set5days" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Standard five days week</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_weekdays.Weekdays.sizeHint">
+<code class="descname">sizeHint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_weekdays.html#Weekdays.sizeHint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_weekdays.Weekdays.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17.w_yesno_combo">
+<span id="ted17-w-yesno-combo-module"></span><h2>ted17.w_yesno_combo module<a class="headerlink" href="#module-ted17.w_yesno_combo" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.w_yesno_combo.Yes_no_combo">
+<em class="property">class </em><code class="descclassname">ted17.w_yesno_combo.</code><code class="descname">Yes_no_combo</code><span class="sig-paren">(</span><em>val=0, noyes=['No', 'Yes'], parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_yesno_combo.html#Yes_no_combo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_yesno_combo.Yes_no_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QComboBox</span></code></p>
+<dl class="method">
+<dt id="ted17.w_yesno_combo.Yes_no_combo.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_yesno_combo.html#Yes_no_combo.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_yesno_combo.Yes_no_combo.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_yesno_combo.Yes_no_combo.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_yesno_combo.html#Yes_no_combo.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_yesno_combo.Yes_no_combo.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ted17">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ted17" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ted17 package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ted17.dategr">ted17.dategr module</a></li>
+<li><a class="reference internal" href="#module-ted17.db">ted17.db module</a></li>
+<li><a class="reference internal" href="#module-ted17.db_context_manager">ted17.db_context_manager module</a></li>
+<li><a class="reference internal" href="#module-ted17.db_sql_create">ted17.db_sql_create module</a></li>
+<li><a class="reference internal" href="#module-ted17.dbmanager">ted17.dbmanager module</a></li>
+<li><a class="reference internal" href="#module-ted17.dec">ted17.dec module</a></li>
+<li><a class="reference internal" href="#ted17-f-find-module">ted17.f_find module</a></li>
+<li><a class="reference internal" href="#module-ted17.f_table">ted17.f_table module</a></li>
+<li><a class="reference internal" href="#module-ted17.grup">ted17.grup module</a></li>
+<li><a class="reference internal" href="#module-ted17.parameters">ted17.parameters module</a></li>
+<li><a class="reference internal" href="#module-ted17.rpt_html">ted17.rpt_html module</a></li>
+<li><a class="reference internal" href="#ted17-rpt-tbl-module">ted17.rpt_tbl module</a></li>
+<li><a class="reference internal" href="#ted17-rpt-tbl-tst-module">ted17.rpt_tbl_tst module</a></li>
+<li><a class="reference internal" href="#ted17-selector-module">ted17.selector module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_checkbox">ted17.w_checkbox module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_date">ted17.w_date module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_date_or_empty">ted17.w_date_or_empty module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_integer">ted17.w_integer module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_integer_spin">ted17.w_integer_spin module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_numeric_old">ted17.w_numeric_old module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_numeric_spin">ted17.w_numeric_spin module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_text">ted17.w_text module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_text_button">ted17.w_text_button module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_text_button_old">ted17.w_text_button_old module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_text_combo">ted17.w_text_combo module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_textline">ted17.w_textline module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_textline_numbers_only">ted17.w_textline_numbers_only module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_tree">ted17.w_tree module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_weekdays">ted17.w_weekdays module</a></li>
+<li><a class="reference internal" href="#module-ted17.w_yesno_combo">ted17.w_yesno_combo module</a></li>
+<li><a class="reference internal" href="#module-ted17">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to ted17&#8217;s documentation!</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ted17.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ted17’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ted17 0.01 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

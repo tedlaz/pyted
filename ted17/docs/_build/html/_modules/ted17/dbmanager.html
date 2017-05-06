@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17.dbmanager &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ted17.dbmanager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Module dbmanager.py</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">QT</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">QTFIELDS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="s1">&#39;textline&#39;</span><span class="p">,</span> <span class="p">}</span>
+<span class="n">FTYP</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TXT&#39;</span><span class="p">,</span> <span class="s1">&#39;TXN&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;NUM&#39;</span><span class="p">,</span> <span class="s1">&#39;DAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FK&#39;</span><span class="p">]</span>
+<span class="n">SQLTYP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TXT&#39;</span><span class="p">:</span> <span class="s1">&#39;TEXT NOT NULL&#39;</span><span class="p">,</span> <span class="s1">&#39;TXN&#39;</span><span class="p">:</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;INT&#39;</span><span class="p">:</span> <span class="s1">&#39;INTEGER NOT NULL DEFAULT 0&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;NUM&#39;</span><span class="p">:</span> <span class="s1">&#39;NUMERIC NOT NULL DEFAULT 0&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;DAT&#39;</span><span class="p">:</span> <span class="s1">&#39;DATE NOT NULL&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;FK&#39;</span><span class="p">:</span> <span class="s1">&#39;INTEGER NOT NULL REFERENCES </span><span class="si">%s</span><span class="s1">(id)&#39;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="DbmanagerException"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.DbmanagerException">[docs]</a><span class="k">class</span> <span class="nc">DbmanagerException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception to use with class Dbmanager&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Dbmanager"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager">[docs]</a><span class="k">class</span> <span class="nc">Dbmanager</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Dbmanager class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_version</span><span class="p">,</span> <span class="n">application_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_version</span> <span class="o">=</span> <span class="n">user_version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">application_id</span> <span class="o">=</span> <span class="n">application_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fielda</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Dictionary of array to keep field order</span>
+
+<div class="viewcode-block" id="Dbmanager.add_table"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.add_table">[docs]</a>    <span class="k">def</span> <span class="nf">add_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">labelp</span><span class="p">,</span> <span class="n">rpr</span><span class="o">=</span><span class="p">[],</span> <span class="n">unifld</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adds a new table</span>
+<span class="sd">        table : The table Name</span>
+<span class="sd">        label : The translated title of table</span>
+<span class="sd">        labelp : The translated plural title of table</span>
+<span class="sd">        rpr : List of table representation fields</span>
+<span class="sd">        unifld : List of fields to be unique</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Table </span><span class="si">%s</span><span class="s1"> already exists&#39;</span> <span class="o">%</span> <span class="n">table</span>
+            <span class="k">raise</span> <span class="n">DbmanagerException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">table</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lbl&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                               <span class="s1">&#39;lblp&#39;</span><span class="p">:</span> <span class="n">labelp</span><span class="p">,</span>
+                               <span class="s1">&#39;rpr&#39;</span><span class="p">:</span> <span class="n">rpr</span><span class="p">,</span>
+                               <span class="s1">&#39;uniqfields&#39;</span><span class="p">:</span> <span class="n">unifld</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Dbmanager.add_field"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.add_field">[docs]</a>    <span class="k">def</span> <span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;TXT&#39;</span><span class="p">,</span> <span class="n">qt</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Adds a new field</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Table </span><span class="si">%s</span><span class="s1"> must be added to tables first&#39;</span> <span class="o">%</span> <span class="n">table</span>
+            <span class="k">raise</span> <span class="n">DbmanagerException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">table</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fielda</span><span class="p">[</span><span class="n">table</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lbl&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+                                      <span class="s1">&#39;typ&#39;</span><span class="p">:</span> <span class="n">typ</span><span class="p">,</span>
+                                      <span class="s1">&#39;uni&#39;</span><span class="p">:</span> <span class="n">unique</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fielda</span><span class="p">[</span><span class="n">table</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Dbmanager.get_joined_fields"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.get_joined_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_joined_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">only_rpr</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns string with joined fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">joiner</span> <span class="o">=</span> <span class="s2">&quot; || &#39; &#39; || &quot;</span>
+        <span class="n">rprfields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="s1">&#39;rpr&#39;</span><span class="p">]</span>
+        <span class="n">tblfields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">with_id</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">only_rpr</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rprfields</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">tblfields</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tblfields</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> not in table </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">DbmanagerException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rprfields</span> <span class="o">=</span> <span class="n">tblfields</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rprfields</span> <span class="o">=</span> <span class="n">tblfields</span>
+        <span class="k">return</span> <span class="n">joiner</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rprfields</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Dbmanager.rpr"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.rpr">[docs]</a>    <span class="k">def</span> <span class="nf">rpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get sql of table representation</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">rprfields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="s1">&#39;rpr&#39;</span><span class="p">]</span>
+        <span class="n">tblfields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">with_id</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rprfields</span><span class="p">:</span>
+            <span class="c1"># Just check that exist</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">rprfields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tblfields</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Field </span><span class="si">%s</span><span class="s1"> not in table </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">DbmanagerException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rprfields</span> <span class="o">=</span> <span class="n">tblfields</span>
+        <span class="n">sqlt</span> <span class="o">=</span> <span class="s1">&#39;SELECT id, </span><span class="si">%s</span><span class="s1"> AS rpr FROM </span><span class="si">%s</span><span class="s1"> &#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="n">sqlt</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot; || &#39; &#39; || &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rprfields</span><span class="p">),</span> <span class="n">table</span><span class="p">)</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;WHERE id=</span><span class="si">%s</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">sql</span></div>
+
+<div class="viewcode-block" id="Dbmanager.get_labels"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.get_labels">[docs]</a>    <span class="k">def</span> <span class="nf">get_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a dictionary with fields: labels of table</span>
+<span class="sd">        {&#39;fld1&#39;: &#39;lbl1&#39;, &#39;fld2&#39;: &#39;lbl2&#39;, ...}</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">tdic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;ΑΑ&#39;</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">table</span><span class="p">]:</span>
+            <span class="n">tdic</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">table</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="s1">&#39;lbl&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tdic</span></div>
+
+<div class="viewcode-block" id="Dbmanager.get_fields"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.get_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">with_id</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns an ordered list with table fields</span>
+<span class="sd">            with_id=True  : [&#39;id&#39;, &#39;fld1&#39;, &#39;fld2&#39;, ...]</span>
+<span class="sd">            with_id=False : [&#39;fld1&#39;, &#39;fld2&#39;, ...]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">tlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">with_id</span><span class="p">:</span>
+            <span class="n">tlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fielda</span><span class="p">[</span><span class="n">table</span><span class="p">]:</span>
+            <span class="n">tlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tlist</span></div>
+
+<div class="viewcode-block" id="Dbmanager.get_tables_fields"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.get_tables_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_tables_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a dictionary of tables: ordered list of table fields</span>
+<span class="sd">        {&#39;tabename&#39;: [&#39;id&#39;, &#39;fld1&#39;, &#39;fld2&#39;, ...]}</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">dic_list</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">:</span>
+            <span class="n">dic_list</span><span class="p">[</span><span class="n">table</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dic_list</span></div>
+
+<div class="viewcode-block" id="Dbmanager.sql_create"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns sql script for database creation</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;BEGIN TRANSACTION;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;PRAGMA user_version = </span><span class="si">%s</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_version</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;PRAGMA application_id = </span><span class="si">%s</span><span class="s2">;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">application_id</span>
+        <span class="k">for</span> <span class="n">tbl</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">):</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s2"> (</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tbl</span>
+            <span class="n">tar</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id INTEGER PRIMARY KEY&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fielda</span><span class="p">[</span><span class="n">tbl</span><span class="p">]:</span>
+                <span class="c1"># Check if field is foreign key of the form table_id</span>
+                <span class="k">if</span> <span class="n">fld</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_id&#39;</span><span class="p">):</span>
+                    <span class="n">ftable</span> <span class="o">=</span> <span class="n">fld</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># Remove the _id part</span>
+                    <span class="n">sqltyp</span> <span class="o">=</span> <span class="n">SQLTYP</span><span class="p">[</span><span class="s1">&#39;FK&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="n">ftable</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fldtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="n">fld</span><span class="p">][</span><span class="s1">&#39;typ&#39;</span><span class="p">]</span>
+                    <span class="n">sqltyp</span> <span class="o">=</span> <span class="n">SQLTYP</span><span class="p">[</span><span class="n">fldtype</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="n">fld</span><span class="p">][</span><span class="s1">&#39;uni&#39;</span><span class="p">]:</span>
+                    <span class="n">sqltyp</span> <span class="o">+=</span> <span class="s1">&#39; UNIQUE&#39;</span>
+                <span class="n">tar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fld</span><span class="p">,</span> <span class="n">sqltyp</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="s1">&#39;uniqfields&#39;</span><span class="p">]:</span>
+                <span class="n">unflds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="s1">&#39;uniqfields&#39;</span><span class="p">]</span>
+                <span class="n">tar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">UNIQUE (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unflds</span><span class="p">))</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tar</span><span class="p">)</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">);</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot;COMMIT;&quot;</span>
+        <span class="k">return</span> <span class="n">sql</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">tbl</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tbl</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">stt</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="s1">&#39;lbl&#39;</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_tables</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="s1">&#39;lblp&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">tbl</span><span class="p">]):</span>
+                <span class="n">stt</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">%-10s</span><span class="s1"> </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fld</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">tbl</span><span class="p">][</span><span class="n">fld</span><span class="p">][</span><span class="s1">&#39;lbl&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">stt</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">dbm</span> <span class="o">=</span> <span class="n">Dbmanager</span><span class="p">(</span><span class="n">user_version</span><span class="o">=</span><span class="mi">2017</span><span class="p">,</span> <span class="n">application_id</span><span class="o">=</span><span class="mi">20170313</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="s1">&#39;lmo&#39;</span><span class="p">,</span> <span class="s1">&#39;Λογαριασμός&#39;</span><span class="p">,</span> <span class="s1">&#39;Λογαριασμοί&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;lmo&#39;</span><span class="p">,</span> <span class="s1">&#39;lmop&#39;</span><span class="p">])</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;lmo&#39;</span><span class="p">,</span> <span class="s1">&#39;lmo&#39;</span><span class="p">,</span> <span class="s1">&#39;Λογαριασμός&#39;</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;lmo&#39;</span><span class="p">,</span> <span class="s1">&#39;lmop&#39;</span><span class="p">,</span> <span class="s1">&#39;Περιγραφή&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;Εργαζόμενος&#39;</span><span class="p">,</span> <span class="s1">&#39;Εργαζόμενοι&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;epo&#39;</span><span class="p">,</span> <span class="s1">&#39;ono&#39;</span><span class="p">])</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;epo&#39;</span><span class="p">,</span> <span class="s1">&#39;Επώνυμο&#39;</span><span class="p">,</span> <span class="s1">&#39;TXN&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;ono&#39;</span><span class="p">,</span> <span class="s1">&#39;Όνομα&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;poso&#39;</span><span class="p">,</span> <span class="s1">&#39;Ποσό&#39;</span><span class="p">,</span> <span class="s1">&#39;NUM&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;pat&#39;</span><span class="p">,</span> <span class="s1">&#39;Πατρώνυμο&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;mit&#39;</span><span class="p">,</span> <span class="s1">&#39;Μητρώνυμο&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;bdat&#39;</span><span class="p">,</span> <span class="s1">&#39;Ημ/νία γέννησης&#39;</span><span class="p">,</span> <span class="s1">&#39;DAT&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="s1">&#39;lmo_id&#39;</span><span class="p">,</span> <span class="s1">&#39;Λογαριασμός&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="s1">&#39;Κίνηση&#39;</span><span class="p">,</span> <span class="s1">&#39;Κινήσεις&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="s1">&#39;im_id&#39;</span><span class="p">,</span> <span class="s1">&#39;Ημερολόγιο&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="s1">&#39;lmo_id&#39;</span><span class="p">,</span> <span class="s1">&#39;Λογαριασμός&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="s1">&#39;per2&#39;</span><span class="p">,</span> <span class="s1">&#39;Περιγραφή&#39;</span><span class="p">)</span>
+    <span class="n">dbm</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="s1">&#39;xr&#39;</span><span class="p">,</span> <span class="s1">&#39;Χρέωση&#39;</span><span class="p">,</span> <span class="s1">&#39;NUM&#39;</span><span class="p">)</span>
+    <span class="c1"># print(dbm.sql_create())</span>
+    <span class="c1"># print(dbm.get_labels(&#39;erg&#39;))</span>
+    <span class="c1"># print(dbm.get_tables_fields())</span>
+    <span class="c1"># print(dbm.get_fields(&#39;trd&#39;))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dbm</span><span class="o">.</span><span class="n">get_joined_fields</span><span class="p">(</span><span class="s1">&#39;erg&#39;</span><span class="p">,</span> <span class="n">only_rpr</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dbm</span><span class="o">.</span><span class="n">sql_create</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17.db_context_manager &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ted17.db_context_manager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Module db_context_manager.py</span>
+<span class="sd">Connect to sqlite database and perform crud functions</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">.grup</span> <span class="k">import</span> <span class="n">grup</span>
+
+
+<span class="n">PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">PATH</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="OpenSqlite"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite">[docs]</a><span class="k">class</span> <span class="nc">OpenSqlite</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Context manager class</span>
+<span class="sd">    Use it as:</span>
+<span class="sd">    with Open_sqlite(dbfilename) as db:</span>
+<span class="sd">        your code here ...</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbfile</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbf</span> <span class="o">=</span> <span class="n">dbfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">create_function</span><span class="p">(</span><span class="s2">&quot;grup&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grup</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="OpenSqlite.script"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.script">[docs]</a>    <span class="k">def</span> <span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqlscript</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute an sql script against self.dbf&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">sqlscript</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.application_id">[docs]</a>    <span class="k">def</span> <span class="nf">application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get application_id from database file&#39;&#39;&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA application_id;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.set_application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.set_application_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idv</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set application_id to database file&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA application_id = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">idv</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.user_version">[docs]</a>    <span class="k">def</span> <span class="nf">user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get user_version from database file&#39;&#39;&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA user_version;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.set_user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.set_user_version">[docs]</a>    <span class="k">def</span> <span class="nf">set_user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set user_version to database file&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA user_version = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">version</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.select"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a list of tuples with data&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rows</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.select_with_names"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.select_with_names">[docs]</a>    <span class="k">def</span> <span class="nf">select_with_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a tuple with column names and a list of tuples with data</span>
+
+<span class="sd">        :param sql: The sql to execute</span>
+<span class="sd">        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">column_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">rows</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.select_as_dict"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.select_as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">select_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a list of dictionaries</span>
+
+<span class="sd">        :param sql: The sql to execute</span>
+<span class="sd">        :return: [{}, {}, ...]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">diclist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="n">dic</span><span class="p">[</span><span class="n">column_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">col</span>
+            <span class="n">diclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="n">diclen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">diclist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">diclen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">diclist</span>
+        <span class="k">return</span> <span class="p">[{}]</span></div>
+
+<div class="viewcode-block" id="OpenSqlite.select_master_detail_as_dic"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.select_master_detail_as_dic">[docs]</a>    <span class="k">def</span> <span class="nf">select_master_detail_as_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                    <span class="n">idv</span><span class="p">,</span>
+                                    <span class="n">tablemaster</span><span class="p">,</span>
+                                    <span class="n">tabledetail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get a specific record from table tablemaster.</span>
+<span class="sd">        If we pass it a tabledetail value, it gets detail records too.</span>
+
+<span class="sd">        :param idv: id value of record</span>
+<span class="sd">        :param tablemaster: Master table name</span>
+<span class="sd">        :param tabledetail: Detail table name</span>
+<span class="sd">        :param id_at_end: If True Foreign key is like tablemaster_id</span>
+<span class="sd">                      else is like id_mastertable</span>
+<span class="sd">        :return: dictionary with values</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">id_at_end</span><span class="p">:</span>
+            <span class="n">fkeytemplate</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fkeytemplate</span> <span class="o">=</span> <span class="s1">&#39;id_</span><span class="si">%s</span><span class="s1">&#39;</span>
+
+        <span class="n">id_field</span> <span class="o">=</span> <span class="n">fkeytemplate</span> <span class="o">%</span> <span class="n">tablemaster</span>
+        <span class="n">sql1</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablemaster</span><span class="p">,</span> <span class="n">idv</span><span class="p">)</span>
+        <span class="n">sql2</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE </span><span class="si">%s</span><span class="s2">=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tabledetail</span><span class="p">,</span> <span class="n">id_field</span><span class="p">,</span> <span class="n">idv</span><span class="p">)</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_as_dict</span><span class="p">(</span><span class="n">sql1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ldic</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ldic</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dic</span>
+        <span class="k">if</span> <span class="n">tabledetail</span><span class="p">:</span>
+            <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_as_dict</span><span class="p">(</span><span class="n">sql2</span><span class="p">)</span>
+            <span class="c1"># Remove id_field key</span>
+            <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">elm</span><span class="p">[</span><span class="n">id_field</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dic</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">DBPATH</span> <span class="o">=</span> <span class="s1">&#39;/home/tedlaz/tedfiles/prj/2017/2017a.sql3&#39;</span>
+    <span class="k">with</span> <span class="n">OpenSqlite</span><span class="p">(</span><span class="n">DBPATH</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;select * from lmo limit 2;&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select_as_dict</span><span class="p">(</span><span class="s1">&#39;select * from vtr_trd limit 10;&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select_with_names</span><span class="p">(</span><span class="s1">&#39;select * from lmo limit 2;&#39;</span><span class="p">))</span>
+        <span class="c1"># print(db.script(&#39;PRAGMA application_id = 20170313;&#39;))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">application_id</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">user_version</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select_master_detail_as_dic</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select_master_detail_as_dic</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select_master_detail_as_dic</span><span class="p">(</span><span class="mi">200000</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">select_master_detail_as_dic</span><span class="p">(</span><span class="mi">200000</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;trd&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

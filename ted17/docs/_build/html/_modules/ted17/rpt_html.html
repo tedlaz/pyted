@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17.rpt_html &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ted17.rpt_html</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 5 Μαρ 2013</span>
+<span class="sd">Updated on 26 Mar 2017</span>
+<span class="sd">@author: tedlaz</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span> <span class="k">as</span> <span class="nn">Qw</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span> <span class="k">as</span> <span class="nn">Qc</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span> <span class="k">as</span> <span class="nn">Qg</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtPrintSupport</span> <span class="k">as</span> <span class="nn">Qp</span>
+
+
+<div class="viewcode-block" id="Window"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window">[docs]</a><span class="k">class</span> <span class="nc">Window</span><span class="p">(</span><span class="n">Qw</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">value_array</span><span class="p">,</span> <span class="n">pdf_name</span><span class="p">):</span>
+        <span class="n">Qw</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdf_name</span> <span class="o">=</span> <span class="n">pdf_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tr</span><span class="p">(</span><span class="s1">&#39;Document Printer&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editor</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QTextEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="s1">&#39;Times New Roman&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handleTextChanged</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonOpen</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonOpen</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handleOpen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPrint</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Print&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPrint</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tstPrintPdf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPreview</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Preview&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPreview</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handlePreview</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonOpen</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonPrint</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buttonPreview</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handleTextChanged</span><span class="p">()</span>
+        <span class="n">final_text</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_array</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row_dict</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value_array</span><span class="p">):</span>
+            <span class="n">final_text</span> <span class="o">+=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">row_dict</span><span class="p">)</span>
+            <span class="n">newpage</span> <span class="o">=</span> <span class="s2">&quot;&lt;p style=&#39;page-break-after:always;&#39;&gt;&quot;</span>
+            <span class="n">final_line</span> <span class="o">=</span> <span class="p">(</span><span class="n">newpage</span> <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">pages</span> <span class="k">else</span> <span class="s2">&quot;&lt;p&gt;&quot;</span><span class="p">)</span>
+            <span class="n">final_text</span> <span class="o">+=</span> <span class="n">final_line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">setHtml</span><span class="p">(</span><span class="n">final_text</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Window.handleOpen"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window.handleOpen">[docs]</a>    <span class="k">def</span> <span class="nf">handleOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr</span><span class="p">(</span><span class="s1">&#39;Open file&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tr</span><span class="p">(</span><span class="s1">&#39;HTML files (*.html);;Text files (*.txt)&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="n">Qc</span><span class="o">.</span><span class="n">QFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">stream</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">QIODevice</span><span class="o">.</span><span class="n">ReadOnly</span><span class="p">):</span>
+                <span class="n">info</span> <span class="o">=</span> <span class="n">Qc</span><span class="o">.</span><span class="n">QFileInfo</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">readAll</span><span class="p">()</span>
+                <span class="n">codec</span> <span class="o">=</span> <span class="n">Qc</span><span class="o">.</span><span class="n">QTextCodec</span><span class="o">.</span><span class="n">codecForHtml</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">unistr</span> <span class="o">=</span> <span class="n">codec</span><span class="o">.</span><span class="n">toUnicode</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">completeSuffix</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;html&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">setHtml</span><span class="p">(</span><span class="n">unistr</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="n">unistr</span><span class="p">)</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Window.handlePrint"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window.handlePrint">[docs]</a>    <span class="k">def</span> <span class="nf">handlePrint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">Qp</span><span class="o">.</span><span class="n">QPrintDialog</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">document</span><span class="p">()</span><span class="o">.</span><span class="n">print_</span><span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">printer</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Window.tstPrintPdf"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window.tstPrintPdf">[docs]</a>    <span class="k">def</span> <span class="nf">tstPrintPdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;%Αποθήκευση ως&quot;</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">pdf_name</span><span class="p">,</span>
+                                               <span class="sa">u</span><span class="s2">&quot;Αρχείο (*.pdf)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="n">printer</span> <span class="o">=</span> <span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="p">()</span>
+        <span class="n">printer</span><span class="o">.</span><span class="n">setOutputFormat</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">PdfFormat</span><span class="p">)</span>
+        <span class="n">printer</span><span class="o">.</span><span class="n">setOutputFileName</span><span class="p">(</span><span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">document</span><span class="p">()</span><span class="o">.</span><span class="n">print_</span><span class="p">(</span><span class="n">printer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Window.saveAsOdt"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window.saveAsOdt">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsOdt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QTextDocument</span><span class="p">()</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QTextCursor</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">insertHtml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">toHtml</span><span class="p">())</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QTextDocumentWriter</span><span class="p">()</span>
+        <span class="n">odf_format</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">supportedDocumentFormats</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">setFormat</span><span class="p">(</span><span class="n">odf_format</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">setFileName</span><span class="p">(</span><span class="s1">&#39;symbaseis.odt&#39;</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Window.handlePreview"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window.handlePreview">[docs]</a>    <span class="k">def</span> <span class="nf">handlePreview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">Qp</span><span class="o">.</span><span class="n">QPrintPreviewDialog</span><span class="p">()</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">paintRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">print_</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Window.handleTextChanged"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_html.Window.handleTextChanged">[docs]</a>    <span class="k">def</span> <span class="nf">handleTextChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">enable</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">editor</span><span class="o">.</span><span class="n">document</span><span class="p">()</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPrint</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buttonPreview</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enable</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">txt_html</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;p&gt;&lt;center&gt;&lt;span style=&quot; font-size:14pt; text-decoration: underline;&quot;&gt;</span>
+<span class="s1"> &lt;b&gt;ΕΚΚΑΘΑΡΙΣΗ ΑΠΟΔΟΧΩΝ &amp; ΑΠΟΔΕΙΞΗ ΠΛΗΡΩΜΗΣ&lt;/b&gt;&lt;/span&gt;&lt;/center&gt;&lt;p&gt;</span>
+<span class="s1">Περίοδος : </span><span class="si">{period}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">Τύπος : </span><span class="si">{typos}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;&lt;b&gt;Στοιχεία Επιχείρησης&lt;/b&gt;&lt;/span&gt;&lt;br&gt;</span>
+<span class="s1">Επωνυμία : &lt;i&gt;</span><span class="si">{co_epon}</span><span class="s1">&lt;/i&gt;&lt;br&gt;</span>
+<span class="s1">ΑΦΜ : </span><span class="si">{co_afm}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">Δραστηριότητα : </span><span class="si">{co_dra}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">Διεύθυνση : </span><span class="si">{co_addr}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">&lt;/p&gt;</span>
+<span class="s1">&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;&lt;b&gt;Στοιχεία Εργαζομένου&lt;/b&gt;&lt;/span&gt;&lt;br&gt;</span>
+<span class="s1">Ονοματεπώνυμο : </span><span class="si">{erg_onomatep}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">Όνομα Πατρός : </span><span class="si">{erg_pateras}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">ΑΦΜ : </span><span class="si">{erg_afm}</span><span class="s1">&lt;br&gt;</span>
+<span class="s1">Ειδικότητα εργασίας : </span><span class="si">{erg_eid}</span><span class="s1"></span>
+<span class="s1">&lt;/p&gt;&lt;br&gt;</span>
+<span class="s1">&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot;&gt;</span>
+<span class="s1">  &lt;tbody&gt;</span>
+<span class="s1">      &lt;tr&gt;</span>
+<span class="s1">      &lt;td colspan=2&gt;&lt;center&gt;&lt;b&gt;ΑΝΑΛΥΣΗ ΑΠΟΔΟΧΩΝ&lt;/b&gt;&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td colspan=2&gt;&lt;center&gt;&lt;b&gt;ΚΡΑΤΗΣΕΙΣ&lt;b&gt;&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;Ημερομίσθιο/ Μισθός&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{misthos}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">      &lt;td&gt;1. ΙΚΑ&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{ika}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;Μέρες εργασίας&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{meres}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">      &lt;td&gt;2. Φόρος Μισθωτών Υπηρεσιών&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{foros}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;Ακαθάριστες αποδοχές&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{apod}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">      &lt;td&gt;3. Επίδομα Αλληλεγγύης&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{epid}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;Λοιπές αποδοχές&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;</span><span class="si">{loipa}</span><span class="s1">&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;(Α) Σύνολο αποδοχών&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;&lt;b&gt;</span><span class="si">{apod_total}</span><span class="s1">&lt;/b&gt;&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">     &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;Μείον: (Β) Σύνολο κρατήσεων&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;&lt;b&gt;</span><span class="si">{kratiseis}</span><span class="s1">&lt;/b&gt;&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">     &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;Υπόλοιπο Πληρωτέο (Α - Β)&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;&lt;b&gt;</span><span class="si">{ypoloipo}</span><span class="s1">&lt;/b&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;(Β) Σύνολο κρατήσεων&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td align=&quot;right&quot;&gt;&lt;b&gt;</span><span class="si">{kratiseis}</span><span class="s1">&lt;/b&gt;&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;/tbody&gt;</span>
+<span class="s1">&lt;/table&gt;</span>
+<span class="s1">&lt;p&gt;Ο/Η υπογράφων/υπογράφουσα </span><span class="si">{erg_onomatep}</span><span class="s1">,  δηλώνω ότι η παρούσα αποτελεί</span>
+<span class="s1">πλήρη εξώφληση των αποδοχών μου και καμία άλλη απαίτηση έχω από την παραπάνω</span>
+<span class="s1">επιχείρηση για οποιαδήποτε άλλη αιτία μέχρι σήμερα.&lt;/p&gt;</span>
+<span class="s1">&lt;br&gt;</span>
+<span class="s1">&lt;table width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;2&quot; cellspacing=&quot;2&quot;&gt;</span>
+<span class="s1">  &lt;tbody&gt;</span>
+<span class="s1">      &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;    &lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;</span><span class="si">{imnia}</span><span class="s1">&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">    &lt;tr&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;    &lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">      &lt;td&gt;&lt;center&gt;(Υπογραφή εργαζομένου)&lt;/center&gt;&lt;/td&gt;</span>
+<span class="s1">    &lt;/tr&gt;</span>
+<span class="s1">  &lt;/tbody&gt;</span>
+<span class="s1">&lt;/table&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Ιανουάριος 2015&#39;</span><span class="p">,</span> <span class="s1">&#39;typos&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Μισθοδοσία Περιόδου&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;co_epon&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Μαλακόπουλος ΕΠΕ&#39;</span><span class="p">,</span> <span class="s1">&#39;co_afm&#39;</span><span class="p">:</span> <span class="s1">&#39;044444565&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;co_dra&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Υπηρεσίες εστίασης&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;co_addr&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Αργεντινής 38 14434, Αθήνα&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;erg_onomatep&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Θεόδωρος Μαρκόπουλος&#39;</span><span class="p">,</span> <span class="s1">&#39;erg_pateras&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Γεράσιμος&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;erg_afm&#39;</span><span class="p">:</span> <span class="s1">&#39;044564112&#39;</span><span class="p">,</span> <span class="s1">&#39;erg_eid&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Μάγειρας&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;misthos&#39;</span><span class="p">:</span> <span class="s1">&#39;50,00&#39;</span><span class="p">,</span> <span class="s1">&#39;meres&#39;</span><span class="p">:</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;apod&#39;</span><span class="p">:</span> <span class="s1">&#39;1.000,35&#39;</span><span class="p">,</span> <span class="s1">&#39;loipa&#39;</span><span class="p">:</span> <span class="s1">&#39;0,00&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;apod_total&#39;</span><span class="p">:</span> <span class="s1">&#39;100,35&#39;</span><span class="p">,</span> <span class="s1">&#39;kratiseis&#39;</span><span class="p">:</span> <span class="s1">&#39;20,00&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;ypoloipo&#39;</span><span class="p">:</span> <span class="s1">&#39;0,00&#39;</span><span class="p">,</span> <span class="s1">&#39;ika&#39;</span><span class="p">:</span> <span class="s1">&#39;112,41&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;foros&#39;</span><span class="p">:</span> <span class="s1">&#39;0,00&#39;</span><span class="p">,</span> <span class="s1">&#39;epid&#39;</span><span class="p">:</span> <span class="s1">&#39;0,00&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;kratiseis&#39;</span><span class="p">:</span> <span class="s1">&#39;12,41&#39;</span><span class="p">,</span> <span class="s1">&#39;imnia&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Αθήνα 15/3/2015&#39;</span><span class="p">,</span>
+          <span class="p">}</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">Window</span><span class="p">(</span><span class="n">txt_html</span><span class="p">,</span> <span class="p">[</span><span class="n">f1</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f1</span><span class="p">],</span> <span class="s1">&#39;file1.pdf&#39;</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+    <span class="c1"># print num2descr(4949901945689)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

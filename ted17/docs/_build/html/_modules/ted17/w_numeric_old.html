@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17.w_numeric_old &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ted17.w_numeric_old</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span> <span class="k">as</span> <span class="nn">Qw</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span> <span class="k">as</span> <span class="nn">Qc</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span> <span class="k">as</span> <span class="nn">Qg</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">parameters</span> <span class="k">as</span> <span class="n">par</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">dec</span>
+
+
+<div class="viewcode-block" id="Numeric"><a class="viewcode-back" href="../../ted17.html#ted17.w_numeric_old.Numeric">[docs]</a><span class="k">class</span> <span class="nc">Numeric</span><span class="p">(</span><span class="n">Qw</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Text field with numeric chars only.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">rval</span> <span class="o">=</span> <span class="n">Qc</span><span class="o">.</span><span class="n">QRegExp</span><span class="p">(</span><span class="s1">&#39;(\d*)([1-9,])(\d*)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">Qg</span><span class="o">.</span><span class="n">QRegExpValidator</span><span class="p">(</span><span class="n">rval</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+    <span class="c1"># def keyPressEvent(self, ev):</span>
+    <span class="c1">#     # Check if keypressed is &#39;.&#39;</span>
+    <span class="c1">#     if ev.key() == 46:</span>
+    <span class="c1">#         if &#39;,&#39; in self.text():</span>
+    <span class="c1">#             pass</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             self.setText(self.text() + &#39;,&#39;)</span>
+    <span class="c1">#     elif ev.key() in (Qc.Qt.Key_Return, Qc.Qt.Key_Enter):</span>
+    <span class="c1">#         self.set(self.get())</span>
+    <span class="c1">#     Qw.QLineEdit.keyPressEvent(self, ev)</span>
+
+<div class="viewcode-block" id="Numeric.focusOutEvent"><a class="viewcode-back" href="../../ted17.html#ted17.w_numeric_old.Numeric.focusOutEvent">[docs]</a>    <span class="k">def</span> <span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="n">Qw</span><span class="o">.</span><span class="n">QLineEdit</span><span class="o">.</span><span class="n">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">)</span></div>
+
+    <span class="c1"># def focusInEvent(self, ev):</span>
+    <span class="c1">#     self.selectAll()</span>
+    <span class="c1">#     Qw.QLineEdit.focusInEvent(self, ev)</span>
+
+<div class="viewcode-block" id="Numeric.set"><a class="viewcode-back" href="../../ted17.html#ted17.w_numeric_old.Numeric.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">txt</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dec2gr</span><span class="p">(</span><span class="n">txt</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">dec</span><span class="o">.</span><span class="n">dec2gr</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Numeric.get"><a class="viewcode-back" href="../../ted17.html#ted17.w_numeric_old.Numeric.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">greek_div</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+        <span class="n">normal_div</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">normal_div</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">greek_div</span><span class="p">,</span> <span class="n">normal_div</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dec</span><span class="o">.</span><span class="n">dec</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

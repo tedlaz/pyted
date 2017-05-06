@@ -4,25 +4,11 @@ Connect to sqlite database and perform crud functions
 '''
 import sqlite3
 import os
+from .grup import grup
 
 
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 print(PATH)
-
-
-def grup(txtv):
-    '''
-    Trasforms a string to uppercase special for Greek comparison
-    '''
-    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΊκλμνξοόΌπρσςτυύΎφχψωώΏ"
-    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΦΧΨΩΩΩ"
-    ftxt = u''
-    for letter in txtv:
-        if letter in ar1:
-            ftxt += ar2[ar1.index(letter)]
-        else:
-            ftxt += letter.upper()
-    return ftxt
 
 
 class OpenSqlite:
@@ -88,14 +74,22 @@ class OpenSqlite:
         return rows
 
     def select_with_names(self, sql):
-        '''Get a tuple with column names and a list of tuples with data'''
+        '''Get a tuple with column names and a list of tuples with data
+
+        :param sql: The sql to execute
+        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]
+        '''
         self.cur.execute(sql)
         column_names = tuple([t[0] for t in self.cur.description])
         rows = self.cur.fetchall()
         return column_names, rows
 
     def select_as_dict(self, sql):
-        '''Get a list of dictionaries [{}, {}, ...]'''
+        '''Get a list of dictionaries
+
+        :param sql: The sql to execute
+        :return: [{}, {}, ...]
+        '''
         self.cur.execute(sql)
         column_names = [t[0] for t in self.cur.description]
         rows = self.cur.fetchall()
@@ -116,13 +110,15 @@ class OpenSqlite:
                                     tabledetail=None,
                                     id_at_end=True):
         '''
-        Get a specific record from table tablemaster with id = idv
-        If we pass a tabledetail value it gets detail records too
-        idv : id value of record
-        tablemaster : Master table name
-        tabledetail : Detail table name
-        id_at_end   : If True Foreign key is like <masterTable>_id
-                      else is like id_<masterTable>
+        Get a specific record from table tablemaster.
+        If we pass it a tabledetail value, it gets detail records too.
+
+        :param idv: id value of record
+        :param tablemaster: Master table name
+        :param tabledetail: Detail table name
+        :param id_at_end: If True Foreign key is like tablemaster_id
+                      else is like id_mastertable
+        :return: dictionary with values
         '''
         if id_at_end:
             fkeytemplate = '%s_id'
