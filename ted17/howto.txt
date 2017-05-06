@@ -1,0 +1,2 @@
+To create package run:
+python setup.py bdist sdist bdist_wheel
