@@ -49,7 +49,7 @@
             
   <h1>Source code for ted17.db</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">This is obsolete.</span>
+<span class="sd">Database sqlite3 actions</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -59,7 +59,11 @@
 
 
 <div class="viewcode-block" id="app_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.app_id">[docs]</a><span class="k">def</span> <span class="nf">app_id</span><span class="p">(</span><span class="n">dbf</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get application_id&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get application_id</span>
+
+<span class="sd">    :param dbf: Database file path</span>
+<span class="sd">    :return: application_id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dbf</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">10</span>
     <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;pragma application_id;&#39;</span>
@@ -72,6 +76,12 @@
 
 
 <div class="viewcode-block" id="dataFromDB"><a class="viewcode-back" href="../../ted17.html#ted17.db.dataFromDB">[docs]</a><span class="k">def</span> <span class="nf">dataFromDB</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get data from database</span>
+
+<span class="sd">    :param dbf: Database file path</span>
+<span class="sd">    :param sql: SQL to run</span>
+<span class="sd">    :return: list of tuples [(), (), ...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbf</span><span class="p">)</span>
     <span class="n">con</span><span class="o">.</span><span class="n">create_function</span><span class="p">(</span><span class="s2">&quot;grup&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grup</span><span class="p">)</span>
     <span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
@@ -83,7 +93,12 @@
 
 
 <div class="viewcode-block" id="execute_script"><a class="viewcode-back" href="../../ted17.html#ted17.db.execute_script">[docs]</a><span class="k">def</span> <span class="nf">execute_script</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sqlscript</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Execute script&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Execute script</span>
+
+<span class="sd">    :param dbf: Database file path</span>
+<span class="sd">    :param sqlscript: SQL to run</span>
+<span class="sd">    :return: True if execution success</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbf</span><span class="p">)</span>
     <span class="n">con</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">sqlscript</span><span class="p">)</span>
     <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -169,7 +184,9 @@
 <div class="viewcode-block" id="sql_ins_upd"><a class="viewcode-back" href="../../ted17.html#ted17.db.sql_ins_upd">[docs]</a><span class="k">def</span> <span class="nf">sql_ins_upd</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">adic</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns update or insert sql according id</span>
+
 <span class="sd">    if id = 0 returns insert sql</span>
+
 <span class="sd">    if id &lt;&gt; 0 returns update sql</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
@@ -199,15 +216,15 @@
 
 
 <div class="viewcode-block" id="md2sql"><a class="viewcode-back" href="../../ted17.html#ted17.db.md2sql">[docs]</a><span class="k">def</span> <span class="nf">md2sql</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">tdetail</span><span class="p">,</span> <span class="n">adic</span><span class="p">,</span> <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Master-Detail to sql</span>
-<span class="sd">    tmaster : master table name</span>
-<span class="sd">    tdetail : detail table name</span>
-<span class="sd">    adic    : dictionary to translate to sql. Keys represent</span>
-<span class="sd">              table fields</span>
-<span class="sd">    id_at_end : if foreign key looks like id_* then False</span>
-<span class="sd">                if foreign key looks like *_id then True</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+
+<span class="sd">    :param tmaster: master table name</span>
+<span class="sd">    :param tdetail: detail table name</span>
+<span class="sd">    :param adic: dictionary to translate to sql. Keys represent table fields</span>
+<span class="sd">    :param id_at_end: talble_id or id_table</span>
+<span class="sd">    :return: Transaction sql</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sql</span> <span class="o">=</span> <span class="n">sql_ins_upd</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">adic</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="k">if</span> <span class="n">id_at_end</span><span class="p">:</span>
         <span class="n">fkey</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span>

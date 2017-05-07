@@ -1,5 +1,5 @@
 '''
-This is obsolete.
+Database sqlite3 actions
 '''
 import sqlite3
 import os
@@ -9,7 +9,11 @@ logger = logging.getLogger()
 
 
 def app_id(dbf):
-    """Get application_id"""
+    """Get application_id
+
+    :param dbf: Database file path
+    :return: application_id
+    """
     if not os.path.isfile(dbf):
         return -10
     sql = 'pragma application_id;'
@@ -22,6 +26,12 @@ def app_id(dbf):
 
 
 def dataFromDB(dbf, sql):
+    """Get data from database
+
+    :param dbf: Database file path
+    :param sql: SQL to run
+    :return: list of tuples [(), (), ...]
+    """
     con = sqlite3.connect(dbf)
     con.create_function("grup", 1, grup)
     cur = con.cursor()
@@ -33,7 +43,12 @@ def dataFromDB(dbf, sql):
 
 
 def execute_script(dbf, sqlscript):
-    """Execute script"""
+    """Execute script
+
+    :param dbf: Database file path
+    :param sqlscript: SQL to run
+    :return: True if execution success
+    """
     con = sqlite3.connect(dbf)
     con.executescript(sqlscript)
     con.close()
@@ -119,7 +134,9 @@ def db2dic(dbf, idv, tablemaster, tabledetail=None, key=None,
 def sql_ins_upd(table, adic):
     '''
     Returns update or insert sql according id
+
     if id = 0 returns insert sql
+
     if id <> 0 returns update sql
     '''
     fields = []
@@ -149,15 +166,15 @@ def sql_ins_upd(table, adic):
 
 
 def md2sql(tmaster, tdetail, adic, id_at_end=True):
-    '''
+    """
     Master-Detail to sql
-    tmaster : master table name
-    tdetail : detail table name
-    adic    : dictionary to translate to sql. Keys represent
-              table fields
-    id_at_end : if foreign key looks like id_* then False
-                if foreign key looks like *_id then True
-    '''
+
+    :param tmaster: master table name
+    :param tdetail: detail table name
+    :param adic: dictionary to translate to sql. Keys represent table fields
+    :param id_at_end: talble_id or id_table
+    :return: Transaction sql
+    """
     sql = sql_ins_upd(tmaster, adic) + '\n'
     if id_at_end:
         fkey = '%s_id'

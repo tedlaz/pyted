@@ -12,7 +12,7 @@ import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 import PyQt5.QtPrintSupport as Qp
 # from PyQt4 import QtGui, QtCore, Qt
-from tedutil import dec
+from . import dec
 
 import decimal
 

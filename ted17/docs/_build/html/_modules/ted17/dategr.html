@@ -55,8 +55,23 @@
 
 <div class="viewcode-block" id="date2gr"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.date2gr">[docs]</a><span class="k">def</span> <span class="nf">date2gr</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">removezero</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    date : iso date yyyy-mm-dd</span>
-<span class="sd">    returns date: dd/mm/yyyy</span>
+<span class="sd">    :param date: iso date &#39;yyyy-mm-dd&#39;</span>
+<span class="sd">    :type date: iso_date</span>
+<span class="sd">    :param removezero: Month, Day without trailing zeros (If True &#39;2017-01-09&#39;</span>
+<span class="sd">     =&gt; &#39;9/1/2017&#39;. If False &#39;2017-01-09&#39; =&gt; &#39;09/01/2017&#39;)</span>
+<span class="sd">    :return: &#39;dd/mm/yyyy&#39;</span>
+<span class="sd">    :rtype: greek date</span>
+<span class="sd">    :raises ZeroDivisionError: when divisor = 0</span>
+
+<span class="sd">    .. note:: This function can accept :class:`int` parameters too.</span>
+
+<span class="sd">    .. warning:: ``divisor=0`` will cause :exc:`ZeroDivisionError` exception!</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        result = division(a, b)</span>
+<span class="sd">        for i in range(100):</span>
+<span class="sd">            print i</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">remove_zero</span><span class="p">(</span><span class="n">stra</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove trailing zeros&quot;&quot;&quot;</span>
@@ -74,7 +89,11 @@
 
 
 <div class="viewcode-block" id="grdate2iso"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.grdate2iso">[docs]</a><span class="k">def</span> <span class="nf">grdate2iso</span><span class="p">(</span><span class="n">greek_date</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)</span>
+
+<span class="sd">    :param greek_date: Date of the form &#39;dd/mm/yyyy&#39;</span>
+<span class="sd">    :return: Iso Date (&#39;yyyy-mm-dd&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">greek_date</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">greek_date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">greek_date</span><span class="p">)</span>
     <span class="n">day</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">greek_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
@@ -86,20 +105,23 @@
 
 
 <div class="viewcode-block" id="getymd_from_iso"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.getymd_from_iso">[docs]</a><span class="k">def</span> <span class="nf">getymd_from_iso</span><span class="p">(</span><span class="n">isodate</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Year, month, date From isodate</span>
+    <span class="sd">&#39;&#39;&#39;Year, month, day From isodate</span>
+
+<span class="sd">    :param isodate: Date of the form &#39;yyyy-mm-dd&#39;</span>
+<span class="sd">    :return: int year, int month, int day</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="n">isodate</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span>
     <span class="k">assert</span> <span class="n">isodate</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span>
-    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">date</span> <span class="o">=</span> <span class="n">isodate</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">month</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">)</span></div>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">isodate</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">month</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">day</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="saizon"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.saizon">[docs]</a><span class="k">def</span> <span class="nf">saizon</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="n">startmonth</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Επιστρέφει ετήσιο διάστημα από μήνα</span>
-<span class="sd">    dat : Ημερομηνία</span>
-<span class="sd">    startmonth : Μήνας που αρχίζει η σαιζόν</span>
+    <span class="sd">&#39;&#39;&#39;Find the yearfrom-yearto period of iso_date</span>
+
+<span class="sd">    :param iso_date: Date of the form &#39;yyyy-mm-dd&#39;</span>
+<span class="sd">    :param startmonth: int month value to split year</span>
+<span class="sd">    :return: &#39;year-year_next(startmonth)&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">startmonth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">startmonth</span><span class="p">)</span>  <span class="c1"># Make sure startmonth is integer</span>
     <span class="k">assert</span> <span class="n">startmonth</span> <span class="o">&lt;=</span> <span class="mi">12</span>
@@ -111,8 +133,10 @@
 
 
 <div class="viewcode-block" id="week"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.week">[docs]</a><span class="k">def</span> <span class="nf">week</span><span class="p">(</span><span class="n">iso_date</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    returns year-weekNumber</span>
+    <span class="sd">&#39;&#39;&#39;Evaluate year-weeknumber of iso_date</span>
+
+<span class="sd">    :param iso_date: Date of the form &#39;yyyy-mm-dd&#39;</span>
+<span class="sd">    :return: year-weekNumber</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span> <span class="o">=</span> <span class="n">getymd_from_iso</span><span class="p">(</span><span class="n">iso_date</span><span class="p">)</span>
     <span class="n">week_number</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
@@ -121,13 +145,16 @@
     <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">w</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">week_number</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="period"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.period">[docs]</a><span class="k">def</span> <span class="nf">period</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">diast</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    επιστρέφει δίμηνο, τρίμηνο, τετράμηνο, εξάμηνο</span>
+<div class="viewcode-block" id="period"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.period">[docs]</a><span class="k">def</span> <span class="nf">period</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="n">diast</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Find the timespace iso_dete belongs</span>
+
+<span class="sd">    :param iso_date: Date of the form &#39;yyyy-mm-dd&#39;</span>
+<span class="sd">    :param diast: Time space</span>
+<span class="sd">    :return: &#39;year-diast-diastv&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="n">diast</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
     <span class="n">dval</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;οΔίμ&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;οΤρίμ&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;οΤετρ&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;οΕξάμ&#39;</span><span class="p">}</span>
-    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">date</span> <span class="o">=</span> <span class="n">getymd_from_iso</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">date</span> <span class="o">=</span> <span class="n">getymd_from_iso</span><span class="p">(</span><span class="n">iso_date</span><span class="p">)</span>
     <span class="n">imonth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
     <span class="n">aperiod</span> <span class="o">=</span> <span class="n">imonth</span> <span class="o">//</span> <span class="n">diast</span>
     <span class="n">ypoloipo</span> <span class="o">=</span> <span class="n">imonth</span> <span class="o">%</span> <span class="n">diast</span>

@@ -5,7 +5,7 @@ from ted17.w_date import Date
 from ted17.w_date_or_empty import Date_or_empty
 from ted17.w_integer import Integer
 from ted17.w_integer_spin import Integer_spin
-from ted17.w_numeric import Numeric
+from ted17.w_numeric_old import Numeric
 from ted17.w_numeric_spin import Numeric_spin
 from ted17.w_text import Text
 from ted17.w_text_button import Text_button

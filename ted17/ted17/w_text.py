@@ -15,6 +15,10 @@ class Text(Qw.QTextEdit):
         self.set(val)
 
     def set(self, txt):
+        """Set value
+
+        :param txt: value to set
+        """
         if txt:
             ttxt = '%s' % txt
             self.setText(ttxt.strip())
@@ -22,5 +26,9 @@ class Text(Qw.QTextEdit):
             self.setText('')
 
     def get(self):
+        """Get value
+
+        :return: Text value of control
+        """
         tmpval = '%s' % self.toPlainText().replace("'", "''")
         return tmpval.strip()

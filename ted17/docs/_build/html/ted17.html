@@ -61,20 +61,74 @@
 <dl class="function">
 <dt id="ted17.dategr.date2gr">
 <code class="descclassname">ted17.dategr.</code><code class="descname">date2gr</code><span class="sig-paren">(</span><em>date</em>, <em>removezero=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#date2gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.date2gr" title="Permalink to this definition">¶</a></dt>
-<dd><p>date : iso date yyyy-mm-dd
-returns date: dd/mm/yyyy</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>iso_date</em>) &#8211; iso date &#8216;yyyy-mm-dd&#8217;</li>
+<li><strong>removezero</strong> &#8211; Month, Day without trailing zeros (If True &#8216;2017-01-09&#8217;
+=&gt; &#8216;9/1/2017&#8217;. If False &#8216;2017-01-09&#8217; =&gt; &#8216;09/01/2017&#8217;)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">&#8216;dd/mm/yyyy&#8217;</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">greek date</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ZeroDivisionError</strong> &#8211; when divisor = 0</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function can accept <code class="xref py py-class docutils literal"><span class="pre">int</span></code> parameters too.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><code class="docutils literal"><span class="pre">divisor=0</span></code> will cause <code class="xref py py-exc docutils literal"><span class="pre">ZeroDivisionError</span></code> exception!</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">division</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="nb">print</span> <span class="n">i</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.dategr.getymd_from_iso">
 <code class="descclassname">ted17.dategr.</code><code class="descname">getymd_from_iso</code><span class="sig-paren">(</span><em>isodate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#getymd_from_iso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.getymd_from_iso" title="Permalink to this definition">¶</a></dt>
-<dd><p>Year, month, date From isodate</p>
+<dd><p>Year, month, day From isodate</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>isodate</strong> &#8211; Date of the form &#8216;yyyy-mm-dd&#8217;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">int year, int month, int day</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.dategr.grdate2iso">
 <code class="descclassname">ted17.dategr.</code><code class="descname">grdate2iso</code><span class="sig-paren">(</span><em>greek_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#grdate2iso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.grdate2iso" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>greek_date</strong> &#8211; Date of the form &#8216;dd/mm/yyyy&#8217;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Iso Date (&#8216;yyyy-mm-dd&#8217;)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -85,38 +139,102 @@ returns date: dd/mm/yyyy</p>
 
 <dl class="function">
 <dt id="ted17.dategr.period">
-<code class="descclassname">ted17.dategr.</code><code class="descname">period</code><span class="sig-paren">(</span><em>date</em>, <em>diast=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#period"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.period" title="Permalink to this definition">¶</a></dt>
-<dd><p>επιστρέφει δίμηνο, τρίμηνο, τετράμηνο, εξάμηνο</p>
+<code class="descclassname">ted17.dategr.</code><code class="descname">period</code><span class="sig-paren">(</span><em>iso_date</em>, <em>diast=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#period"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the timespace iso_dete belongs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iso_date</strong> &#8211; Date of the form &#8216;yyyy-mm-dd&#8217;</li>
+<li><strong>diast</strong> &#8211; Time space</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">&#8216;year-diast-diastv&#8217;</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.dategr.saizon">
 <code class="descclassname">ted17.dategr.</code><code class="descname">saizon</code><span class="sig-paren">(</span><em>iso_date</em>, <em>startmonth=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#saizon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.saizon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Επιστρέφει ετήσιο διάστημα από μήνα
-dat : Ημερομηνία
-startmonth : Μήνας που αρχίζει η σαιζόν</p>
+<dd><p>Find the yearfrom-yearto period of iso_date</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iso_date</strong> &#8211; Date of the form &#8216;yyyy-mm-dd&#8217;</li>
+<li><strong>startmonth</strong> &#8211; int month value to split year</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">&#8216;year-year_next(startmonth)&#8217;</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.dategr.week">
 <code class="descclassname">ted17.dategr.</code><code class="descname">week</code><span class="sig-paren">(</span><em>iso_date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#week"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.week" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns year-weekNumber</p>
+<dd><p>Evaluate year-weeknumber of iso_date</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iso_date</strong> &#8211; Date of the form &#8216;yyyy-mm-dd&#8217;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">year-weekNumber</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
 <div class="section" id="module-ted17.db">
 <span id="ted17-db-module"></span><h2>ted17.db module<a class="headerlink" href="#module-ted17.db" title="Permalink to this headline">¶</a></h2>
-<p>This is obsolete.</p>
+<p>Database sqlite3 actions</p>
 <dl class="function">
 <dt id="ted17.db.app_id">
 <code class="descclassname">ted17.db.</code><code class="descname">app_id</code><span class="sig-paren">(</span><em>dbf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#app_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.app_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get application_id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dbf</strong> &#8211; Database file path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">application_id</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.db.dataFromDB">
 <code class="descclassname">ted17.db.</code><code class="descname">dataFromDB</code><span class="sig-paren">(</span><em>dbf</em>, <em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#dataFromDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.dataFromDB" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get data from database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dbf</strong> &#8211; Database file path</li>
+<li><strong>sql</strong> &#8211; SQL to run</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of tuples [(), (), ...]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="ted17.db.db2dic">
@@ -132,21 +250,44 @@ key : Foreign key Field in detail table that connects to mastertable</p>
 <dt id="ted17.db.execute_script">
 <code class="descclassname">ted17.db.</code><code class="descname">execute_script</code><span class="sig-paren">(</span><em>dbf</em>, <em>sqlscript</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#execute_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.execute_script" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute script</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dbf</strong> &#8211; Database file path</li>
+<li><strong>sqlscript</strong> &#8211; SQL to run</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if execution success</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.db.md2sql">
 <code class="descclassname">ted17.db.</code><code class="descname">md2sql</code><span class="sig-paren">(</span><em>tmaster</em>, <em>tdetail</em>, <em>adic</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#md2sql"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.md2sql" title="Permalink to this definition">¶</a></dt>
-<dd><p>Master-Detail to sql
-tmaster : master table name
-tdetail : detail table name
-adic    : dictionary to translate to sql. Keys represent</p>
-<blockquote>
-<div>table fields</div></blockquote>
-<dl class="docutils">
-<dt>id_at_end <span class="classifier-delimiter">:</span> <span class="classifier">if foreign key looks like id_* then False</span></dt>
-<dd>if foreign key looks like <a href="#id1"><span class="problematic" id="id2">*</span></a>_id then True</dd>
-</dl>
+<dd><p>Master-Detail to sql</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tmaster</strong> &#8211; master table name</li>
+<li><strong>tdetail</strong> &#8211; detail table name</li>
+<li><strong>adic</strong> &#8211; dictionary to translate to sql. Keys represent table fields</li>
+<li><strong>id_at_end</strong> &#8211; talble_id or id_table</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Transaction sql</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -164,9 +305,9 @@ adic    : dictionary to translate to sql. Keys represent</p>
 <dl class="function">
 <dt id="ted17.db.sql_ins_upd">
 <code class="descclassname">ted17.db.</code><code class="descname">sql_ins_upd</code><span class="sig-paren">(</span><em>table</em>, <em>adic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#sql_ins_upd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.sql_ins_upd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns update or insert sql according id
-if id = 0 returns insert sql
-if id &lt;&gt; 0 returns update sql</p>
+<dd><p>Returns update or insert sql according id</p>
+<p>if id = 0 returns insert sql</p>
+<p>if id &lt;&gt; 0 returns update sql</p>
 </dd></dl>
 
 </div>
@@ -178,27 +319,57 @@ Connect to sqlite database and perform crud functions</p>
 <dt id="ted17.db_context_manager.OpenSqlite">
 <em class="property">class </em><code class="descclassname">ted17.db_context_manager.</code><code class="descname">OpenSqlite</code><span class="sig-paren">(</span><em>dbfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Context manager class
-Use it as:
-with Open_sqlite(dbfilename) as db:</p>
-<blockquote>
-<div>your code here ...</div></blockquote>
+<p>Context manager class</p>
 <dl class="method">
 <dt id="ted17.db_context_manager.OpenSqlite.application_id">
 <code class="descname">application_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.application_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.application_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get application_id from database file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">application_id or -9</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ted17.db_context_manager.OpenSqlite.dbf">
+<code class="descname">dbf</code><em class="property"> = None</em><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.dbf" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a test</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ted17.db_context_manager.OpenSqlite.script">
 <code class="descname">script</code><span class="sig-paren">(</span><em>sqlscript</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.script" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute an sql script against self.dbf</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sqlscript</strong> &#8211; SQL to run</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ted17.db_context_manager.OpenSqlite.select">
 <code class="descname">select</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of tuples with data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; SQL to run</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of tuples of rows</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -262,18 +433,46 @@ else is like id_mastertable</li>
 <dt id="ted17.db_context_manager.OpenSqlite.set_application_id">
 <code class="descname">set_application_id</code><span class="sig-paren">(</span><em>idv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.set_application_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.set_application_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set application_id to database file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idv</strong> &#8211; application_id value to set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">nothing</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ted17.db_context_manager.OpenSqlite.set_user_version">
 <code class="descname">set_user_version</code><span class="sig-paren">(</span><em>version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.set_user_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.set_user_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set user_version to database file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>version</strong> &#8211; version value to set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ted17.db_context_manager.OpenSqlite.user_version">
 <code class="descname">user_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_context_manager.html#OpenSqlite.user_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_context_manager.OpenSqlite.user_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get user_version from database file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">user_version or -9</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -286,32 +485,48 @@ Creates insert, update, delete sql from dictionaries</p>
 <dl class="function">
 <dt id="ted17.db_sql_create.dic2sql">
 <code class="descclassname">ted17.db_sql_create.</code><code class="descname">dic2sql</code><span class="sig-paren">(</span><em>table</em>, <em>adic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_sql_create.html#dic2sql"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_sql_create.dic2sql" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns sql (insert, update, delete)
-table : The table name
-adic  : dictionary with key names same with table field names
-Returns :</p>
-<blockquote>
-<div>if id  = 0, insert sql
-if id != 0, update sql
-if there is a key in adic with name _d_(value unimportant) delete sql</div></blockquote>
+<dd><p>Dictionary to Sql.</p>
+<p>If adic[&#8216;id&#8217;] == 0 returns insert sql</p>
+<p>If adic[&#8216;id] != 0 returns update sql</p>
+<p>If there is adic[&#8216;_d_&#8217;] returns delete sql</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> &#8211; Table name</li>
+<li><strong>adic</strong> &#8211; dictionary with key names same with table field names</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sql</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.db_sql_create.dic2sql_md">
 <code class="descclassname">ted17.db_sql_create.</code><code class="descname">dic2sql_md</code><span class="sig-paren">(</span><em>tmaster</em>, <em>tdetail</em>, <em>adic</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_sql_create.html#dic2sql_md"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_sql_create.dic2sql_md" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Returns sql inside transaction (insert, update, delete)</dt>
-<dd>for master-detail tables. It uses dic2sql</dd>
-</dl>
-<p>tmaster : master table name
-tdetail : detail table name
-adic    : dictionary to translate to sql. Keys represent</p>
-<blockquote>
-<div>table fields</div></blockquote>
-<dl class="docutils">
-<dt>id_at_end <span class="classifier-delimiter">:</span> <span class="classifier">if foreign key looks like id_* then False</span></dt>
-<dd>if foreign key looks like <a href="#id3"><span class="problematic" id="id4">*</span></a>_id then True</dd>
-</dl>
+<dd><p>Dictionary to transactional SQL.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tmaster</strong> &#8211; master table name</li>
+<li><strong>tdetail</strong> &#8211; detail table name</li>
+<li><strong>adic</strong> &#8211; dictionary to translate to sql. Keys represent table fields</li>
+<li><strong>id_at_end</strong> &#8211; tmaster_id or id_tmaster</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">SQL</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -418,17 +633,10 @@ with_id=False : [&#8216;fld1&#8217;, &#8216;fld2&#8217;, ...]</dd>
 <dl class="function">
 <dt id="ted17.dec.dec">
 <code class="descclassname">ted17.dec.</code><code class="descname">dec</code><span class="sig-paren">(</span><em>poso=0</em>, <em>decimals=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec" title="Permalink to this definition">¶</a></dt>
-<dd><p>use : Given a number, it returns a decimal with a specific number
-of decimals
-input Parameters:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>1.poso <span class="classifier-delimiter">:</span> <span class="classifier">The number for conversion in any format (e.g. string or</span></dt>
-<dd>int ..)</dd>
-</dl>
-<p>2.decimals : The number of decimals (default 2)</p>
-</div></blockquote>
-<p>output: A decimal number</p>
+<dd><p>Decimal with decimal digits = decimals
+:param poso: Mumber in any format (string, float, int, ...)
+:param decimals: Number of decimals (default 2)
+:return: A decimal number</p>
 </dd></dl>
 
 <dl class="function">
@@ -461,11 +669,17 @@ decimals  : Number of decimal digits</p>
 <dl class="function">
 <dt id="ted17.dec.isNum">
 <code class="descclassname">ted17.dec.</code><code class="descname">isNum</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#isNum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.isNum" title="Permalink to this definition">¶</a></dt>
-<dd><p>use: Returns False if val is not a number , True otherwise
-input parameters :</p>
-<blockquote>
-<div>1.val : the value to check against.</div></blockquote>
-<p>output: True or False</p>
+<dd><p>Check if val is number or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; value to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -487,8 +701,81 @@ input parameters :</p>
 </dd></dl>
 
 </div>
-<div class="section" id="ted17-f-find-module">
-<h2>ted17.f_find module<a class="headerlink" href="#ted17-f-find-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-ted17.f_find">
+<span id="ted17-f-find-module"></span><h2>ted17.f_find module<a class="headerlink" href="#module-ted17.f_find" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ted17.f_find.Find">
+<em class="property">class </em><code class="descclassname">ted17.f_find.</code><code class="descname">Find</code><span class="sig-paren">(</span><em>dbf</em>, <em>sql</em>, <em>lbl</em>, <em>parent=None</em>, <em>frm=None</em>, <em>sclose=True</em>, <em>title=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dl class="method">
+<dt id="ted17.f_find.Find.contextMenuEvent">
+<code class="descname">contextMenuEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find.contextMenuEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.f_find.Find.get_values">
+<code class="descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find.get_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find.get_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.f_find.Find.keyPressEvent">
+<code class="descname">keyPressEvent</code><span class="sig-paren">(</span><em>ev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find.keyPressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>use enter or return for fast selection nad form close ...</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.f_find.Find.make_new">
+<code class="descname">make_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find.make_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find.make_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.f_find.Find.populate">
+<code class="descname">populate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find.populate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find.populate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ted17.f_find.Find.signal_make_new">
+<code class="descname">signal_make_new</code><a class="headerlink" href="#ted17.f_find.Find.signal_make_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ted17.f_find.Find.signal_selected_id">
+<code class="descname">signal_selected_id</code><a class="headerlink" href="#ted17.f_find.Find.signal_selected_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.f_find.Find.slot_updated">
+<code class="descname">slot_updated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#Find.slot_updated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.Find.slot_updated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.f_find.item_date">
+<code class="descclassname">ted17.f_find.</code><code class="descname">item_date</code><span class="sig-paren">(</span><em>strv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#item_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.item_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.f_find.item_int">
+<code class="descclassname">ted17.f_find.</code><code class="descname">item_int</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#item_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.item_int" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.f_find.item_num">
+<code class="descclassname">ted17.f_find.</code><code class="descname">item_num</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#item_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.item_num" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.f_find.item_str">
+<code class="descclassname">ted17.f_find.</code><code class="descname">item_str</code><span class="sig-paren">(</span><em>strv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#item_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.item_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="ted17.f_find.sortWidgetItem">
+<em class="property">class </em><code class="descclassname">ted17.f_find.</code><code class="descname">sortWidgetItem</code><span class="sig-paren">(</span><em>text</em>, <em>sortKey</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/f_find.html#sortWidgetItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.f_find.sortWidgetItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QTableWidgetItem</span></code></p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ted17.f_table">
 <span id="ted17-f-table-module"></span><h2>ted17.f_table module<a class="headerlink" href="#module-ted17.f_table" title="Permalink to this headline">¶</a></h2>
@@ -582,14 +869,86 @@ Updated on 26 Mar 2017
 </dd></dl>
 
 </div>
-<div class="section" id="ted17-rpt-tbl-module">
-<h2>ted17.rpt_tbl module<a class="headerlink" href="#ted17-rpt-tbl-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-ted17.rpt_tbl">
+<span id="ted17-rpt-tbl-module"></span><h2>ted17.rpt_tbl module<a class="headerlink" href="#module-ted17.rpt_tbl" title="Permalink to this headline">¶</a></h2>
+<p>Created on 23 Mar 2017</p>
+<p>&#64;author: tedlaz</p>
+<p>version 1.0</p>
+<dl class="function">
+<dt id="ted17.rpt_tbl.align">
+<code class="descclassname">ted17.rpt_tbl.</code><code class="descname">align</code><span class="sig-paren">(</span><em>opt=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.align" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.rpt_tbl.frmt">
+<code class="descclassname">ted17.rpt_tbl.</code><code class="descname">frmt</code><span class="sig-paren">(</span><em>val</em>, <em>typos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#frmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.frmt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ted17.rpt_tbl.gr">
+<code class="descclassname">ted17.rpt_tbl.</code><code class="descname">gr</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.gr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Greek Decimal(2) number or empty space</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.rpt_tbl.gr0">
+<code class="descclassname">ted17.rpt_tbl.</code><code class="descname">gr0</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#gr0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.gr0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Greek Decimal(2) number or 0,00</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.rpt_tbl.grd">
+<code class="descclassname">ted17.rpt_tbl.</code><code class="descname">grd</code><span class="sig-paren">(</span><em>imnia</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#grd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.grd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Greek Date</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ted17.rpt_tbl.grint">
+<code class="descclassname">ted17.rpt_tbl.</code><code class="descname">grint</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#grint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.grint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Greek Decimal(1) number</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ted17.rpt_tbl.qtTableReport">
+<em class="property">class </em><code class="descclassname">ted17.rpt_tbl.</code><code class="descname">qtTableReport</code><span class="sig-paren">(</span><em>f={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#qtTableReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.qtTableReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ted17.rpt_tbl.qtTableReport.printPdf">
+<code class="descname">printPdf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#qtTableReport.printPdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.qtTableReport.printPdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.rpt_tbl.qtTableReport.printPreview">
+<code class="descname">printPreview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl.html#qtTableReport.printPreview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl.qtTableReport.printPreview" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="ted17-rpt-tbl-tst-module">
-<h2>ted17.rpt_tbl_tst module<a class="headerlink" href="#ted17-rpt-tbl-tst-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-ted17.rpt_tbl_tst">
+<span id="ted17-rpt-tbl-tst-module"></span><h2>ted17.rpt_tbl_tst module<a class="headerlink" href="#module-ted17.rpt_tbl_tst" title="Permalink to this headline">¶</a></h2>
+<p>Created on 3 Mar 2013</p>
+<p>&#64;author: tedlaz</p>
+<dl class="class">
+<dt id="ted17.rpt_tbl_tst.testprn1">
+<em class="property">class </em><code class="descclassname">ted17.rpt_tbl_tst.</code><code class="descname">testprn1</code><a class="reference internal" href="_modules/ted17/rpt_tbl_tst.html#testprn1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl_tst.testprn1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dl class="method">
+<dt id="ted17.rpt_tbl_tst.testprn1.onClick">
+<code class="descname">onClick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/rpt_tbl_tst.html#testprn1.onClick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.rpt_tbl_tst.testprn1.onClick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="ted17-selector-module">
-<h2>ted17.selector module<a class="headerlink" href="#ted17-selector-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-ted17.selector">
+<span id="ted17-selector-module"></span><h2>ted17.selector module<a class="headerlink" href="#module-ted17.selector" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ted17.selector.qtfield">
+<code class="descclassname">ted17.selector.</code><code class="descname">qtfield</code><span class="sig-paren">(</span><em>typ</em>, <em>parent</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/selector.html#qtfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.selector.qtfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory for fld classes.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ted17.w_checkbox">
 <span id="ted17-w-checkbox-module"></span><h2>ted17.w_checkbox module<a class="headerlink" href="#module-ted17.w_checkbox" title="Permalink to this headline">¶</a></h2>
@@ -747,12 +1106,30 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <dl class="method">
 <dt id="ted17.w_text.Text.get">
 <code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text.html#Text.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text.Text.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Text value of control</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="ted17.w_text.Text.set">
 <code class="descname">set</code><span class="sig-paren">(</span><em>txt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text.html#Text.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text.Text.set" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Set value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>txt</strong> &#8211; value to set</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -1170,14 +1547,14 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <li><a class="reference internal" href="#module-ted17.db_sql_create">ted17.db_sql_create module</a></li>
 <li><a class="reference internal" href="#module-ted17.dbmanager">ted17.dbmanager module</a></li>
 <li><a class="reference internal" href="#module-ted17.dec">ted17.dec module</a></li>
-<li><a class="reference internal" href="#ted17-f-find-module">ted17.f_find module</a></li>
+<li><a class="reference internal" href="#module-ted17.f_find">ted17.f_find module</a></li>
 <li><a class="reference internal" href="#module-ted17.f_table">ted17.f_table module</a></li>
 <li><a class="reference internal" href="#module-ted17.grup">ted17.grup module</a></li>
 <li><a class="reference internal" href="#module-ted17.parameters">ted17.parameters module</a></li>
 <li><a class="reference internal" href="#module-ted17.rpt_html">ted17.rpt_html module</a></li>
-<li><a class="reference internal" href="#ted17-rpt-tbl-module">ted17.rpt_tbl module</a></li>
-<li><a class="reference internal" href="#ted17-rpt-tbl-tst-module">ted17.rpt_tbl_tst module</a></li>
-<li><a class="reference internal" href="#ted17-selector-module">ted17.selector module</a></li>
+<li><a class="reference internal" href="#module-ted17.rpt_tbl">ted17.rpt_tbl module</a></li>
+<li><a class="reference internal" href="#module-ted17.rpt_tbl_tst">ted17.rpt_tbl_tst module</a></li>
+<li><a class="reference internal" href="#module-ted17.selector">ted17.selector module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_checkbox">ted17.w_checkbox module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_date">ted17.w_date module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_date_or_empty">ted17.w_date_or_empty module</a></li>

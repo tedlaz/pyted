@@ -6,13 +6,17 @@ Creates insert, update, delete sql from dictionaries
 
 def dic2sql(table, adic):
     '''
-    Returns sql (insert, update, delete)
-    table : The table name
-    adic  : dictionary with key names same with table field names
-    Returns :
-     if id  = 0, insert sql
-     if id != 0, update sql
-     if there is a key in adic with name _d_(value unimportant) delete sql
+    Dictionary to Sql.
+
+    If adic['id'] == 0 returns insert sql
+
+    If adic['id] != 0 returns update sql
+
+    If there is adic['_d_'] returns delete sql
+
+    :param table: Table name
+    :param adic: dictionary with key names same with table field names
+    :return: sql
     '''
     fields = []
     values = []
@@ -42,14 +46,13 @@ def dic2sql(table, adic):
 
 def dic2sql_md(tmaster, tdetail, adic, id_at_end=True):
     '''
-    Returns sql inside transaction (insert, update, delete)
-     for master-detail tables. It uses dic2sql
-    tmaster : master table name
-    tdetail : detail table name
-    adic    : dictionary to translate to sql. Keys represent
-              table fields
-    id_at_end : if foreign key looks like id_* then False
-                if foreign key looks like *_id then True
+    Dictionary to transactional SQL.
+
+    :param tmaster: master table name
+    :param tdetail: detail table name
+    :param adic: dictionary to translate to sql. Keys represent table fields
+    :param id_at_end: tmaster_id or id_tmaster
+    :return: SQL
     '''
     sql = dic2sql(tmaster, adic) + '\n'
     if id_at_end:

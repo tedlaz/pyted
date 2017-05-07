@@ -4,11 +4,11 @@ from collections import OrderedDict
 
 
 def isNum(val):  # is val number or not ?
-    """ use: Returns False if val is not a number , True otherwise
-        input parameters :
-            1.val : the value to check against.
-        output: True or False
-        """
+    """Check if val is number or not
+
+    :param val: value to check
+    :return: Boolean
+    """
     try:
         float(val)
     except ValueError:
@@ -18,14 +18,12 @@ def isNum(val):  # is val number or not ?
 
 
 def dec(poso=0, decimals=2):
-    """ use : Given a number, it returns a decimal with a specific number
-        of decimals
-        input Parameters:
-            1.poso : The number for conversion in any format (e.g. string or
-                int ..)
-            2.decimals : The number of decimals (default 2)
-        output: A decimal number
-        """
+    """
+    Decimal with decimal digits = decimals
+    :param poso: Mumber in any format (string, float, int, ...)
+    :param decimals: Number of decimals (default 2)
+    :return: A decimal number
+    """
     if poso is None:
         poso = 0
     PLACES = decimal.Decimal(10) ** (-1 * decimals)

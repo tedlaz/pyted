@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17.rpt_tbl_tst &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ted17.rpt_tbl_tst</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 3 Mar 2013</span>
+
+<span class="sd">@author: tedlaz</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span> <span class="k">as</span> <span class="nn">Qw</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span> <span class="k">as</span> <span class="nn">Qc</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">rpt_tbl</span> <span class="k">as</span> <span class="n">tr</span>
+
+
+<div class="viewcode-block" id="testprn1"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl_tst.testprn1">[docs]</a><span class="k">class</span> <span class="nc">testprn1</span><span class="p">(</span><span class="n">Qw</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Qw</span><span class="o">.</span><span class="n">QDialog</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_DeleteOnClose</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="p">[[</span><span class="sa">u</span><span class="s1">&#39;       ΈΣΟΔΑ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Πωλ.Πρ/ντ.Χονδρικές&#39;</span><span class="p">,</span> <span class="mi">955</span><span class="p">,</span> <span class="mf">181.45</span><span class="p">,</span> <span class="mi">4050</span><span class="p">,</span> <span class="mf">769.5</span><span class="p">,</span> <span class="mi">5005</span><span class="p">,</span> <span class="mf">950.95</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Σύνολα εσόδων κεντρικού&#39;</span><span class="p">,</span> <span class="mi">955</span><span class="p">,</span> <span class="mf">181.45</span><span class="p">,</span> <span class="mi">4050</span><span class="p">,</span> <span class="mf">769.5</span><span class="p">,</span> <span class="mi">5005</span><span class="p">,</span>
+               <span class="mf">950.95</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Γενικό Σύνολο εσόδων&#39;</span><span class="p">,</span> <span class="mi">955</span><span class="p">,</span> <span class="mf">181.45</span><span class="p">,</span> <span class="mi">4050</span><span class="p">,</span> <span class="mf">769.5</span><span class="p">,</span> <span class="mi">5005</span><span class="p">,</span>
+               <span class="mf">950.95</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;       ΈΞΟΔΑ&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Αγορές Α Υλών&#39;</span><span class="p">,</span> <span class="mf">1573.73</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">19743.77</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">21317.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Αγορές παγίων&#39;</span><span class="p">,</span> <span class="mf">366.94</span><span class="p">,</span> <span class="mf">69.71</span><span class="p">,</span> <span class="mf">121.9</span><span class="p">,</span> <span class="mf">23.16</span><span class="p">,</span> <span class="mf">488.84</span><span class="p">,</span> <span class="mf">92.87</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Γεν.Εξοδα ΧΔΕΦ&#39;</span><span class="p">,</span> <span class="mf">129.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">133.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Γεν.Εξ.ΜΔΕΦ&#39;</span><span class="p">,</span> <span class="mf">1055.33</span><span class="p">,</span> <span class="mf">200.55</span><span class="p">,</span> <span class="mf">4170.93</span><span class="p">,</span> <span class="mf">785.71</span><span class="p">,</span> <span class="mf">5226.26</span><span class="p">,</span>
+               <span class="mf">986.26</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Ενοίκια&#39;</span><span class="p">,</span> <span class="mf">3470.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">3970.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Σύνολο εξόδων κεντρικού&#39;</span><span class="p">,</span> <span class="mi">955</span><span class="p">,</span> <span class="mf">181.45</span><span class="p">,</span> <span class="mi">4050</span><span class="p">,</span> <span class="mf">769.5</span><span class="p">,</span> <span class="mi">5005</span><span class="p">,</span>
+               <span class="mf">950.95</span><span class="p">],</span>
+              <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Γενικό σύνολα εξόδων&#39;</span><span class="p">,</span> <span class="mi">955</span><span class="p">,</span> <span class="mf">181.45</span><span class="p">,</span> <span class="mi">4050</span><span class="p">,</span> <span class="mf">769.5</span><span class="p">,</span> <span class="mi">5005</span><span class="p">,</span>
+               <span class="mf">950.95</span><span class="p">],</span>
+              <span class="p">]</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="s1">&#39;pdfName&#39;</span><span class="p">:</span> <span class="s1">&#39;test.pdf&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;fontFamily&#39;</span><span class="p">:</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;ReportHeader1&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Μηνιαία κατάσταση εσόδων-εξόδων&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;ReportHeader2&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Περίοδος : Μάρτιος 2012&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;ReportHeader3&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;headerLabels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Τύπος&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;Από μεταφορά&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;ΦΠΑ&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;Περίοδος&#39;</span><span class="p">,</span>
+                              <span class="sa">u</span><span class="s1">&#39;ΦΠΑ&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;Σε μεταφορά&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;ΦΠΑ&#39;</span><span class="p">],</span>
+             <span class="s1">&#39;columnSizes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+             <span class="s1">&#39;columnToSum&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+             <span class="s1">&#39;columnTypes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+             <span class="s1">&#39;columnAlign&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+             <span class="s1">&#39;footerLine&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="s1">&#39;footerText&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;This is a footer text for testing&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;footerPageNumberText&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;Σελίδα&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">dt</span> <span class="o">*</span> <span class="mi">5</span>
+             <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rep</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">qtTableReport</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">tstButton</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+        <span class="n">tstButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onClick</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">tstButton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        <span class="c1"># self.onClick()</span>
+
+<div class="viewcode-block" id="testprn1.onClick"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl_tst.testprn1.onClick">[docs]</a>    <span class="k">def</span> <span class="nf">onClick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rep</span><span class="o">.</span><span class="n">printPreview</span><span class="p">()</span></div></div>
+        <span class="c1"># self.accept()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Qw</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">testprn1</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

@@ -56,13 +56,17 @@
 
 <div class="viewcode-block" id="dic2sql"><a class="viewcode-back" href="../../ted17.html#ted17.db_sql_create.dic2sql">[docs]</a><span class="k">def</span> <span class="nf">dic2sql</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">adic</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns sql (insert, update, delete)</span>
-<span class="sd">    table : The table name</span>
-<span class="sd">    adic  : dictionary with key names same with table field names</span>
-<span class="sd">    Returns :</span>
-<span class="sd">     if id  = 0, insert sql</span>
-<span class="sd">     if id != 0, update sql</span>
-<span class="sd">     if there is a key in adic with name _d_(value unimportant) delete sql</span>
+<span class="sd">    Dictionary to Sql.</span>
+
+<span class="sd">    If adic[&#39;id&#39;] == 0 returns insert sql</span>
+
+<span class="sd">    If adic[&#39;id] != 0 returns update sql</span>
+
+<span class="sd">    If there is adic[&#39;_d_&#39;] returns delete sql</span>
+
+<span class="sd">    :param table: Table name</span>
+<span class="sd">    :param adic: dictionary with key names same with table field names</span>
+<span class="sd">    :return: sql</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
@@ -92,14 +96,13 @@
 
 <div class="viewcode-block" id="dic2sql_md"><a class="viewcode-back" href="../../ted17.html#ted17.db_sql_create.dic2sql_md">[docs]</a><span class="k">def</span> <span class="nf">dic2sql_md</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">tdetail</span><span class="p">,</span> <span class="n">adic</span><span class="p">,</span> <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns sql inside transaction (insert, update, delete)</span>
-<span class="sd">     for master-detail tables. It uses dic2sql</span>
-<span class="sd">    tmaster : master table name</span>
-<span class="sd">    tdetail : detail table name</span>
-<span class="sd">    adic    : dictionary to translate to sql. Keys represent</span>
-<span class="sd">              table fields</span>
-<span class="sd">    id_at_end : if foreign key looks like id_* then False</span>
-<span class="sd">                if foreign key looks like *_id then True</span>
+<span class="sd">    Dictionary to transactional SQL.</span>
+
+<span class="sd">    :param tmaster: master table name</span>
+<span class="sd">    :param tdetail: detail table name</span>
+<span class="sd">    :param adic: dictionary to translate to sql. Keys represent table fields</span>
+<span class="sd">    :param id_at_end: tmaster_id or id_tmaster</span>
+<span class="sd">    :return: SQL</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">sql</span> <span class="o">=</span> <span class="n">dic2sql</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">adic</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="k">if</span> <span class="n">id_at_end</span><span class="p">:</span>

@@ -14,12 +14,9 @@ print(PATH)
 class OpenSqlite:
     '''
     Context manager class
-    Use it as:
-    with Open_sqlite(dbfilename) as db:
-        your code here ...
     '''
     def __init__(self, dbfile):
-        self.dbf = dbfile
+        self.dbf = dbfile  #: This is a test
         self.active = False
         self.con = None
         self.cur = None
@@ -37,12 +34,19 @@ class OpenSqlite:
             self.con.close()
 
     def script(self, sqlscript):
-        """Execute an sql script against self.dbf"""
+        """Execute an sql script against self.dbf
+
+        :param sqlscript: SQL to run
+        :return: Nothing
+        """
         self.con.executescript(sqlscript)
         return True
 
     def application_id(self):
-        '''Get application_id from database file'''
+        '''Get application_id from database file
+
+        :return: application_id or -9
+        '''
         sql = 'PRAGMA application_id;'
         try:
             rws = self.select(sql)
@@ -51,11 +55,18 @@ class OpenSqlite:
             return -9
 
     def set_application_id(self, idv):
-        '''Set application_id to database file'''
+        '''Set application_id to database file
+
+        :param idv: application_id value to set
+        :return: nothing
+        '''
         self.script('PRAGMA application_id = %s;' % idv)
 
     def user_version(self):
-        '''Get user_version from database file'''
+        '''Get user_version from database file
+
+        :return: user_version or -9
+        '''
         sql = 'PRAGMA user_version;'
         try:
             rws = self.select(sql)
@@ -64,11 +75,19 @@ class OpenSqlite:
             return -9
 
     def set_user_version(self, version):
-        '''Set user_version to database file'''
+        '''Set user_version to database file
+
+        :param version: version value to set
+        :return: Nothing
+        '''
         self.script('PRAGMA user_version = %s;' % version)
 
     def select(self, sql):
-        '''Get a list of tuples with data'''
+        '''Get a list of tuples with data
+
+        :param sql: SQL to run
+        :return: list of tuples of rows
+        '''
         self.cur.execute(sql)
         rows = self.cur.fetchall()
         return rows

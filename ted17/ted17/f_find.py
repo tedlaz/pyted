@@ -2,8 +2,8 @@
 
 import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
-from tedutil import dec
-from tedutil import db
+from . import dec
+from . import db
 from decimal import Decimal as tdec
 
 

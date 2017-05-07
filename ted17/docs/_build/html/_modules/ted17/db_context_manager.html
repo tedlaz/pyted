@@ -64,12 +64,9 @@
 <div class="viewcode-block" id="OpenSqlite"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite">[docs]</a><span class="k">class</span> <span class="nc">OpenSqlite</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Context manager class</span>
-<span class="sd">    Use it as:</span>
-<span class="sd">    with Open_sqlite(dbfilename) as db:</span>
-<span class="sd">        your code here ...</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbfile</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dbf</span> <span class="o">=</span> <span class="n">dbfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbf</span> <span class="o">=</span> <span class="n">dbfile</span>  <span class="c1">#: This is a test</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="kc">None</span>
@@ -87,12 +84,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="OpenSqlite.script"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.script">[docs]</a>    <span class="k">def</span> <span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqlscript</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Execute an sql script against self.dbf&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Execute an sql script against self.dbf</span>
+
+<span class="sd">        :param sqlscript: SQL to run</span>
+<span class="sd">        :return: Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">sqlscript</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="OpenSqlite.application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.application_id">[docs]</a>    <span class="k">def</span> <span class="nf">application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get application_id from database file&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Get application_id from database file</span>
+
+<span class="sd">        :return: application_id or -9</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA application_id;&#39;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
@@ -101,11 +105,18 @@
             <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
 
 <div class="viewcode-block" id="OpenSqlite.set_application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.set_application_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idv</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set application_id to database file&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Set application_id to database file</span>
+
+<span class="sd">        :param idv: application_id value to set</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA application_id = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">idv</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OpenSqlite.user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.user_version">[docs]</a>    <span class="k">def</span> <span class="nf">user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get user_version from database file&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Get user_version from database file</span>
+
+<span class="sd">        :return: user_version or -9</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA user_version;&#39;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
@@ -114,11 +125,19 @@
             <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
 
 <div class="viewcode-block" id="OpenSqlite.set_user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.set_user_version">[docs]</a>    <span class="k">def</span> <span class="nf">set_user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set user_version to database file&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Set user_version to database file</span>
+
+<span class="sd">        :param version: version value to set</span>
+<span class="sd">        :return: Nothing</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA user_version = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">version</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OpenSqlite.select"><a class="viewcode-back" href="../../ted17.html#ted17.db_context_manager.OpenSqlite.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get a list of tuples with data&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Get a list of tuples with data</span>
+
+<span class="sd">        :param sql: SQL to run</span>
+<span class="sd">        :return: list of tuples of rows</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">rows</span></div>

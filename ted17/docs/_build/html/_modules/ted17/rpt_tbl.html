@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ted17.rpt_tbl &#8212; ted17 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ted17.rpt_tbl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 23 Mar 2017</span>
+
+<span class="sd">@author: tedlaz</span>
+
+<span class="sd">version 1.0</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">PyQt5.QtWidgets</span> <span class="k">as</span> <span class="nn">Qw</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtCore</span> <span class="k">as</span> <span class="nn">Qc</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtGui</span> <span class="k">as</span> <span class="nn">Qg</span>
+<span class="kn">import</span> <span class="nn">PyQt5.QtPrintSupport</span> <span class="k">as</span> <span class="nn">Qp</span>
+<span class="c1"># from PyQt4 import QtGui, QtCore, Qt</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">dec</span>
+
+<span class="kn">import</span> <span class="nn">decimal</span>
+
+
+<span class="c1"># Utility Functions</span>
+<div class="viewcode-block" id="gr"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.gr">[docs]</a><span class="k">def</span> <span class="nf">gr</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="s1">&#39;Returns Greek Decimal(2) number or empty space&#39;</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">dec</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.004</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">number</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="gr0"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.gr0">[docs]</a><span class="k">def</span> <span class="nf">gr0</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="s1">&#39;Returns Greek Decimal(2) number or 0,00&#39;</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.004</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;0,00&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">number</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="grint"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.grint">[docs]</a><span class="k">def</span> <span class="nf">grint</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="s1">&#39;Returns Greek Decimal(1) number&#39;</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.004</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.1f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">number</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">a</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="grd"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.grd">[docs]</a><span class="k">def</span> <span class="nf">grd</span><span class="p">(</span><span class="n">imnia</span><span class="p">):</span>
+    <span class="s1">&#39;Returns Greek Date&#39;</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">imnia</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="align"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.align">[docs]</a><span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="n">opt</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">opt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QTextOption</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span> <span class="o">|</span> <span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignVCenter</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">opt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QTextOption</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span> <span class="o">|</span> <span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignVCenter</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QTextOption</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span> <span class="o">|</span> <span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignVCenter</span><span class="p">)</span>
+    <span class="n">option</span><span class="o">.</span><span class="n">setWrapMode</span><span class="p">(</span><span class="n">Qg</span><span class="o">.</span><span class="n">QTextOption</span><span class="o">.</span><span class="n">WordWrap</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">option</span></div>
+
+
+<div class="viewcode-block" id="frmt"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.frmt">[docs]</a><span class="k">def</span> <span class="nf">frmt</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">typos</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">typos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># String</span>
+        <span class="n">frmtVal</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">val</span>
+    <span class="k">elif</span> <span class="n">typos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># Integer</span>
+        <span class="n">frmtVal</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">val</span>
+    <span class="k">elif</span> <span class="n">typos</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Decimal</span>
+        <span class="n">frmtVal</span> <span class="o">=</span> <span class="n">gr</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">typos</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># Date</span>
+        <span class="n">frmtVal</span> <span class="o">=</span> <span class="n">grd</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">typos</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># Decimal with one decimal digit</span>
+        <span class="n">frmtVal</span> <span class="o">=</span> <span class="n">grint</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">frmtVal</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">frmtVal</span></div>
+
+
+<div class="viewcode-block" id="qtTableReport"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.qtTableReport">[docs]</a><span class="k">class</span> <span class="nc">qtTableReport</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printer</span> <span class="o">=</span> <span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="p">()</span>
+        <span class="c1"># Set portrait or landscape</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setOrientation</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">Portrait</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setOrientation</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">Landscape</span><span class="p">)</span>
+        <span class="n">fontSize</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="n">widthOffset</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="c1"># Set Fonts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead1Font</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;fontFamily&#39;</span><span class="p">],</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead1Font</span><span class="o">.</span><span class="n">setBold</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead2Font</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;fontFamily&#39;</span><span class="p">],</span> <span class="mi">12</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead2Font</span><span class="o">.</span><span class="n">setBold</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead2Font</span><span class="o">.</span><span class="n">setItalic</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead3Font</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;fontFamily&#39;</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__RHead3Font</span><span class="o">.</span><span class="n">setItalic</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__TableHeadFont</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;fontFamily&#39;</span><span class="p">],</span> <span class="n">fontSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__TableHeadFont</span><span class="o">.</span><span class="n">setBold</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__TableLineFont</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;fontFamily&#39;</span><span class="p">],</span> <span class="n">fontSize</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__FooterFont</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;fontFamily&#39;</span><span class="p">],</span> <span class="n">fontSize</span><span class="p">)</span>
+        <span class="c1"># self.__FooterFont.setItalic(True)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableMetrics</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QFontMetrics</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__TableLineFont</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableHeaderHeight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tableMetrics</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tableMetrics</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1.7</span><span class="p">)</span>
+        <span class="c1"># Το πλάτος των στηλών</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tableMetrics</span><span class="o">.</span><span class="n">width</span><span class="p">(</span><span class="s1">&#39;w&#39;</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">widthOffset</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnSizes&#39;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">totalColWidths</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">)</span>
+
+        <span class="c1"># Ο αριθμός των στηλών</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__colNo</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__drawCol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__drawCenteredText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">QRectF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span><span class="p">,</span>
+                                   <span class="mi">31</span><span class="p">),</span>
+                         <span class="n">text</span><span class="p">,</span>
+                         <span class="n">align</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="n">spaceAfter</span>
+
+    <span class="k">def</span> <span class="nf">__drawReportHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">hspaceAfter</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawCenteredText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;ReportHeader1&#39;</span><span class="p">],</span>
+                                <span class="n">painter</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__RHead1Font</span><span class="p">,</span>
+                                <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawCenteredText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;ReportHeader2&#39;</span><span class="p">],</span>
+                                <span class="n">painter</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__RHead2Font</span><span class="p">,</span>
+                                <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawCenteredText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;ReportHeader3&#39;</span><span class="p">],</span>
+                                <span class="n">painter</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__RHead3Font</span><span class="p">,</span>
+                                <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="n">hspaceAfter</span>
+
+    <span class="k">def</span> <span class="nf">__fixPainterBug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="s1">&#39;This is a workaround for painter to paint lines properly&#39;</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoPen</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__drawPageHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__drawRectWithText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__drawTableHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__TableHeadFont</span><span class="p">)</span>
+        <span class="n">pen</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QPen</span><span class="p">()</span>
+        <span class="n">pen</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+        <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;headerLabels&#39;</span><span class="p">])):</span>
+            <span class="c1"># painter.drawRect(self.x,self.y,self.colWidths[i],self.tableHeaderHeight)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableHeaderHeight</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableHeaderHeight</span><span class="p">)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">QRectF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">6</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">tableHeaderHeight</span> <span class="o">-</span> <span class="mi">6</span><span class="p">),</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;headerLabels&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+                             <span class="n">align</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableHeaderHeight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__drawTableLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">-</span> <span class="mi">95</span><span class="p">:</span>
+                <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__drawNewPage</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+                <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__TableLineFont</span><span class="p">)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">black</span> <span class="o">|</span> <span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">DashLine</span><span class="p">)</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__colNo</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">dlen</span><span class="p">:</span>
+                    <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="n">pen</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QPen</span><span class="p">()</span>
+                    <span class="n">pen</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+                    <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="n">painter</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
+                    <span class="n">painter</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span><span class="p">)</span>
+                    <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+                <span class="n">painter</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span><span class="p">)</span>
+                <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">QRectF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">6</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span> <span class="o">-</span> <span class="mi">6</span><span class="p">),</span>
+                                 <span class="n">frmt</span><span class="p">(</span><span class="n">el</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnTypes&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span>
+                                 <span class="n">align</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnAlign&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__drawTableFooter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnToSum&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">sumArr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnToSum&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">el</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sumArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sumArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__colNo</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnToSum&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sumArr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">el</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="mi">10</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__TableHeadFont</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__colNo</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnToSum&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QRectF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">6</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span> <span class="o">-</span> <span class="mi">6</span><span class="p">),</span>
+                                 <span class="n">frmt</span><span class="p">(</span><span class="n">sumArr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnTypes&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span>
+                                 <span class="n">align</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;columnAlign&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colWidths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1"># painter.drawRect(self.xLeftMargin,self.y,sum(self.colWidths),self.tableColumnHeight)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableColumnHeight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__drawPageFooter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">pen</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QPen</span><span class="p">()</span>
+        <span class="n">pen</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="n">old_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yFooter</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;footerLine&#39;</span><span class="p">]:</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="c1"># painter.drawLine(self.x,self.y,self.totalColWidths+self.xLeftMargin,self.y)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__FooterFont</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;footerPageNumberText&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">finalText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;footerText&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">finalText</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;footerText&#39;</span><span class="p">]</span>
+            <span class="n">selText</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;footerPageNumberText&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pageNo</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">QRectF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span><span class="p">,</span>
+                                   <span class="mi">31</span><span class="p">),</span>
+                         <span class="n">finalText</span><span class="p">,</span>
+                         <span class="n">align</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">Qc</span><span class="o">.</span><span class="n">QRectF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span><span class="p">,</span>
+                                   <span class="mi">31</span><span class="p">),</span>
+                         <span class="n">selText</span><span class="p">,</span> <span class="n">align</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">old_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__drawNewPage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">):</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">newPage</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pageNo</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yTopMargin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawPageFooter</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawTableHeader</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__tstPoly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">siz</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">90</span>
+
+        <span class="k">def</span> <span class="nf">poly</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPolygonF</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QPointF</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">),</span> <span class="n">pts</span><span class="p">))</span>
+        <span class="n">xsiz</span> <span class="o">=</span> <span class="n">siz</span>
+        <span class="n">ysiz</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">siz</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">ysiz</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">xsiz</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">ysiz</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">xsiz</span><span class="p">,</span> <span class="n">y</span><span class="p">]]</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[:]</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">drawPolyline</span><span class="p">(</span><span class="n">poly</span><span class="p">(</span><span class="n">pts</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">xsiz</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="mi">3</span><span class="p">),</span>
+                         <span class="n">QtCore</span><span class="o">.</span><span class="n">QPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">num</span> <span class="o">*</span> <span class="n">xsiz</span><span class="p">),</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;height : </span><span class="si">{0}</span><span class="s1">, width : </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">width</span><span class="p">()))</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">drawRect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">yTopMargin</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span> <span class="o">-</span> <span class="mi">36</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">yTopMargin</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__drawReport</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Here we assemble the pieces to make the final report&#39;&#39;&#39;</span>
+        <span class="n">painter</span> <span class="o">=</span> <span class="n">Qg</span><span class="o">.</span><span class="n">QPainter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">pageRect</span><span class="p">()</span>
+        <span class="c1"># initialize print Cursor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xLeftMargin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">52</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yTopMargin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yFooter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pageRect</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">-</span> <span class="mi">54</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pageNo</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawReportHeader</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="c1"># self.__drawPageHeader()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__fixPainterBug</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawPageFooter</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawTableHeader</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawTableLines</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="c1"># self.__tstPoly(painter)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__drawTableFooter</span><span class="p">(</span><span class="n">painter</span><span class="p">)</span>
+        <span class="n">painter</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+<div class="viewcode-block" id="qtTableReport.printPreview"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.qtTableReport.printPreview">[docs]</a>    <span class="k">def</span> <span class="nf">printPreview</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;pdfName&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setOutputFormat</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">PdfFormat</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setOutputFileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;pdfName&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setPaperSize</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">A4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setFullPage</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pp</span> <span class="o">=</span> <span class="n">Qp</span><span class="o">.</span><span class="n">QPrintPreviewDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="p">)</span>
+        <span class="n">pp</span><span class="o">.</span><span class="n">paintRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__drawReport</span><span class="p">)</span>
+        <span class="n">pp</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="qtTableReport.printPdf"><a class="viewcode-back" href="../../ted17.html#ted17.rpt_tbl.qtTableReport.printPdf">[docs]</a>    <span class="k">def</span> <span class="nf">printPdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;pdfName&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setOutputFormat</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">PdfFormat</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setOutputFileName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;pdfName&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setPaperSize</span><span class="p">(</span><span class="n">Qp</span><span class="o">.</span><span class="n">QPrinter</span><span class="o">.</span><span class="n">A4</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printer</span><span class="o">.</span><span class="n">setFullPage</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__drawReport</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ted17 0.01 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Ted Lazaros.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

@@ -7,7 +7,7 @@ Created on 3 Mar 2013
 import sys
 import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
-import rpt_tbl as tr
+from . import rpt_tbl as tr
 
 
 class testprn1(Qw.QDialog):

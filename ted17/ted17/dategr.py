@@ -5,8 +5,23 @@ import datetime
 
 def date2gr(date, removezero=False):
     '''
-    date : iso date yyyy-mm-dd
-    returns date: dd/mm/yyyy
+    :param date: iso date 'yyyy-mm-dd'
+    :type date: iso_date
+    :param removezero: Month, Day without trailing zeros (If True '2017-01-09'
+     => '9/1/2017'. If False '2017-01-09' => '09/01/2017')
+    :return: 'dd/mm/yyyy'
+    :rtype: greek date
+    :raises ZeroDivisionError: when divisor = 0
+
+    .. note:: This function can accept :class:`int` parameters too.
+
+    .. warning:: ``divisor=0`` will cause :exc:`ZeroDivisionError` exception!
+
+    Example::
+
+        result = division(a, b)
+        for i in range(100):
+            print i
     '''
     def remove_zero(stra):
         """Remove trailing zeros"""
@@ -24,7 +39,11 @@ def date2gr(date, removezero=False):
 
 
 def grdate2iso(greek_date):
-    """Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)"""
+    """Return iso date (yyy-mm-dd) from greek date(dd/mm/yyyy)
+
+    :param greek_date: Date of the form 'dd/mm/yyyy'
+    :return: Iso Date ('yyyy-mm-dd')
+    """
     assert len(greek_date) in (8, 9, 10)
     assert len(greek_date.replace('/', '')) + 2 == len(greek_date)
     day, month, year = greek_date.split('/')
@@ -36,20 +55,23 @@ def grdate2iso(greek_date):
 
 
 def getymd_from_iso(isodate):
-    '''
-    Year, month, date From isodate
+    '''Year, month, day From isodate
+
+    :param isodate: Date of the form 'yyyy-mm-dd'
+    :return: int year, int month, int day
     '''
     assert isodate[4] == '-'
     assert isodate[7] == '-'
-    year, month, date = isodate.split('-')
-    return int(year), int(month), int(date)
+    year, month, day = isodate.split('-')
+    return int(year), int(month), int(day)
 
 
 def saizon(iso_date, startmonth=10):
-    '''
-    Επιστρέφει ετήσιο διάστημα από μήνα
-    dat : Ημερομηνία
-    startmonth : Μήνας που αρχίζει η σαιζόν
+    '''Find the yearfrom-yearto period of iso_date
+
+    :param iso_date: Date of the form 'yyyy-mm-dd'
+    :param startmonth: int month value to split year
+    :return: 'year-year_next(startmonth)'
     '''
     startmonth = int(startmonth)  # Make sure startmonth is integer
     assert startmonth <= 12
@@ -61,8 +83,10 @@ def saizon(iso_date, startmonth=10):
 
 
 def week(iso_date):
-    '''
-    returns year-weekNumber
+    '''Evaluate year-weeknumber of iso_date
+
+    :param iso_date: Date of the form 'yyyy-mm-dd'
+    :return: year-weekNumber
     '''
     year, month, day = getymd_from_iso(iso_date)
     week_number = '%s' % datetime.date(year, month, day).isocalendar()[1]
@@ -71,13 +95,16 @@ def week(iso_date):
     return '%sw%s' % (year, week_number)
 
 
-def period(date, diast=2):
-    '''
-    επιστρέφει δίμηνο, τρίμηνο, τετράμηνο, εξάμηνο
+def period(iso_date, diast=2):
+    '''Find the timespace iso_dete belongs
+
+    :param iso_date: Date of the form 'yyyy-mm-dd'
+    :param diast: Time space
+    :return: 'year-diast-diastv'
     '''
     assert diast in (2, 3, 4, 6)
     dval = {2: u'οΔίμ', 3: u'οΤρίμ', 4: u'οΤετρ', 6: u'οΕξάμ'}
-    year, month, date = getymd_from_iso(date)
+    year, month, date = getymd_from_iso(iso_date)
     imonth = int(month)
     aperiod = imonth // diast
     ypoloipo = imonth % diast
