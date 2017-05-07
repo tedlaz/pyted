@@ -8,7 +8,7 @@
     
     <title>ted17.dategr &#8212; ted17 0.01 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -49,7 +49,12 @@
             
   <h1>Source code for ted17.dategr</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Module dategr.py&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">dategr - A library to work with Greek Format Dates</span>
+<span class="sd">--------------------------------------------------</span>
+<span class="sd">dategr is a libray that provides a set of functions to work with Greek</span>
+<span class="sd">Formatted Dates.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 
@@ -60,18 +65,14 @@
 <span class="sd">    :param removezero: Month, Day without trailing zeros (If True &#39;2017-01-09&#39;</span>
 <span class="sd">     =&gt; &#39;9/1/2017&#39;. If False &#39;2017-01-09&#39; =&gt; &#39;09/01/2017&#39;)</span>
 <span class="sd">    :return: &#39;dd/mm/yyyy&#39;</span>
-<span class="sd">    :rtype: greek date</span>
-<span class="sd">    :raises ZeroDivisionError: when divisor = 0</span>
-
-<span class="sd">    .. note:: This function can accept :class:`int` parameters too.</span>
-
-<span class="sd">    .. warning:: ``divisor=0`` will cause :exc:`ZeroDivisionError` exception!</span>
 
 <span class="sd">    Example::</span>
 
-<span class="sd">        result = division(a, b)</span>
-<span class="sd">        for i in range(100):</span>
-<span class="sd">            print i</span>
+<span class="sd">        &gt;&gt;&gt; import dategr</span>
+<span class="sd">        &gt;&gt;&gt; dategr.date2gr(&#39;2017-01-15)</span>
+<span class="sd">        &#39;15/01/2017&#39;</span>
+<span class="sd">        &gt;&gt;&gt; dategr.dat2gr(&#39;2017-01-15, True)</span>
+<span class="sd">        &#39;15/1/2017&#39;</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">remove_zero</span><span class="p">(</span><span class="n">stra</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove trailing zeros&quot;&quot;&quot;</span>
@@ -163,28 +164,54 @@
     <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">aperiod</span><span class="p">,</span> <span class="n">dval</span><span class="p">[</span><span class="n">diast</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="group_selector"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.group_selector">[docs]</a><span class="k">def</span> <span class="nf">group_selector</span><span class="p">(</span><span class="n">adate</span><span class="p">,</span> <span class="n">per</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selector&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="group_selector"><a class="viewcode-back" href="../../ted17.html#ted17.dategr.group_selector">[docs]</a><span class="k">def</span> <span class="nf">group_selector</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="n">per</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selector</span>
+
+<span class="sd">    :param iso_date: Iso Date to transform</span>
+<span class="sd">    :param per: Text in range (d, m, y, m2, m3, m4, m6, w, s)</span>
+
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | per |  Time Interval  |</span>
+<span class="sd">    +=====+=================+</span>
+<span class="sd">    | m   | month           |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | d   | full date       |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | y   | year            |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | m2  | Dimino          |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | m3  | Trimino         |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | m4  | Tetramino       |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | m6  | Ejamino         |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | w   | Week            |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    | s   | Season          |</span>
+<span class="sd">    +-----+-----------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>  <span class="c1"># Όλη η ημερομηνία</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">adate</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>  <span class="c1"># Έτος + μήνας ####-##</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">adate</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>  <span class="c1"># Έτος μόνο</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">adate</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m2&#39;</span><span class="p">:</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">adate</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m3&#39;</span><span class="p">:</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">adate</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m4&#39;</span><span class="p">:</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">adate</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m6&#39;</span><span class="p">:</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">adate</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">week</span><span class="p">(</span><span class="n">adate</span><span class="p">)</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">week</span><span class="p">(</span><span class="n">iso_date</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">saizon</span><span class="p">(</span><span class="n">adate</span><span class="p">)</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">saizon</span><span class="p">(</span><span class="n">iso_date</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># Default is Year</span>
-        <span class="n">dat</span> <span class="o">=</span> <span class="n">adate</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">dat</span></div>
 </pre></div>
 

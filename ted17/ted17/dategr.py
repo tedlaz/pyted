@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Module dategr.py"""
+"""
+dategr - A library to work with Greek Format Dates
+--------------------------------------------------
+dategr is a libray that provides a set of functions to work with Greek
+Formatted Dates.
+"""
 import datetime
 
 
@@ -10,18 +15,14 @@ def date2gr(date, removezero=False):
     :param removezero: Month, Day without trailing zeros (If True '2017-01-09'
      => '9/1/2017'. If False '2017-01-09' => '09/01/2017')
     :return: 'dd/mm/yyyy'
-    :rtype: greek date
-    :raises ZeroDivisionError: when divisor = 0
-
-    .. note:: This function can accept :class:`int` parameters too.
-
-    .. warning:: ``divisor=0`` will cause :exc:`ZeroDivisionError` exception!
 
     Example::
 
-        result = division(a, b)
-        for i in range(100):
-            print i
+        >>> import dategr
+        >>> dategr.date2gr('2017-01-15)
+        '15/01/2017'
+        >>> dategr.dat2gr('2017-01-15, True)
+        '15/1/2017'
     '''
     def remove_zero(stra):
         """Remove trailing zeros"""
@@ -113,26 +114,52 @@ def period(iso_date, diast=2):
     return '%s-%s%s' % (year, aperiod, dval[diast])
 
 
-def group_selector(adate, per='m'):
-    """Selector"""
+def group_selector(iso_date, per='m'):
+    """Selector
+
+    :param iso_date: Iso Date to transform
+    :param per: Text in range (d, m, y, m2, m3, m4, m6, w, s)
+
+    +-----+-----------------+
+    | per |  Time Interval  |
+    +=====+=================+
+    | m   | month           |
+    +-----+-----------------+
+    | d   | full date       |
+    +-----+-----------------+
+    | y   | year            |
+    +-----+-----------------+
+    | m2  | Dimino          |
+    +-----+-----------------+
+    | m3  | Trimino         |
+    +-----+-----------------+
+    | m4  | Tetramino       |
+    +-----+-----------------+
+    | m6  | Ejamino         |
+    +-----+-----------------+
+    | w   | Week            |
+    +-----+-----------------+
+    | s   | Season          |
+    +-----+-----------------+
+    """
     if per == 'd':  # Όλη η ημερομηνία
-        dat = adate[:10]
+        dat = iso_date[:10]
     elif per == 'm':  # Έτος + μήνας ####-##
-        dat = adate[:7]
+        dat = iso_date[:7]
     elif per == 'y':  # Έτος μόνο
-        dat = adate[:4]
+        dat = iso_date[:4]
     elif per == 'm2':
-        dat = period(adate, 2)
+        dat = period(iso_date, 2)
     elif per == 'm3':
-        dat = period(adate, 3)
+        dat = period(iso_date, 3)
     elif per == 'm4':
-        dat = period(adate, 4)
+        dat = period(iso_date, 4)
     elif per == 'm6':
-        dat = period(adate, 6)
+        dat = period(iso_date, 6)
     elif per == 'w':
-        dat = week(adate)
+        dat = week(iso_date)
     elif per == 's':
-        dat = saizon(adate)
+        dat = saizon(iso_date)
     else:  # Default is Year
-        dat = adate[:4]
+        dat = iso_date[:4]
     return dat

@@ -8,7 +8,7 @@
     
     <title>ted17 package &#8212; ted17 0.01 documentation</title>
     
-    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -57,7 +57,10 @@
 </div>
 <div class="section" id="module-ted17.dategr">
 <span id="ted17-dategr-module"></span><h2>ted17.dategr module<a class="headerlink" href="#module-ted17.dategr" title="Permalink to this headline">¶</a></h2>
-<p>Module dategr.py</p>
+<div class="section" id="dategr-a-library-to-work-with-greek-format-dates">
+<h3>dategr - A library to work with Greek Format Dates<a class="headerlink" href="#dategr-a-library-to-work-with-greek-format-dates" title="Permalink to this headline">¶</a></h3>
+<p>dategr is a libray that provides a set of functions to work with Greek
+Formatted Dates.</p>
 <dl class="function">
 <dt id="ted17.dategr.date2gr">
 <code class="descclassname">ted17.dategr.</code><code class="descname">date2gr</code><span class="sig-paren">(</span><em>date</em>, <em>removezero=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#date2gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.date2gr" title="Permalink to this definition">¶</a></dt>
@@ -72,29 +75,17 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">&#8216;dd/mm/yyyy&#8217;</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">greek date</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ZeroDivisionError</strong> &#8211; when divisor = 0</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">&#8216;dd/mm/yyyy&#8217;</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This function can accept <code class="xref py py-class docutils literal"><span class="pre">int</span></code> parameters too.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last"><code class="docutils literal"><span class="pre">divisor=0</span></code> will cause <code class="xref py py-exc docutils literal"><span class="pre">ZeroDivisionError</span></code> exception!</p>
-</div>
 <p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">division</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="nb">print</span> <span class="n">i</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">dategr</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dategr</span><span class="o">.</span><span class="n">date2gr</span><span class="p">(</span><span class="s1">&#39;2017-01-15)</span>
+<span class="go">&#39;15/01/2017&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dategr</span><span class="o">.</span><span class="n">dat2gr</span><span class="p">(</span><span class="s1">&#39;2017-01-15, True)</span>
+<span class="go">&#39;15/1/2017&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -133,8 +124,60 @@
 
 <dl class="function">
 <dt id="ted17.dategr.group_selector">
-<code class="descclassname">ted17.dategr.</code><code class="descname">group_selector</code><span class="sig-paren">(</span><em>adate</em>, <em>per='m'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#group_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.group_selector" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ted17.dategr.</code><code class="descname">group_selector</code><span class="sig-paren">(</span><em>iso_date</em>, <em>per='m'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dategr.html#group_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dategr.group_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selector</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iso_date</strong> &#8211; Iso Date to transform</li>
+<li><strong>per</strong> &#8211; Text in range (d, m, y, m2, m3, m4, m6, w, s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">per</th>
+<th class="head">Time Interval</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>m</td>
+<td>month</td>
+</tr>
+<tr class="row-odd"><td>d</td>
+<td>full date</td>
+</tr>
+<tr class="row-even"><td>y</td>
+<td>year</td>
+</tr>
+<tr class="row-odd"><td>m2</td>
+<td>Dimino</td>
+</tr>
+<tr class="row-even"><td>m3</td>
+<td>Trimino</td>
+</tr>
+<tr class="row-odd"><td>m4</td>
+<td>Tetramino</td>
+</tr>
+<tr class="row-even"><td>m6</td>
+<td>Ejamino</td>
+</tr>
+<tr class="row-odd"><td>w</td>
+<td>Week</td>
+</tr>
+<tr class="row-even"><td>s</td>
+<td>Season</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -195,6 +238,7 @@
 </table>
 </dd></dl>
 
+</div>
 </div>
 <div class="section" id="module-ted17.db">
 <span id="ted17-db-module"></span><h2>ted17.db module<a class="headerlink" href="#module-ted17.db" title="Permalink to this headline">¶</a></h2>
@@ -1541,7 +1585,10 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
   <ul>
 <li><a class="reference internal" href="#">ted17 package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-ted17.dategr">ted17.dategr module</a></li>
+<li><a class="reference internal" href="#module-ted17.dategr">ted17.dategr module</a><ul>
+<li><a class="reference internal" href="#dategr-a-library-to-work-with-greek-format-dates">dategr - A library to work with Greek Format Dates</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-ted17.db">ted17.db module</a></li>
 <li><a class="reference internal" href="#module-ted17.db_context_manager">ted17.db_context_manager module</a></li>
 <li><a class="reference internal" href="#module-ted17.db_sql_create">ted17.db_sql_create module</a></li>

@@ -1,0 +1,21 @@
+Example document string
+
+    '''
+    :param date: iso date 'yyyy-mm-dd'
+    :type date: iso_date
+    :param removezero: Month, Day without trailing zeros (If True '2017-01-09'
+     => '9/1/2017'. If False '2017-01-09' => '09/01/2017')
+    :return: 'dd/mm/yyyy'
+    :rtype: greek date
+    :raises ZeroDivisionError: when divisor = 0
+
+    .. note:: This function can accept :class:`int` parameters too.
+
+    .. warning:: ``divisor=0`` will cause :exc:`ZeroDivisionError` exception!
+
+    Example::
+
+        result = division(a, b)
+        for i in range(100):
+            print(i)
+    '''
