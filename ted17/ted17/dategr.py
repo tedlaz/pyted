@@ -118,7 +118,7 @@ def group_selector(iso_date, per='m'):
     """Selector
 
     :param iso_date: Iso Date to transform
-    :param per: Text in range (d, m, y, m2, m3, m4, m6, w, s)
+    :param per: Text value according to following table
 
     +-----+-----------------+
     | per |  Time Interval  |
@@ -129,24 +129,24 @@ def group_selector(iso_date, per='m'):
     +-----+-----------------+
     | y   | year            |
     +-----+-----------------+
-    | m2  | Dimino          |
+    | m2  | Βimonthly       |
     +-----+-----------------+
-    | m3  | Trimino         |
+    | m3  | Quarter         |
     +-----+-----------------+
-    | m4  | Tetramino       |
+    | m4  | Quadrimester    |
     +-----+-----------------+
-    | m6  | Ejamino         |
+    | m6  | Semester        |
     +-----+-----------------+
     | w   | Week            |
     +-----+-----------------+
     | s   | Season          |
     +-----+-----------------+
     """
-    if per == 'd':  # Όλη η ημερομηνία
+    if per == 'd':  #: Όλη η ημερομηνία
         dat = iso_date[:10]
-    elif per == 'm':  # Έτος + μήνας ####-##
+    elif per == 'm':  #: Έτος + μήνας
         dat = iso_date[:7]
-    elif per == 'y':  # Έτος μόνο
+    elif per == 'y':  #: Έτος μόνο
         dat = iso_date[:4]
     elif per == 'm2':
         dat = period(iso_date, 2)

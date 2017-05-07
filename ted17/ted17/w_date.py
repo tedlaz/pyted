@@ -22,14 +22,14 @@ class Date(Qw.QDateEdit):
         self.setMaximumHeight(par.MAX_HEIGHT)
         self.setLocale(par.grlocale)
 
-    def set(self, sqliteDate):
-        if sqliteDate:
-            if len(sqliteDate) > 10:
-                sqliteDate = sqliteDate[:10]
-            yr, mn, dt = sqliteDate.split('-')
-            qd = Qc.QDate()
-            qd.setDate(int(yr), int(mn), int(dt))
-            self.setDate(qd)
+    def set(self, iso_date):
+        if iso_date:
+            if len(iso_date) > 10:
+                iso_date = iso_date[:10]
+            yyy, mmm, ddd = iso_date.split('-')
+            qdate = Qc.QDate()
+            qdate.setDate(int(yyy), int(mmm), int(ddd))
+            self.setDate(qdate)
         else:
             self.setDate(Qc.QDate.currentDate())
 

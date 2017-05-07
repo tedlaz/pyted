@@ -1,5 +1,5 @@
 '''
-Module db_sql_create.py
+Module db_sql.py
 Creates insert, update, delete sql from dictionaries
 '''
 

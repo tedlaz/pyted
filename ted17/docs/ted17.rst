@@ -20,18 +20,10 @@ ted17\.db module
     :undoc-members:
     :show-inheritance:
 
-ted17\.db\_context\_manager module
-----------------------------------
+ted17\.db\_sql module
+---------------------
 
-.. automodule:: ted17.db_context_manager
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-ted17\.db\_sql\_create module
------------------------------
-
-.. automodule:: ted17.db_sql_create
+.. automodule:: ted17.db_sql
     :members:
     :undoc-members:
     :show-inheritance:

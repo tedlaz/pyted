@@ -49,30 +49,21 @@
             
   <h1>Source code for ted17.db</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Database sqlite3 actions</span>
+<span class="sd">Module db.py</span>
+<span class="sd">Connect to sqlite database and perform crud functions</span>
+
+<span class="sd">Example::</span>
+
+<span class="sd">&gt;&gt;&gt; from ted17 import db_context_manager as dbc</span>
+<span class="sd">&gt;&gt;&gt; with dbc.SqliteManager(&#39;path/to/sql3file&#39;) as db:</span>
+<span class="sd">&gt;&gt;&gt;     db.select(&#39;SELECT * from tbl1&#39;)</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">.grup</span> <span class="k">import</span> <span class="n">grup</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="app_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.app_id">[docs]</a><span class="k">def</span> <span class="nf">app_id</span><span class="p">(</span><span class="n">dbf</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get application_id</span>
-
-<span class="sd">    :param dbf: Database file path</span>
-<span class="sd">    :return: application_id</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dbf</span><span class="p">):</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">10</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;pragma application_id;&#39;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">rws</span> <span class="o">=</span> <span class="n">dataFromDB</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Something went wrong&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+<span class="n">PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
 
 
 <div class="viewcode-block" id="dataFromDB"><a class="viewcode-back" href="../../ted17.html#ted17.db.dataFromDB">[docs]</a><span class="k">def</span> <span class="nf">dataFromDB</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
@@ -92,151 +83,152 @@
     <span class="k">return</span> <span class="n">rws</span></div>
 
 
-<div class="viewcode-block" id="execute_script"><a class="viewcode-back" href="../../ted17.html#ted17.db.execute_script">[docs]</a><span class="k">def</span> <span class="nf">execute_script</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sqlscript</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Execute script</span>
-
-<span class="sd">    :param dbf: Database file path</span>
-<span class="sd">    :param sqlscript: SQL to run</span>
-<span class="sd">    :return: True if execution success</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbf</span><span class="p">)</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">sqlscript</span><span class="p">)</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="kc">True</span></div>
-
-
-<div class="viewcode-block" id="rowst"><a class="viewcode-back" href="../../ted17.html#ted17.db.rowst">[docs]</a><span class="k">def</span> <span class="nf">rowst</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">with_column_names</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SqliteManager"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager">[docs]</a><span class="k">class</span> <span class="nc">SqliteManager</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get a list of tuples of rows [(), (), ...]</span>
+<span class="sd">    Context manager class</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbf</span><span class="p">)</span>
-    <span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">with_column_names</span><span class="p">:</span>
-        <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
-    <span class="n">rws</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">with_column_names</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">rws</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">rws</span></div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbfile</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbf</span> <span class="o">=</span> <span class="n">dbfile</span>  <span class="c1">#: This is a test</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">create_function</span><span class="p">(</span><span class="s2">&quot;grup&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grup</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="rowsd"><a class="viewcode-back" href="../../ted17.html#ted17.db.rowsd">[docs]</a><span class="k">def</span> <span class="nf">rowsd</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get a list of dictionaries [{}, {}, ...]</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbf</span><span class="p">)</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
-    <span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">list_of_dictionaries</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
-        <span class="n">list_of_dictionaries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">row</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">list_of_dictionaries</span></div>
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
+<div class="viewcode-block" id="SqliteManager.script"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.script">[docs]</a>    <span class="k">def</span> <span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqlscript</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute an sql script against self.dbf</span>
 
-<div class="viewcode-block" id="db2dic"><a class="viewcode-back" href="../../ted17.html#ted17.db.db2dic">[docs]</a><span class="k">def</span> <span class="nf">db2dic</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">idv</span><span class="p">,</span> <span class="n">tablemaster</span><span class="p">,</span> <span class="n">tabledetail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-           <span class="n">remove_parent_id</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    dbf : sqlite database file path</span>
-<span class="sd">    idv : id value of record</span>
-<span class="sd">    tablemaster : Master table name</span>
-<span class="sd">    tabledetail : Detail table name</span>
-<span class="sd">    key : Foreign key Field in detail table that connects to mastertable</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">id_at_end</span><span class="p">:</span>
-        <span class="n">fkeytemplate</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">fkeytemplate</span> <span class="o">=</span> <span class="s1">&#39;id_</span><span class="si">%s</span><span class="s1">&#39;</span>
-    <span class="k">if</span> <span class="n">key</span><span class="p">:</span>  <span class="c1"># if we set key</span>
-        <span class="n">id_field</span> <span class="o">=</span> <span class="n">key</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Otherwise creates key automatically according to fkeytemplate</span>
+<span class="sd">        :param sqlscript: SQL to run</span>
+<span class="sd">        :return: Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">sqlscript</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="SqliteManager.application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.application_id">[docs]</a>    <span class="k">def</span> <span class="nf">application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get application_id from database file</span>
+
+<span class="sd">        :return: application_id or -9</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA application_id;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+
+<div class="viewcode-block" id="SqliteManager.set_application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.set_application_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idv</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set application_id to database file</span>
+
+<span class="sd">        :param idv: application_id value to set</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA application_id = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">idv</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SqliteManager.user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.user_version">[docs]</a>    <span class="k">def</span> <span class="nf">user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get user_version from database file</span>
+
+<span class="sd">        :return: user_version or -9</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA user_version;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+
+<div class="viewcode-block" id="SqliteManager.set_user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.set_user_version">[docs]</a>    <span class="k">def</span> <span class="nf">set_user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set user_version to database file</span>
+
+<span class="sd">        :param version: version value to set</span>
+<span class="sd">        :return: Nothing</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA user_version = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">version</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SqliteManager.select"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a list of tuples with data</span>
+
+<span class="sd">        :param sql: SQL to run</span>
+<span class="sd">        :return: list of tuples of rows</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rows</span></div>
+
+<div class="viewcode-block" id="SqliteManager.select_with_names"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_with_names">[docs]</a>    <span class="k">def</span> <span class="nf">select_with_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a tuple with column names and a list of tuples with data</span>
+
+<span class="sd">        :param sql: The sql to execute</span>
+<span class="sd">        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">column_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">rows</span></div>
+
+<div class="viewcode-block" id="SqliteManager.select_as_dict"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">select_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a list of dictionaries</span>
+
+<span class="sd">        :param sql: The sql to execute</span>
+<span class="sd">        :return: [{}, {}, ...]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">diclist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="n">dic</span><span class="p">[</span><span class="n">column_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">col</span>
+            <span class="n">diclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="n">diclen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">diclist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">diclen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">diclist</span>
+        <span class="k">return</span> <span class="p">[{}]</span></div>
+
+<div class="viewcode-block" id="SqliteManager.select_master_detail_as_dic"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_master_detail_as_dic">[docs]</a>    <span class="k">def</span> <span class="nf">select_master_detail_as_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                    <span class="n">idv</span><span class="p">,</span>
+                                    <span class="n">tablemaster</span><span class="p">,</span>
+                                    <span class="n">tabledetail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Get a specific record from table tablemaster.</span>
+<span class="sd">        If we pass it a tabledetail value, it gets detail records too.</span>
+
+<span class="sd">        :param idv: id value of record</span>
+<span class="sd">        :param tablemaster: Master table name</span>
+<span class="sd">        :param tabledetail: Detail table name</span>
+<span class="sd">        :param id_at_end: If True Foreign key is like tablemaster_id</span>
+<span class="sd">         else is like id_mastertable</span>
+<span class="sd">        :return: dictionary with values</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">id_at_end</span><span class="p">:</span>
+            <span class="n">fkeytemplate</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fkeytemplate</span> <span class="o">=</span> <span class="s1">&#39;id_</span><span class="si">%s</span><span class="s1">&#39;</span>
+
         <span class="n">id_field</span> <span class="o">=</span> <span class="n">fkeytemplate</span> <span class="o">%</span> <span class="n">tablemaster</span>
-    <span class="n">sql1</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablemaster</span><span class="p">,</span> <span class="n">idv</span><span class="p">)</span>
-    <span class="n">sql2</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE </span><span class="si">%s</span><span class="s2">=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tabledetail</span><span class="p">,</span> <span class="n">id_field</span><span class="p">,</span> <span class="n">idv</span><span class="p">)</span>
-    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbf</span><span class="p">)</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
-    <span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql1</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">rows</span><span class="p">:</span>
-        <span class="n">dic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">tabledetail</span><span class="p">:</span>
-        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql2</span><span class="p">)</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
-            <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">row</span><span class="p">)))</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">id_field</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span> <span class="ow">and</span> <span class="n">remove_parent_id</span><span class="p">:</span>
-                <span class="k">del</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">id_field</span><span class="p">]</span>
-    <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">dic</span></div>
-
-
-<div class="viewcode-block" id="sql_ins_upd"><a class="viewcode-back" href="../../ted17.html#ted17.db.sql_ins_upd">[docs]</a><span class="k">def</span> <span class="nf">sql_ins_upd</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">adic</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns update or insert sql according id</span>
-
-<span class="sd">    if id = 0 returns insert sql</span>
-
-<span class="sd">    if id &lt;&gt; 0 returns update sql</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ufldva</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">adic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">el</span> <span class="o">==</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">el</span> <span class="o">==</span> <span class="s1">&#39;zlines&#39;</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;(SELECT MAX(id) FROM&#39;</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">adic</span><span class="p">[</span><span class="n">el</span><span class="p">]):</span>
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">adic</span><span class="p">[</span><span class="n">el</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">adic</span><span class="p">[</span><span class="n">el</span><span class="p">])</span>
-        <span class="n">ufldva</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">adic</span><span class="p">[</span><span class="n">el</span><span class="p">]))</span>
-    <span class="k">if</span> <span class="s1">&#39;_d_&#39;</span> <span class="ow">in</span> <span class="n">adic</span><span class="p">:</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;DELETE FROM </span><span class="si">%s</span><span class="s1"> WHERE id=</span><span class="si">%s</span><span class="s1">;&#39;</span>
-        <span class="k">return</span> <span class="n">sql</span> <span class="o">%</span> <span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%%</span><span class="s2">s) VALUES (</span><span class="si">%%</span><span class="s2">s);&quot;</span> <span class="o">%</span> <span class="n">table</span>
-        <span class="k">return</span> <span class="n">sql</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">),</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE </span><span class="si">%s</span><span class="s2"> SET </span><span class="si">%s</span><span class="s2"> WHERE id=</span><span class="si">%s</span><span class="s2">;&quot;</span>
-        <span class="k">return</span> <span class="n">sql</span> <span class="o">%</span> <span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ufldva</span><span class="p">),</span> <span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span></div>
-
-
-<div class="viewcode-block" id="md2sql"><a class="viewcode-back" href="../../ted17.html#ted17.db.md2sql">[docs]</a><span class="k">def</span> <span class="nf">md2sql</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">tdetail</span><span class="p">,</span> <span class="n">adic</span><span class="p">,</span> <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Master-Detail to sql</span>
-
-<span class="sd">    :param tmaster: master table name</span>
-<span class="sd">    :param tdetail: detail table name</span>
-<span class="sd">    :param adic: dictionary to translate to sql. Keys represent table fields</span>
-<span class="sd">    :param id_at_end: talble_id or id_table</span>
-<span class="sd">    :return: Transaction sql</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="n">sql_ins_upd</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">adic</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="k">if</span> <span class="n">id_at_end</span><span class="p">:</span>
-        <span class="n">fkey</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_id&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">fkey</span> <span class="o">=</span> <span class="s1">&#39;id_</span><span class="si">%s</span><span class="s1">&#39;</span>
-    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">adic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">el</span><span class="p">[</span><span class="n">fkey</span> <span class="o">%</span> <span class="n">tmaster</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;(SELECT MAX(id) FROM </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">tmaster</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">el</span><span class="p">[</span><span class="n">fkey</span> <span class="o">%</span> <span class="n">tmaster</span><span class="p">]</span> <span class="o">=</span> <span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
-        <span class="n">sql</span> <span class="o">+=</span> <span class="n">sql_ins_upd</span><span class="p">(</span><span class="n">tdetail</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="k">return</span> <span class="s1">&#39;BEGIN TRANSACTION;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">sql</span> <span class="o">+</span> <span class="s1">&#39;COMMIT;</span><span class="se">\n</span><span class="s1">&#39;</span></div>
+        <span class="n">sql1</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablemaster</span><span class="p">,</span> <span class="n">idv</span><span class="p">)</span>
+        <span class="n">sql2</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE </span><span class="si">%s</span><span class="s2">=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tabledetail</span><span class="p">,</span> <span class="n">id_field</span><span class="p">,</span> <span class="n">idv</span><span class="p">)</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_as_dict</span><span class="p">(</span><span class="n">sql1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ldic</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ldic</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dic</span>
+        <span class="k">if</span> <span class="n">tabledetail</span><span class="p">:</span>
+            <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_as_dict</span><span class="p">(</span><span class="n">sql2</span><span class="p">)</span>
+            <span class="c1"># Remove id_field key</span>
+            <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">elm</span><span class="p">[</span><span class="n">id_field</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dic</span></div></div>
 </pre></div>
 
           </div>

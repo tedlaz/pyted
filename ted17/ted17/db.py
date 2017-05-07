@@ -1,28 +1,19 @@
 '''
-Database sqlite3 actions
+Module db.py
+Connect to sqlite database and perform crud functions
+
+Example::
+
+>>> from ted17 import db_context_manager as dbc
+>>> with dbc.SqliteManager('path/to/sql3file') as db:
+>>>     db.select('SELECT * from tbl1')
 '''
 import sqlite3
 import os
-import logging
 from .grup import grup
-logger = logging.getLogger()
 
 
-def app_id(dbf):
-    """Get application_id
-
-    :param dbf: Database file path
-    :return: application_id
-    """
-    if not os.path.isfile(dbf):
-        return -10
-    sql = 'pragma application_id;'
-    try:
-        rws = dataFromDB(dbf, sql)
-        return rws[0][0]
-    except:
-        logger.exception("Something went wrong")
-        return -9
+PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 
 def dataFromDB(dbf, sql):
@@ -42,148 +33,149 @@ def dataFromDB(dbf, sql):
     return rws
 
 
-def execute_script(dbf, sqlscript):
-    """Execute script
-
-    :param dbf: Database file path
-    :param sqlscript: SQL to run
-    :return: True if execution success
-    """
-    con = sqlite3.connect(dbf)
-    con.executescript(sqlscript)
-    con.close()
-    return True
-
-
-def rowst(dbf, sql, with_column_names=False):
+class SqliteManager:
     '''
-    Get a list of tuples of rows [(), (), ...]
+    Context manager class
     '''
-    con = sqlite3.connect(dbf)
-    cur = con.cursor()
-    cur.execute(sql)
-    if with_column_names:
-        column_names = [t[0] for t in cur.description]
-    rws = cur.fetchall()
-    cur.close()
-    con.close()
-    if with_column_names:
-        return column_names, rws
-    else:
-        return rws
+    def __init__(self, dbfile):
+        self.dbf = dbfile  #: This is a test
+        self.active = False
+        self.con = None
+        self.cur = None
 
+    def __enter__(self):
+        self.con = sqlite3.connect(self.dbf)
+        self.con.create_function("grup", 1, grup)
+        self.cur = self.con.cursor()
+        self.active = True
+        return self
 
-def rowsd(dbf, sql):
-    '''
-    Get a list of dictionaries [{}, {}, ...]
-    '''
-    con = sqlite3.connect(dbf)
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute(sql)
-    rows = cur.fetchall()
-    cur.close()
-    con.close()
-    list_of_dictionaries = []
-    for row in rows:
-        list_of_dictionaries.append(dict(zip(row.keys(), row)))
-    return list_of_dictionaries
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.active:
+            self.cur.close()
+            self.con.close()
 
+    def script(self, sqlscript):
+        """Execute an sql script against self.dbf
 
-def db2dic(dbf, idv, tablemaster, tabledetail=None, key=None,
-           remove_parent_id=True, id_at_end=True):
-    '''
-    dbf : sqlite database file path
-    idv : id value of record
-    tablemaster : Master table name
-    tabledetail : Detail table name
-    key : Foreign key Field in detail table that connects to mastertable
-    '''
-    if id_at_end:
-        fkeytemplate = '%s_id'
-    else:
-        fkeytemplate = 'id_%s'
-    if key:  # if we set key
-        id_field = key
-    else:  # Otherwise creates key automatically according to fkeytemplate
+        :param sqlscript: SQL to run
+        :return: Nothing
+        """
+        self.con.executescript(sqlscript)
+        return True
+
+    def application_id(self):
+        '''Get application_id from database file
+
+        :return: application_id or -9
+        '''
+        sql = 'PRAGMA application_id;'
+        try:
+            rws = self.select(sql)
+            return rws[0][0]
+        except:
+            return -9
+
+    def set_application_id(self, idv):
+        '''Set application_id to database file
+
+        :param idv: application_id value to set
+        :return: nothing
+        '''
+        self.script('PRAGMA application_id = %s;' % idv)
+
+    def user_version(self):
+        '''Get user_version from database file
+
+        :return: user_version or -9
+        '''
+        sql = 'PRAGMA user_version;'
+        try:
+            rws = self.select(sql)
+            return rws[0][0]
+        except:
+            return -9
+
+    def set_user_version(self, version):
+        '''Set user_version to database file
+
+        :param version: version value to set
+        :return: Nothing
+        '''
+        self.script('PRAGMA user_version = %s;' % version)
+
+    def select(self, sql):
+        '''Get a list of tuples with data
+
+        :param sql: SQL to run
+        :return: list of tuples of rows
+        '''
+        self.cur.execute(sql)
+        rows = self.cur.fetchall()
+        return rows
+
+    def select_with_names(self, sql):
+        '''Get a tuple with column names and a list of tuples with data
+
+        :param sql: The sql to execute
+        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]
+        '''
+        self.cur.execute(sql)
+        column_names = tuple([t[0] for t in self.cur.description])
+        rows = self.cur.fetchall()
+        return column_names, rows
+
+    def select_as_dict(self, sql):
+        '''Get a list of dictionaries
+
+        :param sql: The sql to execute
+        :return: [{}, {}, ...]
+        '''
+        self.cur.execute(sql)
+        column_names = [t[0] for t in self.cur.description]
+        rows = self.cur.fetchall()
+        diclist = []
+        for row in rows:
+            dic = {}
+            for i, col in enumerate(row):
+                dic[column_names[i]] = col
+            diclist.append(dic)
+        diclen = len(diclist)
+        if diclen > 0:
+            return diclist
+        return [{}]
+
+    def select_master_detail_as_dic(self,
+                                    idv,
+                                    tablemaster,
+                                    tabledetail=None,
+                                    id_at_end=True):
+        '''
+        Get a specific record from table tablemaster.
+        If we pass it a tabledetail value, it gets detail records too.
+
+        :param idv: id value of record
+        :param tablemaster: Master table name
+        :param tabledetail: Detail table name
+        :param id_at_end: If True Foreign key is like tablemaster_id
+         else is like id_mastertable
+        :return: dictionary with values
+        '''
+        if id_at_end:
+            fkeytemplate = '%s_id'
+        else:
+            fkeytemplate = 'id_%s'
+
         id_field = fkeytemplate % tablemaster
-    sql1 = "SELECT * FROM %s WHERE id='%s'" % (tablemaster, idv)
-    sql2 = "SELECT * FROM %s WHERE %s='%s'" % (tabledetail, id_field, idv)
-    con = sqlite3.connect(dbf)
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute(sql1)
-    rows = cur.fetchall()
-    if rows:
-        dic = dict(zip(rows[0].keys(), rows[0]))
-    else:
-        return {}
-    if tabledetail:
-        cur.execute(sql2)
-        rows = cur.fetchall()
-        dic['zlines'] = []
-        for i, row in enumerate(rows):
-            dic['zlines'].append(dict(zip(row.keys(), row)))
-            if (id_field in dic['zlines'][i]) and remove_parent_id:
-                del dic['zlines'][i][id_field]
-    cur.close()
-    con.close()
-    return dic
-
-
-def sql_ins_upd(table, adic):
-    '''
-    Returns update or insert sql according id
-
-    if id = 0 returns insert sql
-
-    if id <> 0 returns update sql
-    '''
-    fields = []
-    values = []
-    ufldva = []
-    adic['id'] = adic.get('id', 0)
-    for el in adic.keys():
-        if el == 'id':
-            continue
-        if el == 'zlines':
-            continue
-        fields.append(el)
-        if '(SELECT MAX(id) FROM' in ('%s' % adic[el]):
-            values.append("%s" % adic[el])
-        else:
-            values.append("'%s'" % adic[el])
-        ufldva.append("%s='%s'" % (el, adic[el]))
-    if '_d_' in adic:
-        sql = 'DELETE FROM %s WHERE id=%s;'
-        return sql % (table, adic['id'])
-    if (adic['id'] == 0) or (adic['id'] == '') or (adic['id'] is None):
-        sql = "INSERT INTO %s (%%s) VALUES (%%s);" % table
-        return sql % (', '.join(fields), ', '.join(values))
-    else:
-        sql = "UPDATE %s SET %s WHERE id=%s;"
-        return sql % (table, ', '.join(ufldva), adic['id'])
-
-
-def md2sql(tmaster, tdetail, adic, id_at_end=True):
-    """
-    Master-Detail to sql
-
-    :param tmaster: master table name
-    :param tdetail: detail table name
-    :param adic: dictionary to translate to sql. Keys represent table fields
-    :param id_at_end: talble_id or id_table
-    :return: Transaction sql
-    """
-    sql = sql_ins_upd(tmaster, adic) + '\n'
-    if id_at_end:
-        fkey = '%s_id'
-    else:
-        fkey = 'id_%s'
-    for el in adic['zlines']:
-        if (adic['id'] == 0) or (adic['id'] == '') or (adic['id'] is None):
-            el[fkey % tmaster] = ('(SELECT MAX(id) FROM %s)' % tmaster)
-        else:
-            el[fkey % tmaster] = adic['id']
-        sql += sql_ins_upd(tdetail, el) + '\n'
-    return 'BEGIN TRANSACTION;\n' + sql + 'COMMIT;\n'
+        sql1 = "SELECT * FROM %s WHERE id='%s'" % (tablemaster, idv)
+        sql2 = "SELECT * FROM %s WHERE %s='%s'" % (tabledetail, id_field, idv)
+        dic = self.select_as_dict(sql1)[0]
+        ldic = len(dic)
+        if ldic == 0:
+            return dic
+        if tabledetail:
+            dic['zlines'] = self.select_as_dict(sql2)
+            # Remove id_field key
+            for elm in dic['zlines']:
+                del elm[id_field]
+        return dic

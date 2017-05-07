@@ -2,7 +2,7 @@
 Testing sql creation
 """
 import unittest
-from ted17 import db_sql_create as sqc
+from ted17 import db_sql as sqc
 
 SQ1 = '''BEGIN TRANSACTION;
 INSERT INTO tm (epo, ono) VALUES ('Laz', 'Ted');

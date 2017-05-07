@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ted17.db_sql_create &#8212; ted17 0.01 documentation</title>
+    <title>ted17.db_sql &#8212; ted17 0.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -47,14 +47,14 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for ted17.db_sql_create</h1><div class="highlight"><pre>
+  <h1>Source code for ted17.db_sql</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Module db_sql_create.py</span>
+<span class="sd">Module db_sql.py</span>
 <span class="sd">Creates insert, update, delete sql from dictionaries</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 
-<div class="viewcode-block" id="dic2sql"><a class="viewcode-back" href="../../ted17.html#ted17.db_sql_create.dic2sql">[docs]</a><span class="k">def</span> <span class="nf">dic2sql</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">adic</span><span class="p">):</span>
+<div class="viewcode-block" id="dic2sql"><a class="viewcode-back" href="../../ted17.html#ted17.db_sql.dic2sql">[docs]</a><span class="k">def</span> <span class="nf">dic2sql</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">adic</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Dictionary to Sql.</span>
 
@@ -94,7 +94,7 @@
         <span class="k">return</span> <span class="n">sql</span> <span class="o">%</span> <span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ufldva</span><span class="p">),</span> <span class="n">adic</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="dic2sql_md"><a class="viewcode-back" href="../../ted17.html#ted17.db_sql_create.dic2sql_md">[docs]</a><span class="k">def</span> <span class="nf">dic2sql_md</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">tdetail</span><span class="p">,</span> <span class="n">adic</span><span class="p">,</span> <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="dic2sql_md"><a class="viewcode-back" href="../../ted17.html#ted17.db_sql.dic2sql_md">[docs]</a><span class="k">def</span> <span class="nf">dic2sql_md</span><span class="p">(</span><span class="n">tmaster</span><span class="p">,</span> <span class="n">tdetail</span><span class="p">,</span> <span class="n">adic</span><span class="p">,</span> <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Dictionary to transactional SQL.</span>
 

@@ -168,7 +168,7 @@
     <span class="sd">&quot;&quot;&quot;Selector</span>
 
 <span class="sd">    :param iso_date: Iso Date to transform</span>
-<span class="sd">    :param per: Text in range (d, m, y, m2, m3, m4, m6, w, s)</span>
+<span class="sd">    :param per: Text value according to following table</span>
 
 <span class="sd">    +-----+-----------------+</span>
 <span class="sd">    | per |  Time Interval  |</span>
@@ -179,24 +179,24 @@
 <span class="sd">    +-----+-----------------+</span>
 <span class="sd">    | y   | year            |</span>
 <span class="sd">    +-----+-----------------+</span>
-<span class="sd">    | m2  | Dimino          |</span>
+<span class="sd">    | m2  | Βimonthly       |</span>
 <span class="sd">    +-----+-----------------+</span>
-<span class="sd">    | m3  | Trimino         |</span>
+<span class="sd">    | m3  | Quarter         |</span>
 <span class="sd">    +-----+-----------------+</span>
-<span class="sd">    | m4  | Tetramino       |</span>
+<span class="sd">    | m4  | Quadrimester    |</span>
 <span class="sd">    +-----+-----------------+</span>
-<span class="sd">    | m6  | Ejamino         |</span>
+<span class="sd">    | m6  | Semester        |</span>
 <span class="sd">    +-----+-----------------+</span>
 <span class="sd">    | w   | Week            |</span>
 <span class="sd">    +-----+-----------------+</span>
 <span class="sd">    | s   | Season          |</span>
 <span class="sd">    +-----+-----------------+</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>  <span class="c1"># Όλη η ημερομηνία</span>
+    <span class="k">if</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>  <span class="c1">#: Όλη η ημερομηνία</span>
         <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>  <span class="c1"># Έτος + μήνας ####-##</span>
+    <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>  <span class="c1">#: Έτος + μήνας</span>
         <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>  <span class="c1"># Έτος μόνο</span>
+    <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>  <span class="c1">#: Έτος μόνο</span>
         <span class="n">dat</span> <span class="o">=</span> <span class="n">iso_date</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">per</span> <span class="o">==</span> <span class="s1">&#39;m2&#39;</span><span class="p">:</span>
         <span class="n">dat</span> <span class="o">=</span> <span class="n">period</span><span class="p">(</span><span class="n">iso_date</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
