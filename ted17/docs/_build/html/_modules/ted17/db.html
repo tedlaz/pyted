@@ -59,11 +59,7 @@
 <span class="sd">&gt;&gt;&gt;     db.select(&#39;SELECT * from tbl1&#39;)</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">.grup</span> <span class="k">import</span> <span class="n">grup</span>
-
-
-<span class="n">PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
 
 
 <div class="viewcode-block" id="dataFromDB"><a class="viewcode-back" href="../../ted17.html#ted17.db.dataFromDB">[docs]</a><span class="k">def</span> <span class="nf">dataFromDB</span><span class="p">(</span><span class="n">dbf</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
@@ -89,6 +85,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbfile</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dbf</span> <span class="o">=</span> <span class="n">dbfile</span>  <span class="c1">#: This is a test</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_context_mode</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="kc">None</span>
@@ -97,6 +94,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbf</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">create_function</span><span class="p">(</span><span class="s2">&quot;grup&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grup</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_context_mode</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -104,6 +102,25 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_context_mode</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_context_mode</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_context_mode</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="SqliteManager.script"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.script">[docs]</a>    <span class="k">def</span> <span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqlscript</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute an sql script against self.dbf</span>
@@ -111,7 +128,9 @@
 <span class="sd">        :param sqlscript: SQL to run</span>
 <span class="sd">        :return: Nothing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="n">sqlscript</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="SqliteManager.application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.application_id">[docs]</a>    <span class="k">def</span> <span class="nf">application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -120,11 +139,13 @@
 <span class="sd">        :return: application_id or -9</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA application_id;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">app_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+            <span class="n">app_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">app_id</span></div>
 
 <div class="viewcode-block" id="SqliteManager.set_application_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.set_application_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_application_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idv</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set application_id to database file</span>
@@ -132,7 +153,9 @@
 <span class="sd">        :param idv: application_id value to set</span>
 <span class="sd">        :return: nothing</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA application_id = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">idv</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA application_id = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">idv</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SqliteManager.user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.user_version">[docs]</a>    <span class="k">def</span> <span class="nf">user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get user_version from database file</span>
@@ -140,11 +163,13 @@
 <span class="sd">        :return: user_version or -9</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;PRAGMA user_version;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">rws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">rws</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">user_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span></div>
+            <span class="n">user_version</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">user_version</span></div>
 
 <div class="viewcode-block" id="SqliteManager.set_user_version"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.set_user_version">[docs]</a>    <span class="k">def</span> <span class="nf">set_user_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set user_version to database file</span>
@@ -152,16 +177,20 @@
 <span class="sd">        :param version: version value to set</span>
 <span class="sd">        :return: Nothing</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA user_version = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">version</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script</span><span class="p">(</span><span class="s1">&#39;PRAGMA user_version = </span><span class="si">%s</span><span class="s1">;&#39;</span> <span class="o">%</span> <span class="n">version</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SqliteManager.select"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get a list of tuples with data</span>
 
 <span class="sd">        :param sql: SQL to run</span>
-<span class="sd">        :return: list of tuples of rows</span>
+<span class="sd">        :return: List of tuples of rows</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">rows</span></div>
 
 <div class="viewcode-block" id="SqliteManager.select_with_names"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_with_names">[docs]</a>    <span class="k">def</span> <span class="nf">select_with_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
@@ -170,9 +199,11 @@
 <span class="sd">        :param sql: The sql to execute</span>
 <span class="sd">        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
         <span class="n">column_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">])</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">rows</span></div>
 
 <div class="viewcode-block" id="SqliteManager.select_as_dict"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">select_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
@@ -181,6 +212,7 @@
 <span class="sd">        :param sql: The sql to execute</span>
 <span class="sd">        :return: [{}, {}, ...]</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
         <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
@@ -191,15 +223,16 @@
                 <span class="n">dic</span><span class="p">[</span><span class="n">column_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">col</span>
             <span class="n">diclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
         <span class="n">diclen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">diclist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">diclen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">diclist</span>
         <span class="k">return</span> <span class="p">[{}]</span></div>
 
-<div class="viewcode-block" id="SqliteManager.select_master_detail_as_dic"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_master_detail_as_dic">[docs]</a>    <span class="k">def</span> <span class="nf">select_master_detail_as_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                    <span class="n">idv</span><span class="p">,</span>
-                                    <span class="n">tablemaster</span><span class="p">,</span>
-                                    <span class="n">tabledetail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="SqliteManager.select_master_detail"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_master_detail">[docs]</a>    <span class="k">def</span> <span class="nf">select_master_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">idv</span><span class="p">,</span>
+                             <span class="n">tablemaster</span><span class="p">,</span>
+                             <span class="n">tabledetail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">id_at_end</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Get a specific record from table tablemaster.</span>
 <span class="sd">        If we pass it a tabledetail value, it gets detail records too.</span>
@@ -228,7 +261,35 @@
             <span class="c1"># Remove id_field key</span>
             <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;zlines&#39;</span><span class="p">]:</span>
                 <span class="k">del</span> <span class="n">elm</span><span class="p">[</span><span class="n">id_field</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">dic</span></div></div>
+        <span class="k">return</span> <span class="n">dic</span></div>
+
+<div class="viewcode-block" id="SqliteManager.tables"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.tables">[docs]</a>    <span class="k">def</span> <span class="nf">tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A tuple with database tables&quot;&quot;&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;select name from sqlite_master where type = &#39;table&#39;;&quot;</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+        <span class="n">tbl</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SqliteManager.views"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.views">[docs]</a>    <span class="k">def</span> <span class="nf">views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A Tuple with database views&quot;&quot;&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;select name from sqlite_master where type = &#39;view&#39;;&quot;</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">viw</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">val</span><span class="p">]</span>
+        <span class="n">viw</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">viw</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SqliteManager.fields"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.fields">[docs]</a>    <span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_or_view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A Tuple with table or view fields</span>
+
+<span class="sd">        :param table_or_view: Table or View name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">%s</span><span class="s1"> LIMIT 0&#39;</span> <span class="o">%</span> <span class="n">table_or_view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">column_names</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

@@ -54,6 +54,7 @@
 <span class="n">QT</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="p">]</span>
 <span class="n">QTFIELDS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="s1">&#39;textline&#39;</span><span class="p">,</span> <span class="p">}</span>
 <span class="n">FTYP</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TXT&#39;</span><span class="p">,</span> <span class="s1">&#39;TXN&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;NUM&#39;</span><span class="p">,</span> <span class="s1">&#39;DAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FK&#39;</span><span class="p">]</span>
+<span class="c1"># s : string, t: text, i: int, d: date, n: numeric, ....</span>
 <span class="n">SQLTYP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TXT&#39;</span><span class="p">:</span> <span class="s1">&#39;TEXT NOT NULL&#39;</span><span class="p">,</span> <span class="s1">&#39;TXN&#39;</span><span class="p">:</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span>
           <span class="s1">&#39;INT&#39;</span><span class="p">:</span> <span class="s1">&#39;INTEGER NOT NULL DEFAULT 0&#39;</span><span class="p">,</span>
           <span class="s1">&#39;NUM&#39;</span><span class="p">:</span> <span class="s1">&#39;NUMERIC NOT NULL DEFAULT 0&#39;</span><span class="p">,</span>
@@ -64,6 +65,17 @@
 <div class="viewcode-block" id="DbmanagerException"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.DbmanagerException">[docs]</a><span class="k">class</span> <span class="nc">DbmanagerException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception to use with class Dbmanager&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Dbm"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbm">[docs]</a><span class="k">class</span> <span class="nc">Dbm</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Dbm.add_table"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbm.add_table">[docs]</a>    <span class="k">def</span> <span class="nf">add_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">table</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="Dbm.add_field"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbm.add_field">[docs]</a>    <span class="k">def</span> <span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="Dbmanager"><a class="viewcode-back" href="../../ted17.html#ted17.dbmanager.Dbmanager">[docs]</a><span class="k">class</span> <span class="nc">Dbmanager</span><span class="p">():</span>

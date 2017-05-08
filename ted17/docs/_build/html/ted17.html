@@ -276,6 +276,20 @@ Connect to sqlite database and perform crud functions</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="ted17.db.SqliteManager.fields">
+<code class="descname">fields</code><span class="sig-paren">(</span><em>table_or_view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Tuple with table or view fields</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>table_or_view</strong> &#8211; Table or View name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="ted17.db.SqliteManager.script">
 <code class="descname">script</code><span class="sig-paren">(</span><em>sqlscript</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.script" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute an sql script against self.dbf</p>
@@ -301,7 +315,7 @@ Connect to sqlite database and perform crud functions</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; SQL to run</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of tuples of rows</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of tuples of rows</td>
 </tr>
 </tbody>
 </table>
@@ -324,8 +338,8 @@ Connect to sqlite database and perform crud functions</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ted17.db.SqliteManager.select_master_detail_as_dic">
-<code class="descname">select_master_detail_as_dic</code><span class="sig-paren">(</span><em>idv</em>, <em>tablemaster</em>, <em>tabledetail=None</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_master_detail_as_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_master_detail_as_dic" title="Permalink to this definition">¶</a></dt>
+<dt id="ted17.db.SqliteManager.select_master_detail">
+<code class="descname">select_master_detail</code><span class="sig-paren">(</span><em>idv</em>, <em>tablemaster</em>, <em>tabledetail=None</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_master_detail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_master_detail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a specific record from table tablemaster.
 If we pass it a tabledetail value, it gets detail records too.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -397,6 +411,12 @@ else is like id_mastertable</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="ted17.db.SqliteManager.tables">
+<code class="descname">tables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tuple with database tables</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ted17.db.SqliteManager.user_version">
 <code class="descname">user_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.user_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.user_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get user_version from database file</p>
@@ -408,6 +428,12 @@ else is like id_mastertable</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db.SqliteManager.views">
+<code class="descname">views</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.views"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.views" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Tuple with database views</p>
 </dd></dl>
 
 </dd></dl>
@@ -489,6 +515,22 @@ Creates insert, update, delete sql from dictionaries</p>
 <div class="section" id="module-ted17.dbmanager">
 <span id="ted17-dbmanager-module"></span><h2>ted17.dbmanager module<a class="headerlink" href="#module-ted17.dbmanager" title="Permalink to this headline">¶</a></h2>
 <p>Module dbmanager.py</p>
+<dl class="class">
+<dt id="ted17.dbmanager.Dbm">
+<em class="property">class </em><code class="descclassname">ted17.dbmanager.</code><code class="descname">Dbm</code><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ted17.dbmanager.Dbm.add_field">
+<code class="descname">add_field</code><span class="sig-paren">(</span><em>table</em>, <em>field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbm.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbm.add_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.dbmanager.Dbm.add_table">
+<code class="descname">add_table</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbm.add_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbm.add_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="ted17.dbmanager.Dbmanager">
 <em class="property">class </em><code class="descclassname">ted17.dbmanager.</code><code class="descname">Dbmanager</code><span class="sig-paren">(</span><em>user_version</em>, <em>application_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dbmanager.html#Dbmanager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dbmanager.Dbmanager" title="Permalink to this definition">¶</a></dt>
