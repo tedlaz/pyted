@@ -6,6 +6,12 @@ from ted17 import db
 
 
 class TestDb(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
     def test_memorydb(self):
         sqm = 'CREATE TABLE ts(id INTEGER PRIMARY KEY, val TEXT);'
         sqd = 'CREATE TABLE dt(id INTEGER PRIMARY KEY, ts_id INTEGER, v TEXT);'
@@ -30,3 +36,15 @@ class TestDb(unittest.TestCase):
             self.assertEqual(dbm.select_with_names(sqls), rv2)
             self.assertEqual(dbm.select_as_dict(sqls), rv3)
             self.assertEqual(dbm.select_master_detail_as_dic(1, 'ts', 'dt'), rv4)
+
+    def test_tables(self):
+        sqm = ("CREATE TABLE ts(id INTEGER PRIMARY KEY, val TEXT);"
+               "CREATE TABLE dt(id INTEGER PRIMARY KEY, ts_id INTEGER, v TEXT);"
+               "INSERT INTO ts VALUES (1, 'ted');"
+               "INSERT INTO ts VALUES (2, 'popi');"
+               "INSERT INTO dt VALUES (1, 1, 'Val1');"
+               "INSERT INTO dt VALUES (2, 1, 'val2');")
+        with db.SqliteManager(':memory:') as dbm:
+            dbm.script(sqm)
+            self.assertEqual(dbm.tables(), ('dt', 'ts'))
+            self.assertEqual(dbm.fields('dt'), ('id', 'ts_id', 'v'))
