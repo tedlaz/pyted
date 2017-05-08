@@ -9,11 +9,7 @@ Example::
 >>>     db.select('SELECT * from tbl1')
 '''
 import sqlite3
-import os
 from .grup import grup
-
-
-PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 
 def dataFromDB(dbf, sql):
@@ -182,11 +178,11 @@ class SqliteManager:
             return diclist
         return [{}]
 
-    def select_master_detail_as_dic(self,
-                                    idv,
-                                    tablemaster,
-                                    tabledetail=None,
-                                    id_at_end=True):
+    def select_master_detail(self,
+                             idv,
+                             tablemaster,
+                             tabledetail=None,
+                             id_at_end=True):
         '''
         Get a specific record from table tablemaster.
         If we pass it a tabledetail value, it gets detail records too.
@@ -218,6 +214,7 @@ class SqliteManager:
         return dic
 
     def tables(self):
+        """A tuple with database tables"""
         sql = "select name from sqlite_master where type = 'table';"
         val = self.select(sql)
         tbl = [el[0] for el in val]
@@ -225,6 +222,7 @@ class SqliteManager:
         return tuple(tbl)
 
     def views(self):
+        """A Tuple with database views"""
         sql = "select name from sqlite_master where type = 'view';"
         val = self.select(sql)
         viw = [el[0] for el in val]
@@ -232,6 +230,10 @@ class SqliteManager:
         return tuple(viw)
 
     def fields(self, table_or_view):
+        """A Tuple with table or view fields
+
+        :param table_or_view: Table or View name
+        """
         sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
         self._open()
         self.cur.execute(sql)

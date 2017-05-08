@@ -4,6 +4,7 @@ Module dbmanager.py
 QT = ['s', ]
 QTFIELDS = {'s': 'textline', }
 FTYP = ['TXT', 'TXN', 'INT', 'NUM', 'DAT', 'FK']
+# s : string, t: text, i: int, d: date, n: numeric, ....
 SQLTYP = {'TXT': 'TEXT NOT NULL', 'TXN': 'TEXT',
           'INT': 'INTEGER NOT NULL DEFAULT 0',
           'NUM': 'NUMERIC NOT NULL DEFAULT 0',
@@ -14,6 +15,17 @@ SQLTYP = {'TXT': 'TEXT NOT NULL', 'TXN': 'TEXT',
 class DbmanagerException(Exception):
     """Exception to use with class Dbmanager"""
     pass
+
+
+class Dbm():
+    def __init__(self):
+        self.tables = {}
+
+    def add_table(self, table):
+        self.tables[table] = {}
+
+    def add_field(self, table, field):
+        pass
 
 
 class Dbmanager():

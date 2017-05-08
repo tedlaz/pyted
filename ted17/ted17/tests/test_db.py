@@ -35,7 +35,7 @@ class TestDb(unittest.TestCase):
             self.assertEqual(dbm.select(sqls), rv1)
             self.assertEqual(dbm.select_with_names(sqls), rv2)
             self.assertEqual(dbm.select_as_dict(sqls), rv3)
-            self.assertEqual(dbm.select_master_detail_as_dic(1, 'ts', 'dt'), rv4)
+            self.assertEqual(dbm.select_master_detail(1, 'ts', 'dt'), rv4)
 
     def test_tables(self):
         sqm = ("CREATE TABLE ts(id INTEGER PRIMARY KEY, val TEXT);"
