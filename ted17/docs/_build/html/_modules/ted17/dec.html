@@ -51,6 +51,7 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">decimal</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
 
 
 <div class="viewcode-block" id="isNum"><a class="viewcode-back" href="../../ted17.html#ted17.dec.isNum">[docs]</a><span class="k">def</span> <span class="nf">isNum</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>  <span class="c1"># is val number or not ?</span>
@@ -69,19 +70,65 @@
 
 <div class="viewcode-block" id="dec"><a class="viewcode-back" href="../../ted17.html#ted17.dec.dec">[docs]</a><span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="n">poso</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decimal with decimal digits = decimals</span>
+<span class="sd">    Always returns a decimal number. If poso is not a number or None</span>
+<span class="sd">    returns dec(0)</span>
+
 <span class="sd">    :param poso: Mumber in any format (string, float, int, ...)</span>
 <span class="sd">    :param decimals: Number of decimals (default 2)</span>
-<span class="sd">    :return: A decimal number</span>
+<span class="sd">    :return: A decimal number rounded to decimals parameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">poso</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">poso</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">PLACES</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">decimals</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">isNum</span><span class="p">(</span><span class="n">poso</span><span class="p">):</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">poso</span><span class="p">))</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">poso</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+    <span class="c1"># in case of tmp = -0.00 to remove negative sign</span>
+    <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">quantize</span><span class="p">(</span><span class="n">PLACES</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="triades"><a class="viewcode-back" href="../../ted17.html#ted17.dec.triades">[docs]</a><span class="k">def</span> <span class="nf">triades</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Help function to split digits to thousants ( 123456 becomes 123.456 )</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">txt</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dec2gr"><a class="viewcode-back" href="../../ted17.html#ted17.dec.dec2gr">[docs]</a><span class="k">def</span> <span class="nf">dec2gr</span><span class="p">(</span><span class="n">poso</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">zero_as_space</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dposo</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">poso</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dposo</span> <span class="o">==</span> <span class="n">dec</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">zero_as_space</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39; &#39;</span>
+    <span class="n">sdposo</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dposo</span><span class="p">)</span>
+    <span class="n">meion</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+    <span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+    <span class="n">decimal_ceparator</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+    <span class="n">prosimo</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">sdposo</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">meion</span><span class="p">):</span>
+        <span class="n">prosimo</span> <span class="o">=</span> <span class="n">meion</span>
+        <span class="n">sdposo</span> <span class="o">=</span> <span class="n">sdposo</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">meion</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">sdposo</span><span class="p">:</span>
+        <span class="n">sint</span><span class="p">,</span> <span class="n">sdec</span> <span class="o">=</span> <span class="n">sdposo</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sint</span> <span class="o">=</span> <span class="n">sdposo</span>
+        <span class="n">decimal_ceparator</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">sdec</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">prosimo</span> <span class="o">+</span> <span class="n">triades</span><span class="p">(</span><span class="n">sint</span><span class="p">)</span> <span class="o">+</span> <span class="n">decimal_ceparator</span> <span class="o">+</span> <span class="n">sdec</span></div>
+
+
+<div class="viewcode-block" id="gr2dec"><a class="viewcode-back" href="../../ted17.html#ted17.dec.gr2dec">[docs]</a><span class="k">def</span> <span class="nf">gr2dec</span><span class="p">(</span><span class="n">poso</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns decimal (12.345,67 becomes 12345.67)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">poso</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dec</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Ddict"><a class="viewcode-back" href="../../ted17.html#ted17.dec.Ddict">[docs]</a><span class="k">class</span> <span class="nc">Ddict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
@@ -126,131 +173,14 @@
         <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dval</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Dordict"><a class="viewcode-back" href="../../ted17.html#ted17.dec.Dordict">[docs]</a><span class="k">class</span> <span class="nc">Dordict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
-
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Ordered Dictionary of decimals</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># self.update(*args, **kwargs)</span>
-        <span class="n">fkw</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">fkw</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-        <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">fkw</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="n">dval</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-        <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dval</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="triades"><a class="viewcode-back" href="../../ted17.html#ted17.dec.triades">[docs]</a><span class="k">def</span> <span class="nf">triades</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Help function to split digits to thousants ( 123456 becomes 123.456 )</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">ltxt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
-    <span class="n">rem</span> <span class="o">=</span> <span class="n">ltxt</span> <span class="o">%</span> <span class="mi">3</span>
-    <span class="n">precSpace</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">rem</span>
-    <span class="n">stxt</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">precSpace</span> <span class="o">+</span> <span class="n">txt</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stxt</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stxt</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
-        <span class="n">stxt</span> <span class="o">=</span> <span class="n">stxt</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
-    <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">fval</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
-        <span class="n">fval</span> <span class="o">+=</span> <span class="n">el</span> <span class="o">+</span> <span class="n">separator</span>
-    <span class="k">return</span> <span class="n">fval</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="dec2gr"><a class="viewcode-back" href="../../ted17.html#ted17.dec.dec2gr">[docs]</a><span class="k">def</span> <span class="nf">dec2gr</span><span class="p">(</span><span class="n">poso</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">zeroasnull</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">poso</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">zeroasnull</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39; &#39;</span>
-    <span class="n">prosimo</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">strposo</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">poso</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">strposo</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">strposo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-            <span class="n">prosimo</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
-            <span class="n">strposo</span> <span class="o">=</span> <span class="n">strposo</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="n">timi</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">dec</span><span class="p">(</span><span class="n">strposo</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
-    <span class="n">intpart</span><span class="p">,</span> <span class="n">decpart</span> <span class="o">=</span> <span class="n">timi</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="n">final</span> <span class="o">=</span> <span class="n">triades</span><span class="p">(</span><span class="n">intpart</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">decpart</span>
-    <span class="k">if</span> <span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
-        <span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="n">prosimo</span> <span class="o">+</span> <span class="n">final</span></div>
-
-
-<div class="viewcode-block" id="dec2gr2"><a class="viewcode-back" href="../../ted17.html#ted17.dec.dec2gr2">[docs]</a><span class="k">def</span> <span class="nf">dec2gr2</span><span class="p">(</span><span class="n">poso</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">zeroAsSpace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">dec</span><span class="p">(</span><span class="n">poso</span><span class="p">)</span> <span class="o">==</span> <span class="n">dec</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">zeroAsSpace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">decs</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="o">*</span> <span class="n">decimals</span>
-            <span class="k">if</span> <span class="n">decimals</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s1">&#39;0,&#39;</span> <span class="o">+</span> <span class="n">decs</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s1">&#39;0&#39;</span>
-
-    <span class="k">def</span> <span class="nf">triades2</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Help function to split digits to thousants ( 123456 becomes 123.456 )</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">ltxt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
-        <span class="n">rem</span> <span class="o">=</span> <span class="n">ltxt</span> <span class="o">%</span> <span class="mi">3</span>
-        <span class="n">precSpace</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">rem</span>
-        <span class="n">stxt</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">precSpace</span> <span class="o">+</span> <span class="n">txt</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stxt</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stxt</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
-            <span class="n">stxt</span> <span class="o">=</span> <span class="n">stxt</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
-        <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">fval</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
-            <span class="n">fval</span> <span class="o">+=</span> <span class="n">el</span> <span class="o">+</span> <span class="n">separator</span>
-        <span class="k">return</span> <span class="n">fval</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="n">prosimo</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">strposo</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">poso</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">strposo</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">strposo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-            <span class="n">prosimo</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
-            <span class="n">strposo</span> <span class="o">=</span> <span class="n">strposo</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="n">timi</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">dec</span><span class="p">(</span><span class="n">strposo</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
-    <span class="n">intpart</span><span class="p">,</span> <span class="n">decpart</span> <span class="o">=</span> <span class="n">timi</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="n">final</span> <span class="o">=</span> <span class="n">triades2</span><span class="p">(</span><span class="n">intpart</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">decpart</span>
-    <span class="k">if</span> <span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
-        <span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">return</span> <span class="n">prosimo</span> <span class="o">+</span> <span class="n">final</span></div>
-
-
-<div class="viewcode-block" id="gr2dec"><a class="viewcode-back" href="../../ted17.html#ted17.dec.gr2dec">[docs]</a><span class="k">def</span> <span class="nf">gr2dec</span><span class="p">(</span><span class="n">poso</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Returns decimal (12.345,67 becomes 12345.67)</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">st</span> <span class="o">=</span> <span class="n">poso</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dec</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="nul2DecimalZero"><a class="viewcode-back" href="../../ted17.html#ted17.dec.nul2DecimalZero">[docs]</a><span class="k">def</span> <span class="nf">nul2DecimalZero</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Instead of null returns 0.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">dec</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="distribute"><a class="viewcode-back" href="../../ted17.html#ted17.dec.distribute">[docs]</a><span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">distArray</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    input parameters:</span>
-<span class="sd">    val       : Decimal value for distribution</span>
-<span class="sd">    distArray : Distribution Array</span>
-<span class="sd">    decimals  : Number of decimal digits</span>
+
+<span class="sd">    :param val: Decimal value for distribution</span>
+<span class="sd">    :param distArray: Distribution Array</span>
+<span class="sd">    :param decimals: Number of decimal digits</span>
+<span class="sd">    :return: Tuple of distributed val</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tmpArr</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">val</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
@@ -262,22 +192,10 @@
         <span class="n">tmpArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec</span><span class="p">(</span><span class="n">val</span> <span class="o">*</span> <span class="n">dec</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span> <span class="o">/</span> <span class="n">tar</span><span class="p">,</span> <span class="n">decimals</span><span class="p">))</span>
     <span class="n">nval</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">tmpArr</span><span class="p">)</span>
     <span class="n">dif</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="n">nval</span>  <span class="c1"># Get the possible difference to fix round problem</span>
-    <span class="k">if</span> <span class="n">dif</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">dif</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="c1"># Max number Element gets the difference</span>
         <span class="n">tmpArr</span><span class="p">[</span><span class="n">tmpArr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">tmpArr</span><span class="p">))]</span> <span class="o">+=</span> <span class="n">dif</span>
-    <span class="k">return</span> <span class="n">tmpArr</span></div>
-
-
-<div class="viewcode-block" id="nul2z"><a class="viewcode-back" href="../../ted17.html#ted17.dec.nul2z">[docs]</a><span class="k">def</span> <span class="nf">nul2z</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Instead of null returns 0. For sqlite use.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">val</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span></div>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">tmpArr</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

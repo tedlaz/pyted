@@ -20,11 +20,12 @@ def isNum(val):  # is val number or not ?
 
 def dec(poso=0, decimals=2):
     """
-    Decimal with decimal digits = decimals
+    Always returns a decimal number. If poso is not a number or None
+    returns dec(0)
 
     :param poso: Mumber in any format (string, float, int, ...)
     :param decimals: Number of decimals (default 2)
-    :return: A decimal number
+    :return: A decimal number rounded to decimals parameter
     """
     if poso is None:
         poso = 0
@@ -37,6 +38,47 @@ def dec(poso=0, decimals=2):
     if tmp == decimal.Decimal(0):
         tmp = decimal.Decimal(0)
     return tmp.quantize(PLACES)
+
+
+def triades(txt, separator='.'):
+    '''
+    Help function to split digits to thousants ( 123456 becomes 123.456 )
+    '''
+    return separator.join(textwrap.wrap(txt[::-1], 3))[::-1]
+
+
+def dec2gr(poso, decimals=2, zero_as_space=False):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    dposo = dec(poso, decimals)
+    if dposo == dec(0):
+        if zero_as_space:
+            return ' '
+    sdposo = str(dposo)
+    meion = '-'
+    separator = '.'
+    decimal_ceparator = ','
+    prosimo = ''
+    if sdposo.startswith(meion):
+        prosimo = meion
+        sdposo = sdposo.replace(meion, '')
+    if '.' in sdposo:
+        sint, sdec = sdposo.split('.')
+    else:
+        sint = sdposo
+        decimal_ceparator = ''
+        sdec = ''
+    return prosimo + triades(sint) + decimal_ceparator + sdec
+
+
+def gr2dec(poso):
+    '''
+    Returns decimal (12.345,67 becomes 12345.67)
+    '''
+    st = poso.replace('.', '')
+    ds = st.replace(',', '.')
+    return dec(ds)
 
 
 class Ddict(dict):
@@ -81,78 +123,14 @@ class Ddi(dict):
         dict.__setitem__(self, key, dval)
 
 
-class Dordict(OrderedDict):
-
-    '''
-    Ordered Dictionary of decimals
-    '''
-
-    def __init__(self, *args, **kwargs):
-        # self.update(*args, **kwargs)
-        fkw = {}
-        for key in kwargs:
-            fkw[key] = dec(kwargs[key])
-        OrderedDict.__init__(self, *args, **fkw)
-
-    def __setitem__(self, key, val):
-        dval = dec(val)
-        OrderedDict.__setitem__(self, key, dval)
-
-
-def triades(txt, separator='.'):
-    '''
-    Help function to split digits to thousants ( 123456 becomes 123.456 )
-    '''
-    return separator.join(textwrap.wrap(txt[::-1], 3))[::-1]
-
-
-def dec2gr(poso, decimals=2, zero_as_space=False):
-    '''
-    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
-    '''
-    dposo = dec(poso, decimals)
-    if (dposo == dec(0)):
-        if zero_as_space:
-            return ' '
-    sdposo = str(dposo)
-    meion = '-'
-    separator = '.'
-    decimal_ceparator = ','
-    prosimo = ''
-    if sdposo.startswith(meion):
-        prosimo = meion
-        sdposo = sdposo.replace(meion, '')
-    if '.' in sdposo:
-        sint, sdec = sdposo.split('.')
-    else:
-        sint = sdposo
-        decimal_ceparator = ''
-        sdec = ''
-    return prosimo + triades(sint) + decimal_ceparator + sdec
-
-
-def gr2dec(poso):
-    '''
-    Returns decimal (12.345,67 becomes 12345.67)
-    '''
-    st = poso.replace('.', '')
-    ds = st.replace(',', '.')
-    return dec(ds)
-
-
-def nul2DecimalZero(val):
-    '''
-    Instead of null returns 0.
-    '''
-    return dec(val)
-
-
 def distribute(val, distArray, decimals=2):
     """
     input parameters:
-    val       : Decimal value for distribution
-    distArray : Distribution Array
-    decimals  : Number of decimal digits
+
+    :param val: Decimal value for distribution
+    :param distArray: Distribution Array
+    :param decimals: Number of decimal digits
+    :return: Tuple of distributed val
     """
     tmpArr = []
     val = dec(val, decimals)
@@ -164,19 +142,7 @@ def distribute(val, distArray, decimals=2):
         tmpArr.append(dec(val * dec(el, decimals) / tar, decimals))
     nval = sum(tmpArr)
     dif = val - nval  # Get the possible difference to fix round problem
-    if dif == 0:
-        pass
-    else:
+    if dif != 0:
         # Max number Element gets the difference
         tmpArr[tmpArr.index(max(tmpArr))] += dif
-    return tmpArr
-
-
-def nul2z(val):
-    '''
-    Instead of null returns 0. For sqlite use.
-    '''
-    if val:
-        return val
-    else:
-        return 0
+    return tuple(tmpArr)

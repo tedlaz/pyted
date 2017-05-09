@@ -621,41 +621,54 @@ with_id=False : [&#8216;fld1&#8217;, &#8216;fld2&#8217;, ...]</dd>
 <p>Dictionary of decimals only</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="ted17.dec.Dordict">
-<em class="property">class </em><code class="descclassname">ted17.dec.</code><code class="descname">Dordict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#Dordict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.Dordict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.OrderedDict</span></code></p>
-<p>Ordered Dictionary of decimals</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="ted17.dec.dec">
 <code class="descclassname">ted17.dec.</code><code class="descname">dec</code><span class="sig-paren">(</span><em>poso=0</em>, <em>decimals=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decimal with decimal digits = decimals
-:param poso: Mumber in any format (string, float, int, ...)
-:param decimals: Number of decimals (default 2)
-:return: A decimal number</p>
+<dd><p>Always returns a decimal number. If poso is not a number or None
+returns dec(0)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>poso</strong> &#8211; Mumber in any format (string, float, int, ...)</li>
+<li><strong>decimals</strong> &#8211; Number of decimals (default 2)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A decimal number rounded to decimals parameter</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.dec.dec2gr">
-<code class="descclassname">ted17.dec.</code><code class="descname">dec2gr</code><span class="sig-paren">(</span><em>poso</em>, <em>decimals=2</em>, <em>zeroasnull=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec2gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec2gr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ted17.dec.dec2gr2">
-<code class="descclassname">ted17.dec.</code><code class="descname">dec2gr2</code><span class="sig-paren">(</span><em>poso</em>, <em>decimals=2</em>, <em>zeroAsSpace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec2gr2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec2gr2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ted17.dec.</code><code class="descname">dec2gr</code><span class="sig-paren">(</span><em>poso</em>, <em>decimals=2</em>, <em>zero_as_space=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#dec2gr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.dec2gr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ted17.dec.distribute">
 <code class="descclassname">ted17.dec.</code><code class="descname">distribute</code><span class="sig-paren">(</span><em>val</em>, <em>distArray</em>, <em>decimals=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.distribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>input parameters:
-val       : Decimal value for distribution
-distArray : Distribution Array
-decimals  : Number of decimal digits</p>
+<dd><p>input parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; Decimal value for distribution</li>
+<li><strong>distArray</strong> &#8211; Distribution Array</li>
+<li><strong>decimals</strong> &#8211; Number of decimal digits</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tuple of distributed val</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -678,18 +691,6 @@ decimals  : Number of decimal digits</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="ted17.dec.nul2DecimalZero">
-<code class="descclassname">ted17.dec.</code><code class="descname">nul2DecimalZero</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#nul2DecimalZero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.nul2DecimalZero" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instead of null returns 0.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ted17.dec.nul2z">
-<code class="descclassname">ted17.dec.</code><code class="descname">nul2z</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/dec.html#nul2z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.dec.nul2z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instead of null returns 0. For sqlite use.</p>
 </dd></dl>
 
 <dl class="function">
