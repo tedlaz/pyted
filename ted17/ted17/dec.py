@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import decimal
 from collections import OrderedDict
+import textwrap
 
 
 def isNum(val):  # is val number or not ?
@@ -20,6 +21,7 @@ def isNum(val):  # is val number or not ?
 def dec(poso=0, decimals=2):
     """
     Decimal with decimal digits = decimals
+
     :param poso: Mumber in any format (string, float, int, ...)
     :param decimals: Number of decimals (default 2)
     :return: A decimal number
@@ -28,9 +30,12 @@ def dec(poso=0, decimals=2):
         poso = 0
     PLACES = decimal.Decimal(10) ** (-1 * decimals)
     if isNum(poso):
-        tmp = decimal.Decimal(str(poso))
+        tmp = decimal.Decimal(poso)
     else:
         tmp = decimal.Decimal('0')
+    # in case of tmp = -0.00 to remove negative sign
+    if tmp == decimal.Decimal(0):
+        tmp = decimal.Decimal(0)
     return tmp.quantize(PLACES)
 
 
@@ -98,85 +103,32 @@ def triades(txt, separator='.'):
     '''
     Help function to split digits to thousants ( 123456 becomes 123.456 )
     '''
-    ltxt = len(txt)
-    rem = ltxt % 3
-    precSpace = 3 - rem
-    stxt = ' ' * precSpace + txt
-    a = []
-    while len(stxt) > 0:
-        a.append(stxt[:3])
-        stxt = stxt[3:]
-    a[0] = a[0].strip()
-    fval = ''
-    for el in a:
-        fval += el + separator
-    return fval[:-1]
+    return separator.join(textwrap.wrap(txt[::-1], 3))[::-1]
 
 
-def dec2gr(poso, decimals=2, zeroasnull=False):
+def dec2gr(poso, decimals=2, zero_as_space=False):
     '''
     Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
     '''
-    if poso == 0 and zeroasnull:
-        return ' '
+    dposo = dec(poso, decimals)
+    if (dposo == dec(0)):
+        if zero_as_space:
+            return ' '
+    sdposo = str(dposo)
+    meion = '-'
+    separator = '.'
+    decimal_ceparator = ','
     prosimo = ''
-    strposo = str(poso)
-    if len(strposo) > 0:
-        if strposo[0] in '-':
-            prosimo = '-'
-            strposo = strposo[1:]
-    timi = '%s' % dec(strposo, decimals)
-    intpart, decpart = timi.split('.')
-    final = triades(intpart) + ',' + decpart
-    if final[0] == '.':
-        final = final[1:]
-    return prosimo + final
-
-
-def dec2gr2(poso, decimals=2, zeroAsSpace=False):
-    '''
-    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
-    '''
-    if dec(poso) == dec(0):
-        if zeroAsSpace:
-            return ''
-        else:
-            decs = '0' * decimals
-            if decimals > 0:
-                return '0,' + decs
-            else:
-                return '0'
-
-    def triades2(txt, separator='.'):
-        '''
-        Help function to split digits to thousants ( 123456 becomes 123.456 )
-        '''
-        ltxt = len(txt)
-        rem = ltxt % 3
-        precSpace = 3 - rem
-        stxt = ' ' * precSpace + txt
-        a = []
-        while len(stxt) > 0:
-            a.append(stxt[:3])
-            stxt = stxt[3:]
-        a[0] = a[0].strip()
-        fval = ''
-        for el in a:
-            fval += el + separator
-        return fval[:-1]
-
-    prosimo = ''
-    strposo = str(poso)
-    if len(strposo) > 0:
-        if strposo[0] in '-':
-            prosimo = '-'
-            strposo = strposo[1:]
-    timi = '%s' % dec(strposo, decimals)
-    intpart, decpart = timi.split('.')
-    final = triades2(intpart) + ',' + decpart
-    if final[0] == '.':
-        final = final[1:]
-    return prosimo + final
+    if sdposo.startswith(meion):
+        prosimo = meion
+        sdposo = sdposo.replace(meion, '')
+    if '.' in sdposo:
+        sint, sdec = sdposo.split('.')
+    else:
+        sint = sdposo
+        decimal_ceparator = ''
+        sdec = ''
+    return prosimo + triades(sint) + decimal_ceparator + sdec
 
 
 def gr2dec(poso):

@@ -24,6 +24,10 @@ class TestDec(unittest.TestCase):
     def test_06(self):
         self.assertNotEqual(float(dec.dec('tedd')), 1)
 
+    def test_07(self):
+        #self.assertNotEqual(float(dec.dec('tedd')), 1)
+        print(dec.dec2gr('-2456', 1))
+        print(dec.dec('12', 0))
 
 class TestDdi(unittest.TestCase):
     def test_01(self):
