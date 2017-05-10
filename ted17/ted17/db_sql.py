@@ -8,15 +8,15 @@ def dic2sql(table, adic):
     '''
     Dictionary to Sql.
 
+    :param table: Table name
+    :param adic: dictionary with key names same with table field names
+    :return: sql according to input parameter adic.
+
     If adic['id'] == 0 returns insert sql
 
     If adic['id] != 0 returns update sql
 
     If there is adic['_d_'] returns delete sql
-
-    :param table: Table name
-    :param adic: dictionary with key names same with table field names
-    :return: sql
     '''
     fields = []
     values = []

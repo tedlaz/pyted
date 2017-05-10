@@ -468,9 +468,6 @@ Creates insert, update, delete sql from dictionaries</p>
 <dt id="ted17.db_sql.dic2sql">
 <code class="descclassname">ted17.db_sql.</code><code class="descname">dic2sql</code><span class="sig-paren">(</span><em>table</em>, <em>adic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db_sql.html#dic2sql"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db_sql.dic2sql" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary to Sql.</p>
-<p>If adic[&#8216;id&#8217;] == 0 returns insert sql</p>
-<p>If adic[&#8216;id] != 0 returns update sql</p>
-<p>If there is adic[&#8216;_d_&#8217;] returns delete sql</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -481,11 +478,14 @@ Creates insert, update, delete sql from dictionaries</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sql</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sql according to input parameter adic.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>If adic[&#8216;id&#8217;] == 0 returns insert sql</p>
+<p>If adic[&#8216;id] != 0 returns update sql</p>
+<p>If there is adic[&#8216;_d_&#8217;] returns delete sql</p>
 </dd></dl>
 
 <dl class="function">

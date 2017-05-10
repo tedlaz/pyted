@@ -58,15 +58,15 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Dictionary to Sql.</span>
 
+<span class="sd">    :param table: Table name</span>
+<span class="sd">    :param adic: dictionary with key names same with table field names</span>
+<span class="sd">    :return: sql according to input parameter adic.</span>
+
 <span class="sd">    If adic[&#39;id&#39;] == 0 returns insert sql</span>
 
 <span class="sd">    If adic[&#39;id] != 0 returns update sql</span>
 
 <span class="sd">    If there is adic[&#39;_d_&#39;] returns delete sql</span>
-
-<span class="sd">    :param table: Table name</span>
-<span class="sd">    :param adic: dictionary with key names same with table field names</span>
-<span class="sd">    :return: sql</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>

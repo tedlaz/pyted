@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='ted17',
-      version='0.1',
+      version='0.2',
       description='Useful widgets and functions for pyqt development',
       long_description=readme(),
       classifiers=[
