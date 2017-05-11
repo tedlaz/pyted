@@ -49,4 +49,4 @@ if __name__ == '__main__':
     print(ns.num2text(15104))
     print(ns.num2text(101000))
     print(ns.num2text(9999103))
-    print(ns.num2text(350000090103))
+    print(ns.num2text(1817090103))
