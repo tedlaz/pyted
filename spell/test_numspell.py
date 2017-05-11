@@ -24,7 +24,8 @@ class TestNumspell(unittest.TestCase):
         self.assertEqual(ns.num2text(2112), 'δύο χιλιάδες εκατόν δώδεκα')
 
     def test_07(self):
-        self.assertEqual(ns.num2text(9999), 'εννέα χιλιάδες εννιακόσια ενενήντα εννέα')
+        tval = 'εννέα χιλιάδες εννιακόσια ενενήντα εννέα'
+        self.assertEqual(ns.num2text(9999), tval)
 
     def test_08(self):
         self.assertEqual(ns.num2text(1012), 'χίλια δώδεκα')
@@ -36,7 +37,8 @@ class TestNumspell(unittest.TestCase):
         self.assertEqual(ns.num2text(900000), 'εννιακόσιες χιλιάδες')
 
     def test_11(self):
-        self.assertEqual(ns.num2text(912123), 'εννιακόσιες δώδεκα χιλιάδες εκατόν είκοσι τρία')
+        tval = 'εννιακόσιες δώδεκα χιλιάδες εκατόν είκοσι τρία'
+        self.assertEqual(ns.num2text(912123), tval)
 
 
 if __name__ == '__main__':
@@ -44,5 +46,7 @@ if __name__ == '__main__':
     print(ns.num2text(1))
     print(ns.num2text(100))
     print(ns.num2text(1000))
-    print(ns.num2text(10000))
+    print(ns.num2text(15104))
     print(ns.num2text(101000))
+    print(ns.num2text(9999103))
+    print(ns.num2text(350000090103))

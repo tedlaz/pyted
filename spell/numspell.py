@@ -26,31 +26,83 @@ def num2text(num, miden=True):
             5: 'πεντακόσιες', 6: 'εξακόσιες', 7: 'επτακόσιες', 8: 'οκτακόσιες',
             9: 'εννιακόσιες'}
 
+    ekat = {1: 'ένα εκατομμύριο', 2: 'εκατομμύρια'}
     if num in mons:
         return mons[num]
     if len(txtval) == 2:
         di1, di2 = txtval
-        return '%s %s' % (deks[int(di1)], mons[int(di2)])
-    if len(txtval) == 3:
+        val = '%s %s' % (deks[int(di1)], mons[int(di2)])
+    elif len(txtval) == 3:
         di1 = int(txtval[0])
         di2 = int(txtval[1:])
-        return '%s %s' % (ekas[di1], num2text(di2, False))
-    if len(txtval) == 4:
+        val = '%s %s' % (ekas[di1], num2text(di2, False))
+    elif len(txtval) == 4:
         di1 = int(txtval[0])
         di2 = int(txtval[1:])
         if di1 == 1:
-            return 'χίλια %s' % num2text(di2, False)
+            val = 'χίλια %s' % num2text(di2, False)
         else:
-            return '%s χιλιάδες %s' % (num2text(di1, False), num2text(di2, False))
-    if len(txtval) == 5:
+            val = '%s χιλιάδες %s' % (num2text(di1, False), num2text(di2, False))
+    elif len(txtval) == 5:
         di1 = int(txtval[:2])
         di2 = int(txtval[2:])
-        return '%s χιλιάδες %s' % (num2text(di1, False), num2text(di2, False))
-    if len(txtval) == 6:
+        val = '%s χιλιάδες %s' % (num2text(di1, False), num2text(di2, False))
+    elif len(txtval) == 6:
         di1 = int(txtval[0])
         di2 = int(txtval[1:3])
         di3 = int(txtval[3:])
         val = '%s %s χιλιάδες %s' % (ekaf[di1], num2text(di2, False), num2text(di3, False))
-        val = val.strip()
-        val = val.replace('  ', ' ')
-        return val
+
+    elif len(txtval) == 7:
+        di1 = int(txtval[0])
+        di2 = int(txtval[1:])
+        if di1 == 1:
+            val1 = 'εκατομμύριο'
+        else:
+            val1 = 'εκατομμύρια'
+        val = '%s %s %s' % (mons[di1], val1, num2text(di2))
+    elif len(txtval) == 8:
+        di1 = int(txtval[:2])
+        di2 = int(txtval[2:])
+        val = '%s εκατομμύρια %s' % (num2text(di1), num2text(di2))
+    elif len(txtval) == 9:
+        di1 = int(txtval[:3])
+        di2 = int(txtval[3:])
+        val = '%s εκατομμύρια %s' % (num2text(di1), num2text(di2))
+    elif len(txtval) == 10:
+        di1 = int(txtval[0])
+        di2 = int(txtval[1:])
+        if di1 == 1:
+            val1 = 'δισεκατομμύριο'
+        else:
+            val1 = 'δισεκατομμύρια'
+        val = '%s %s %s' % (mons[di1], val1, num2text(di2))
+    elif len(txtval) == 11:
+        di1 = int(txtval[:2])
+        di2 = int(txtval[2:])
+        val = '%s δισεκατομμύρια %s' % (num2text(di1), num2text(di2))
+    elif len(txtval) == 12:
+        di1 = int(txtval[:3])
+        di2 = int(txtval[3:])
+        val = '%s δισεκατομμύρια %s' % (num2text(di1), num2text(di2))
+    elif len(txtval) == 13:
+        di1 = int(txtval[0])
+        di2 = int(txtval[1:])
+        if di1 == 1:
+            val1 = 'τρισεκατομμύριο'
+        else:
+            val1 = 'τρισεκατομμύρια'
+        val = '%s %s %s' % (mons[di1], val1, num2text(di2))
+    elif len(txtval) == 14:
+        di1 = int(txtval[:2])
+        di2 = int(txtval[2:])
+        val = '%s τρισεκατομμύρια %s' % (num2text(di1), num2text(di2))
+    elif len(txtval) == 15:
+        di1 = int(txtval[:3])
+        di2 = int(txtval[3:])
+        val = '%s τρισεκατομμύρια %s' % (num2text(di1), num2text(di2))
+    else:
+        val = txtval
+    val = val.strip()
+    val = val.replace('  ', ' ')
+    return val
