@@ -12,6 +12,11 @@ import sqlite3
 from .grup import grup
 
 
+class DbException(Exception):
+    """Exception to use with class Dbmanager"""
+    pass
+
+
 def dataFromDB(dbf, sql):
     """Get data from database
 
@@ -83,6 +88,21 @@ class SqliteManager:
         self._close()
         return True
 
+    def insert(self, sql):
+        """Execute insert sql and get back id of inserted record
+
+        :param sql: sql to run. Function checks that sql is insert sql
+        :return: id of inserted record or None in case of failure
+        """
+        rid = None
+        if not sql.upper().startswith('INSERT '):
+            raise DbException('Wrong sql : %s' % sql)
+        self._open()
+        self.cur.execute(sql)
+        rid = self.cur.lastrowid
+        self._close()
+        return rid
+
     def application_id(self):
         '''Get application_id from database file
 
@@ -137,11 +157,28 @@ class SqliteManager:
         :param sql: SQL to run
         :return: List of tuples of rows
         '''
+        if not sql[:6] in ('SELECT', 'PRAGMA'):
+            raise DbException('Wrong sql : %s' % sql)
         self._open()
         self.cur.execute(sql)
         rows = self.cur.fetchall()
         self._close()
         return rows
+
+    def select_table(self, table_name, return_type='tuples'):
+        """Select
+        """
+        sql = "SELECT * FROM %s" % table_name
+        function = None
+        if return_type == 'tuples':
+            function = self.select
+        elif return_type == 'names-tuples':
+            function = self.select_with_names
+        elif return_type == 'dicts':
+            function = self.select_as_dict
+        else:
+            function = self.select
+        return function(sql)
 
     def select_with_names(self, sql):
         '''Get a tuple with column names and a list of tuples with data
@@ -215,7 +252,7 @@ class SqliteManager:
 
     def tables(self):
         """A tuple with database tables"""
-        sql = "select name from sqlite_master where type = 'table';"
+        sql = "SELECT name FROM sqlite_master WHERE type = 'table';"
         val = self.select(sql)
         tbl = [el[0] for el in val]
         tbl.sort()
@@ -223,7 +260,7 @@ class SqliteManager:
 
     def views(self):
         """A Tuple with database views"""
-        sql = "select name from sqlite_master where type = 'view';"
+        sql = "SELECT name FROM sqlite_master WHERE type = 'view';"
         val = self.select(sql)
         viw = [el[0] for el in val]
         viw.sort()

@@ -48,3 +48,6 @@ class TestDb(unittest.TestCase):
             dbm.script(sqm)
             self.assertEqual(dbm.tables(), ('dt', 'ts'))
             self.assertEqual(dbm.fields('dt'), ('id', 'ts_id', 'v'))
+            sqin = "INSERT INTO ts(val) values ('bob')"
+            self.assertEqual(dbm.insert(sqin), 3)
+            print(dbm.select_table('ts', 'names-tuples'))
