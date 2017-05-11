@@ -103,6 +103,146 @@ class SqliteManager:
         self._close()
         return rid
 
+    def select(self, sql, return_type='tuples'):
+        '''Get a list of tuples with data
+
+        :param sql: SQL to run
+        :return: List of tuples of rows
+        '''
+        if not sql[:6] in ('SELECT', 'PRAGMA'):
+            raise DbException('Wrong sql : %s' % sql)
+        function = None
+        if return_type == 'tuples':
+            function = self._select
+        elif return_type == 'names-tuples':
+            function = self._select_with_names
+        elif return_type == 'dicts':
+            function = self._select_as_dict
+        else:
+            function = self._select
+        return function(sql)
+
+    def select_table(self, table_name, return_type='tuples'):
+        """Select all values of a table
+        """
+        sql = "SELECT * FROM %s" % table_name
+        return self.select(sql, return_type)
+
+    def select_key_val(self, sql):
+        """Select val from table where key=keyval
+        """
+        rows = self.select(sql)
+        if len(rows) > 0:
+            return rows[0][0]
+
+    def _select(self, sql):
+        '''Get a list of tuples with data
+
+        :param sql: SQL to run
+        :return: List of tuples of rows
+        '''
+        if not sql[:6] in ('SELECT', 'PRAGMA'):
+            raise DbException('Wrong sql : %s' % sql)
+        self._open()
+        self.cur.execute(sql)
+        rows = self.cur.fetchall()
+        self._close()
+        return rows
+
+    def _select_with_names(self, sql):
+        '''Get a tuple with column names and a list of tuples with data
+
+        :param sql: The sql to execute
+        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]
+        '''
+        self._open()
+        self.cur.execute(sql)
+        column_names = tuple([t[0] for t in self.cur.description])
+        rows = self.cur.fetchall()
+        self._close()
+        return column_names, rows
+
+    def _select_as_dict(self, sql):
+        '''Get a list of dictionaries
+
+        :param sql: The sql to execute
+        :return: [{}, {}, ...]
+        '''
+        self._open()
+        self.cur.execute(sql)
+        column_names = [t[0] for t in self.cur.description]
+        rows = self.cur.fetchall()
+        diclist = []
+        for row in rows:
+            dic = {}
+            for i, col in enumerate(row):
+                dic[column_names[i]] = col
+            diclist.append(dic)
+        diclen = len(diclist)
+        self._close()
+        if diclen > 0:
+            return diclist
+        return [{}]
+
+    def select_md(self, idv, tablemaster, tabledetail=None, id_at_end=True):
+        '''
+        Get a specific record from table tablemaster.
+        If we pass it a tabledetail value, it gets detail records too.
+
+        :param idv: id value of record
+        :param tablemaster: Master table name
+        :param tabledetail: Detail table name
+        :param id_at_end: If True Foreign key is like tablemaster_id
+         else is like id_mastertable
+        :return: dictionary with values
+        '''
+        if id_at_end:
+            fkeytemplate = '%s_id'
+        else:
+            fkeytemplate = 'id_%s'
+
+        id_field = fkeytemplate % tablemaster
+        sql1 = "SELECT * FROM %s WHERE id='%s'" % (tablemaster, idv)
+        sql2 = "SELECT * FROM %s WHERE %s='%s'" % (tabledetail, id_field, idv)
+        dic = self._select_as_dict(sql1)[0]
+        ldic = len(dic)
+        if ldic == 0:
+            return dic
+        if tabledetail:
+            dic['zlines'] = self._select_as_dict(sql2)
+            # Remove id_field key
+            for elm in dic['zlines']:
+                del elm[id_field]
+        return dic
+
+    def tables(self):
+        """A tuple with database tables"""
+        sql = "SELECT name FROM sqlite_master WHERE type = 'table';"
+        val = self.select(sql)
+        tbl = [el[0] for el in val]
+        tbl.sort()
+        return tuple(tbl)
+
+    def views(self):
+        """A Tuple with database views"""
+        sql = "SELECT name FROM sqlite_master WHERE type = 'view';"
+        val = self.select(sql)
+        viw = [el[0] for el in val]
+        viw.sort()
+        return tuple(viw)
+
+    def fields(self, table_or_view):
+        """A Tuple with table or view fields
+
+        :param table_or_view: Table or View name
+        """
+        sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
+        self._open()
+        self.cur.execute(sql)
+        column_names = [t[0] for t in self.cur.description]
+        self._close()
+        return tuple(column_names)
+
     def application_id(self):
         '''Get application_id from database file
 
@@ -150,130 +290,3 @@ class SqliteManager:
         self._open()
         self.script('PRAGMA user_version = %s;' % version)
         self._close()
-
-    def select(self, sql):
-        '''Get a list of tuples with data
-
-        :param sql: SQL to run
-        :return: List of tuples of rows
-        '''
-        if not sql[:6] in ('SELECT', 'PRAGMA'):
-            raise DbException('Wrong sql : %s' % sql)
-        self._open()
-        self.cur.execute(sql)
-        rows = self.cur.fetchall()
-        self._close()
-        return rows
-
-    def select_table(self, table_name, return_type='tuples'):
-        """Select
-        """
-        sql = "SELECT * FROM %s" % table_name
-        function = None
-        if return_type == 'tuples':
-            function = self.select
-        elif return_type == 'names-tuples':
-            function = self.select_with_names
-        elif return_type == 'dicts':
-            function = self.select_as_dict
-        else:
-            function = self.select
-        return function(sql)
-
-    def select_with_names(self, sql):
-        '''Get a tuple with column names and a list of tuples with data
-
-        :param sql: The sql to execute
-        :return: (columnNam1, ...) [(dataLine1), (dataLine2), ...]
-        '''
-        self._open()
-        self.cur.execute(sql)
-        column_names = tuple([t[0] for t in self.cur.description])
-        rows = self.cur.fetchall()
-        self._close()
-        return column_names, rows
-
-    def select_as_dict(self, sql):
-        '''Get a list of dictionaries
-
-        :param sql: The sql to execute
-        :return: [{}, {}, ...]
-        '''
-        self._open()
-        self.cur.execute(sql)
-        column_names = [t[0] for t in self.cur.description]
-        rows = self.cur.fetchall()
-        diclist = []
-        for row in rows:
-            dic = {}
-            for i, col in enumerate(row):
-                dic[column_names[i]] = col
-            diclist.append(dic)
-        diclen = len(diclist)
-        self._close()
-        if diclen > 0:
-            return diclist
-        return [{}]
-
-    def select_master_detail(self,
-                             idv,
-                             tablemaster,
-                             tabledetail=None,
-                             id_at_end=True):
-        '''
-        Get a specific record from table tablemaster.
-        If we pass it a tabledetail value, it gets detail records too.
-
-        :param idv: id value of record
-        :param tablemaster: Master table name
-        :param tabledetail: Detail table name
-        :param id_at_end: If True Foreign key is like tablemaster_id
-         else is like id_mastertable
-        :return: dictionary with values
-        '''
-        if id_at_end:
-            fkeytemplate = '%s_id'
-        else:
-            fkeytemplate = 'id_%s'
-
-        id_field = fkeytemplate % tablemaster
-        sql1 = "SELECT * FROM %s WHERE id='%s'" % (tablemaster, idv)
-        sql2 = "SELECT * FROM %s WHERE %s='%s'" % (tabledetail, id_field, idv)
-        dic = self.select_as_dict(sql1)[0]
-        ldic = len(dic)
-        if ldic == 0:
-            return dic
-        if tabledetail:
-            dic['zlines'] = self.select_as_dict(sql2)
-            # Remove id_field key
-            for elm in dic['zlines']:
-                del elm[id_field]
-        return dic
-
-    def tables(self):
-        """A tuple with database tables"""
-        sql = "SELECT name FROM sqlite_master WHERE type = 'table';"
-        val = self.select(sql)
-        tbl = [el[0] for el in val]
-        tbl.sort()
-        return tuple(tbl)
-
-    def views(self):
-        """A Tuple with database views"""
-        sql = "SELECT name FROM sqlite_master WHERE type = 'view';"
-        val = self.select(sql)
-        viw = [el[0] for el in val]
-        viw.sort()
-        return tuple(viw)
-
-    def fields(self, table_or_view):
-        """A Tuple with table or view fields
-
-        :param table_or_view: Table or View name
-        """
-        sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
-        self._open()
-        self.cur.execute(sql)
-        column_names = [t[0] for t in self.cur.description]
-        self._close()
-        return tuple(column_names)

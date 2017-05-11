@@ -6,6 +6,7 @@ from ted17 import db
 
 
 class TestDb(unittest.TestCase):
+    """Varius tests"""
     def setUp(self):
         pass
 
@@ -33,9 +34,9 @@ class TestDb(unittest.TestCase):
             dbm.script(sqm + sqd)
             dbm.script(sqli)
             self.assertEqual(dbm.select(sqls), rv1)
-            self.assertEqual(dbm.select_with_names(sqls), rv2)
-            self.assertEqual(dbm.select_as_dict(sqls), rv3)
-            self.assertEqual(dbm.select_master_detail(1, 'ts', 'dt'), rv4)
+            self.assertEqual(dbm.select(sqls, 'names-tuples'), rv2)
+            self.assertEqual(dbm.select(sqls, 'dicts'), rv3)
+            self.assertEqual(dbm.select_md(1, 'ts', 'dt'), rv4)
 
     def test_tables(self):
         sqm = ("CREATE TABLE ts(id INTEGER PRIMARY KEY, val TEXT);"
@@ -50,4 +51,9 @@ class TestDb(unittest.TestCase):
             self.assertEqual(dbm.fields('dt'), ('id', 'ts_id', 'v'))
             sqin = "INSERT INTO ts(val) values ('bob')"
             self.assertEqual(dbm.insert(sqin), 3)
-            print(dbm.select_table('ts', 'names-tuples'))
+            rv1 = (('id', 'val'), [(1, 'ted'), (2, 'popi'), (3, 'bob')])
+            self.assertEqual(dbm.select_table('ts', 'names-tuples'), rv1)
+            sqlkv1 = "SELECT v FROM dt WHERE id=1"
+            self.assertEqual(dbm.select_key_val(sqlkv1), 'Val1')
+            sqlkv2 = "SELECT v FROM dt WHERE id=30"
+            self.assertEqual(dbm.select_key_val(sqlkv2), None)
