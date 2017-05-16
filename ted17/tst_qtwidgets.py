@@ -28,11 +28,17 @@ class Test(Qw.QDialog):
                      qfl('Numeric', tqt.wNum(123.45, self)),
                      qfl('NumericSpin', tqt.wNumOld(11.23, self)),
                      qfl('Text', tqt.wText('This is just text', self)),
-                     qfl('TextButton', tqt.wTxtButton('62.04.05', sq1, sq9, self.db, self)),
-                     qfl('Combo', tqt.wTxtCombo(3, [[1, u'Ενα'], [3, u'Τρία']], self)),
+                     #  qfl('TextButton', tqt.wTxtButton('62.04.05',
+                     #                                   sq1,
+                     #                                   sq9, self.db, self)),
+                     qfl('TextButton', tqt.wTxtButton('10', 'lm1', self)),
+                     qfl('Combo', tqt.wTxtCombo(3, [[1, u'Ενα'],
+                                                    [2, u'Δύο'],
+                                                    [3, u'Τρία']], self)),
                      qfl('TextLine', tqt.wTxtLine('Ted Lazaros', self)),
                      qfl('TextLineNumbers', tqt.wTxtLineNum(123123123, self)),
-                     qfl('WeekDays', tqt.wWeekdays([1, 1, 1, 0, 0, 0, 1], self)),
+                     qfl('WeekDays', tqt.wWeekdays([1, 1, 1, 0, 0, 0, 1],
+                                                   self)),
                      qfl('YesNo', tqt.wYesNo(False, [u'Όχι', u'Ναί'], self))
                     ]
         layout = Qw.QFormLayout()

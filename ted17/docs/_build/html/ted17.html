@@ -250,6 +250,13 @@ Connect to sqlite database and perform crud functions</p>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">db</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;SELECT * from tbl1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="exception">
+<dt id="ted17.db.DbException">
+<em class="property">exception </em><code class="descclassname">ted17.db.</code><code class="descname">DbException</code><a class="reference internal" href="_modules/ted17/db.html#DbException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.DbException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>Exception to use with class Dbmanager</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="ted17.db.SqliteManager">
 <em class="property">class </em><code class="descclassname">ted17.db.</code><code class="descname">SqliteManager</code><span class="sig-paren">(</span><em>dbfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager" title="Permalink to this definition">¶</a></dt>
@@ -277,13 +284,71 @@ Connect to sqlite database and perform crud functions</p>
 
 <dl class="method">
 <dt id="ted17.db.SqliteManager.fields">
-<code class="descname">fields</code><span class="sig-paren">(</span><em>table_or_view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fields</code><span class="sig-paren">(</span><em>table_or_view</em>, <em>with_id=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Tuple with table or view fields</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>table_or_view</strong> &#8211; Table or View name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db.SqliteManager.find_record_by_id">
+<code class="descname">find_record_by_id</code><span class="sig-paren">(</span><em>table</em>, <em>idval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.find_record_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.find_record_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a specific record in database, teble with id = idval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table</strong> &#8211; Table or View name</li>
+<li><strong>idval</strong> &#8211; Value of id</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionary with values or {}</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db.SqliteManager.find_records">
+<code class="descname">find_records</code><span class="sig-paren">(</span><em>table_name</em>, <em>search_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.find_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.find_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find records with multiple search strings</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table_name</strong> &#8211; Table or View name</li>
+<li><strong>search_string</strong> &#8211; A string with space separated search values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of dicts</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ted17.db.SqliteManager.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute insert sql and get back id of inserted record</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; sql to run. Function checks that sql is insert sql</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">id of inserted record or None in case of failure</td>
 </tr>
 </tbody>
 </table>
@@ -307,7 +372,7 @@ Connect to sqlite database and perform crud functions</p>
 
 <dl class="method">
 <dt id="ted17.db.SqliteManager.select">
-<code class="descname">select</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select" title="Permalink to this definition">¶</a></dt>
+<code class="descname">select</code><span class="sig-paren">(</span><em>sql</em>, <em>return_type='tuples'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of tuples with data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -322,24 +387,14 @@ Connect to sqlite database and perform crud functions</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ted17.db.SqliteManager.select_as_dict">
-<code class="descname">select_as_dict</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_as_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_as_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of dictionaries</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; The sql to execute</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[{}, {}, ...]</td>
-</tr>
-</tbody>
-</table>
+<dt id="ted17.db.SqliteManager.select_key_val">
+<code class="descname">select_key_val</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_key_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_key_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select val from table where key=keyval</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ted17.db.SqliteManager.select_master_detail">
-<code class="descname">select_master_detail</code><span class="sig-paren">(</span><em>idv</em>, <em>tablemaster</em>, <em>tabledetail=None</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_master_detail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_master_detail" title="Permalink to this definition">¶</a></dt>
+<dt id="ted17.db.SqliteManager.select_md">
+<code class="descname">select_md</code><span class="sig-paren">(</span><em>idv</em>, <em>tablemaster</em>, <em>tabledetail=None</em>, <em>id_at_end=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_md"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_md" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a specific record from table tablemaster.
 If we pass it a tabledetail value, it gets detail records too.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -363,19 +418,9 @@ else is like id_mastertable</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="ted17.db.SqliteManager.select_with_names">
-<code class="descname">select_with_names</code><span class="sig-paren">(</span><em>sql</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_with_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_with_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a tuple with column names and a list of tuples with data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sql</strong> &#8211; The sql to execute</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(columnNam1, ...) [(dataLine1), (dataLine2), ...]</td>
-</tr>
-</tbody>
-</table>
+<dt id="ted17.db.SqliteManager.select_table">
+<code class="descname">select_table</code><span class="sig-paren">(</span><em>table_name</em>, <em>return_type='tuples'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.select_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.select_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all values of a table</p>
 </dd></dl>
 
 <dl class="method">

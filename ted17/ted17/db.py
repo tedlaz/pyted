@@ -64,6 +64,7 @@ class SqliteManager:
             return
         if not self.active:
             self.con = sqlite3.connect(self.dbf)
+            self.con.create_function("grup", 1, grup)
             self.cur = self.con.cursor()
             self.active = True
 
@@ -122,6 +123,38 @@ class SqliteManager:
             function = self._select
         return function(sql)
 
+    def find_records(self, table_name, search_string, rtype='dicts'):
+        """Find records with multiple search strings
+
+        :param table_name: Table or View name
+        :param search_string: A string with space separated search values
+        :return: List of dicts
+        """
+        search_list = search_string.split()
+        search_sql = []
+        fields = self.fields(table_name, False)
+        search_field = " || ' ' || ".join(fields)
+        sql = "SELECT * FROM %s \n" % table_name
+        where = ''
+        for search_str in search_list:
+            grup_str = grup(search_str)
+            tstr = " grup(%s) LIKE '%%%s%%'\n" % (search_field, grup_str)
+            search_sql.append(tstr)
+            where = 'WHERE'
+        final_sql = sql + where + ' AND '.join(search_sql)
+        return self.select(final_sql, rtype)
+
+    def find_record_by_id(self, table, idval, rtype='dicts'):
+        """Find a specific record in database, teble with id = idval
+
+        :param table: Table or View name
+        :param idval: Value of id
+        :return: dictionary with values or {}
+        """
+        sql = "SELECT * FROM %s WHERE id='%s'" % (table, idval)
+        rows = self.select(sql, rtype)
+        return rows
+
     def select_table(self, table_name, return_type='tuples'):
         """Select all values of a table
         """
@@ -132,7 +165,8 @@ class SqliteManager:
         """Select val from table where key=keyval
         """
         rows = self.select(sql)
-        if len(rows) > 0:
+        lrows = len(rows)
+        if lrows > 0:
             return rows[0][0]
 
     def _select(self, sql):
@@ -231,7 +265,7 @@ class SqliteManager:
         viw.sort()
         return tuple(viw)
 
-    def fields(self, table_or_view):
+    def fields(self, table_or_view, with_id=True):
         """A Tuple with table or view fields
 
         :param table_or_view: Table or View name
@@ -239,7 +273,10 @@ class SqliteManager:
         sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
         self._open()
         self.cur.execute(sql)
-        column_names = [t[0] for t in self.cur.description]
+        if with_id:
+            column_names = [t[0] for t in self.cur.description]
+        else:
+            column_names = [t[0] for t in self.cur.description if t[0] != 'id']
         self._close()
         return tuple(column_names)
 

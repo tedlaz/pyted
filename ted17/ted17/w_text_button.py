@@ -8,7 +8,8 @@ import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
 from .f_table import Form_find
-from .db import dataFromDB
+from . import db as dbm
+
 from .grup import grup
 
 
@@ -17,14 +18,13 @@ class Text_button(Qw.QWidget):
     # SIGNALS HERE
     valNotFound = Qc.pyqtSignal(str)
 
-    def __init__(self, val, qu1, qu9, dbf, parent=None):
+    def __init__(self, val, table, parent):
         '''
         val : The actual value
-        qu1 : SQL for getting the rpr of the val
-        qu9 : SQL for getting pair of (val, rpr)
-        dbf : Database file to use for the querying
         '''
         super().__init__(parent)
+        self.table = table
+        self.dbm = dbm.SqliteManager(parent.db)
         self.text = Qw.QLineEdit(self)
         self.button = Qw.QToolButton(self)
         layout = Qw.QHBoxLayout()
@@ -37,36 +37,56 @@ class Text_button(Qw.QWidget):
         self.text.textChanged.connect(self.text_changed)
         self.button.setFocusPolicy(Qc.Qt.NoFocus)
         self.button.clicked.connect(self.button_clicked)
-        self.qu1 = qu1
-        self.qu9 = qu9
-        self.dbf = dbf
-        self.set(val)
+        self.find_record(val)
 
-    def _set(self, val, vap, isGreen):
-        self.val = val
-        self.vap = vap
-        self.text.setText(vap)
-        self.setToolTip(self.vap)
+    def _set(self, dic_from_db, isGreen):
+        self.val = dic_from_db
+        self.vap = self.txt_val()
+        self.text.setText(self.vap)
+        self.setToolTip(self.rpr_val())
         self.text.setCursorPosition(0)
         if isGreen:
             self.green()
         else:
             self.red()
 
-    def set(self, val):
-        if not val:
-            self._set('', '', False)
+    def txt_val(self):
+        atxt = ''
+        for i, field in enumerate(self.val[0]):
+            if field != 'id':
+                atxt += '%s ' % self.val[1][0][i]
+        return atxt
+
+    def rpr_val(self):
+        atxt = ''
+        for i, field_name in enumerate(self.val[0]):
+            atxt += '%s : %s\n' % (field_name, self.val[1][0][i])
+        return atxt
+
+    def find_record(self, idval):
+        """Find a record by its id value
+
+        :param idval: id value of record
+        """
+        if not idval:
+            self._set(None, False)
         else:
-            vfromdb = dataFromDB(self.dbf, self.qu1 % val)
-            if len(vfromdb) == 1:
-                self._set(val, vfromdb[0][0], True)
+            dic_from_db = self.dbm.find_record_by_id(self.table,
+                                                     idval,
+                                                     'names-tuples')
+            if dic_from_db:
+                self._set(dic_from_db, True)
             else:
                 # There is not an rpr from database
-                self._set('', '', False)
+                self._set(None, False)
 
     def get(self):
+        field_names, vals = self.val
+        if 'id' not in field_names:
+            return ''
+        id_index = field_names.index('id')
         if self.isGreen:
-            return '%s' % self.val
+            return '%s' % vals[0][id_index]
         else:
             return ''
 
@@ -81,18 +101,12 @@ class Text_button(Qw.QWidget):
         self.find('')
 
     def green(self):
-        # self.button.setStyleSheet(
-        #     'border: 0px; padding: 0px; background-color: rgba(0, 180, 0); '
-        #     'color: rgb(255, 255, 255);')
         self.button.setStyleSheet('background-color: rgba(0, 180, 0);')
         self.button.setText('?')
         self.isGreen = True
 
     def red(self):
         self.button.setStyleSheet('background-color: rgba(239, 41, 41);')
-        # self.button.setStyleSheet(
-        #     'border: 0px; padding: 0px; background-color: rgba(220, 50, 0); '
-        #     'color: rgb(255, 255, 255);')
         self.button.setText('?')
         self.isGreen = False
 
@@ -104,15 +118,13 @@ class Text_button(Qw.QWidget):
 
     def find(self, text):
         oldvalue = self.get()
-        sql = self.qu9 % grup(text)  # Convert it to python text
-        vals = dataFromDB(self.dbf, sql)
-        if len(vals) == 1:
-            self._set(vals[0][0], vals[0][1], True)
-        elif len(vals) > 1:
-            tf = Form_find([u'κωδ', u'Περιγραφή'], vals, u'Αναζήτηση', self)
+        vals = self.dbm.find_records(self.table, text, 'names-tuples')
+        if len(vals[1]) == 1:
+            self._set(vals, True)
+        elif len(vals[1]) > 1:
+            tf = Form_find(vals[0], vals[1], u'Αναζήτηση', self)
             if tf.exec_() == Qw.QDialog.Accepted:
-                assert len(tf.vals) == 2
-                self._set(tf.vals[0], tf.vals[1], True)
+                self.find_record(tf.vals[0])
             else:
                 if oldvalue == self.get():
                     pass
@@ -120,5 +132,3 @@ class Text_button(Qw.QWidget):
                     self.red()
         else:
             self.valNotFound.emit(self.text.text())
-        # self.text.setCursorPosition(0)
-        self.setToolTip(self.vap)

@@ -57,3 +57,7 @@ class TestDb(unittest.TestCase):
             self.assertEqual(dbm.select_key_val(sqlkv1), 'Val1')
             sqlkv2 = "SELECT v FROM dt WHERE id=30"
             self.assertEqual(dbm.select_key_val(sqlkv2), None)
+            ld1 = [{'id': 1, 'val': 'ted'}]
+            self.assertEqual(dbm.find_records('ts', 'TE eD'), ld1)
+            di2 = {'id': 2, 'val': 'popi'}
+            self.assertEqual(dbm.find_record_by_id('ts', 2), di2)
