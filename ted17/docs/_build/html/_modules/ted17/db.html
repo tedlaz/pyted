@@ -173,7 +173,7 @@
             <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span>
         <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SqliteManager.find_records"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.find_records">[docs]</a>    <span class="k">def</span> <span class="nf">find_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">search_string</span><span class="p">):</span>
+<div class="viewcode-block" id="SqliteManager.find_records"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.find_records">[docs]</a>    <span class="k">def</span> <span class="nf">find_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">search_string</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;dicts&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find records with multiple search strings</span>
 
 <span class="sd">        :param table_name: Table or View name</span>
@@ -184,15 +184,17 @@
         <span class="n">search_sql</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">search_field</span> <span class="o">=</span> <span class="s2">&quot; || &#39; &#39; || &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> </span><span class="se">\n</span><span class="s2">WHERE&quot;</span> <span class="o">%</span> <span class="n">table_name</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">table_name</span>
+        <span class="n">where</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">search_str</span> <span class="ow">in</span> <span class="n">search_list</span><span class="p">:</span>
             <span class="n">grup_str</span> <span class="o">=</span> <span class="n">grup</span><span class="p">(</span><span class="n">search_str</span><span class="p">)</span>
             <span class="n">tstr</span> <span class="o">=</span> <span class="s2">&quot; grup(</span><span class="si">%s</span><span class="s2">) LIKE &#39;</span><span class="si">%%%s%%</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">search_field</span><span class="p">,</span> <span class="n">grup_str</span><span class="p">)</span>
             <span class="n">search_sql</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tstr</span><span class="p">)</span>
-        <span class="n">final_sql</span> <span class="o">=</span> <span class="n">sql</span> <span class="o">+</span> <span class="s1">&#39; AND &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">search_sql</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">final_sql</span><span class="p">,</span> <span class="s1">&#39;dicts&#39;</span><span class="p">)</span></div>
+            <span class="n">where</span> <span class="o">=</span> <span class="s1">&#39;WHERE&#39;</span>
+        <span class="n">final_sql</span> <span class="o">=</span> <span class="n">sql</span> <span class="o">+</span> <span class="n">where</span> <span class="o">+</span> <span class="s1">&#39; AND &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">search_sql</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">final_sql</span><span class="p">,</span> <span class="n">rtype</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SqliteManager.find_record_by_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.find_record_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_record_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">idval</span><span class="p">):</span>
+<div class="viewcode-block" id="SqliteManager.find_record_by_id"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.find_record_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_record_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">idval</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;dicts&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find a specific record in database, teble with id = idval</span>
 
 <span class="sd">        :param table: Table or View name</span>
@@ -200,8 +202,8 @@
 <span class="sd">        :return: dictionary with values or {}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2"> WHERE id=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">idval</span><span class="p">)</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">&#39;dicts&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">rtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rows</span></div>
 
 <div class="viewcode-block" id="SqliteManager.select_table"><a class="viewcode-back" href="../../ted17.html#ted17.db.SqliteManager.select_table">[docs]</a>    <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">&#39;tuples&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select all values of a table</span>

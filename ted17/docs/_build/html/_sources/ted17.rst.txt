@@ -180,14 +180,6 @@ ted17\.w\_text\_button module
     :undoc-members:
     :show-inheritance:
 
-ted17\.w\_text\_button\_old module
-----------------------------------
-
-.. automodule:: ted17.w_text_button_old
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 ted17\.w\_text\_combo module
 ----------------------------
 

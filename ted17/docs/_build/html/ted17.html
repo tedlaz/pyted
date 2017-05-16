@@ -298,7 +298,7 @@ Connect to sqlite database and perform crud functions</p>
 
 <dl class="method">
 <dt id="ted17.db.SqliteManager.find_record_by_id">
-<code class="descname">find_record_by_id</code><span class="sig-paren">(</span><em>table</em>, <em>idval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.find_record_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.find_record_by_id" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_record_by_id</code><span class="sig-paren">(</span><em>table</em>, <em>idval</em>, <em>rtype='dicts'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.find_record_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.find_record_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find a specific record in database, teble with id = idval</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -319,7 +319,7 @@ Connect to sqlite database and perform crud functions</p>
 
 <dl class="method">
 <dt id="ted17.db.SqliteManager.find_records">
-<code class="descname">find_records</code><span class="sig-paren">(</span><em>table_name</em>, <em>search_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.find_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.find_records" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_records</code><span class="sig-paren">(</span><em>table_name</em>, <em>search_string</em>, <em>rtype='dicts'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/db.html#SqliteManager.find_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.db.SqliteManager.find_records" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find records with multiple search strings</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1184,7 +1184,7 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <p>&#64;author: tedlaz.</p>
 <dl class="class">
 <dt id="ted17.w_text_button.Text_button">
-<em class="property">class </em><code class="descclassname">ted17.w_text_button.</code><code class="descname">Text_button</code><span class="sig-paren">(</span><em>val</em>, <em>qu1</em>, <em>qu9</em>, <em>dbf</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ted17.w_text_button.</code><code class="descname">Text_button</code><span class="sig-paren">(</span><em>val</em>, <em>table</em>, <em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
 <p>Button text class</p>
 <dl class="method">
@@ -1196,6 +1196,20 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <dt id="ted17.w_text_button.Text_button.find">
 <code class="descname">find</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.find" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.find_record">
+<code class="descname">find_record</code><span class="sig-paren">(</span><em>idval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.find_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.find_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a record by its id value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idval</strong> &#8211; id value of record</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="ted17.w_text_button.Text_button.get">
@@ -1218,8 +1232,8 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="ted17.w_text_button.Text_button.set">
-<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.set" title="Permalink to this definition">¶</a></dt>
+<dt id="ted17.w_text_button.Text_button.rpr_val">
+<code class="descname">rpr_val</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.rpr_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.rpr_val" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1227,71 +1241,14 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <code class="descname">text_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.text_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.text_changed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="ted17.w_text_button.Text_button.txt_val">
+<code class="descname">txt_val</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.txt_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.txt_val" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="ted17.w_text_button.Text_button.valNotFound">
 <code class="descname">valNotFound</code><a class="headerlink" href="#ted17.w_text_button.Text_button.valNotFound" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-ted17.w_text_button_old">
-<span id="ted17-w-text-button-old-module"></span><h2>ted17.w_text_button_old module<a class="headerlink" href="#module-ted17.w_text_button_old" title="Permalink to this headline">¶</a></h2>
-<p>Created on Nov 25, 2014</p>
-<p>&#64;author: tedlaz.</p>
-<dl class="class">
-<dt id="ted17.w_text_button_old.Text_button">
-<em class="property">class </em><code class="descclassname">ted17.w_text_button_old.</code><code class="descname">Text_button</code><span class="sig-paren">(</span><em>val</em>, <em>qu1</em>, <em>qu9</em>, <em>db</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QLineEdit</span></code></p>
-<p>Button text class</p>
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.buttonClicked">
-<code class="descname">buttonClicked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.buttonClicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.buttonClicked" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.edChanged">
-<code class="descname">edChanged</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.edChanged"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.edChanged" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.find">
-<code class="descname">find</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.find" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.get">
-<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.green">
-<code class="descname">green</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.green"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.green" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.keyPressEvent">
-<code class="descname">keyPressEvent</code><span class="sig-paren">(</span><em>ev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.keyPressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.keyPressEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.red">
-<code class="descname">red</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.red"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.red" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.resizeEvent">
-<code class="descname">resizeEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.resizeEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.resizeEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ted17.w_text_button_old.Text_button.set">
-<code class="descname">set</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button_old.html#Text_button.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button_old.Text_button.set" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="ted17.w_text_button_old.Text_button.valNotFound">
-<code class="descname">valNotFound</code><a class="headerlink" href="#ted17.w_text_button_old.Text_button.valNotFound" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1610,7 +1567,6 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <li><a class="reference internal" href="#module-ted17.w_numeric_spin">ted17.w_numeric_spin module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_text">ted17.w_text module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_text_button">ted17.w_text_button module</a></li>
-<li><a class="reference internal" href="#module-ted17.w_text_button_old">ted17.w_text_button_old module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_text_combo">ted17.w_text_combo module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_textline">ted17.w_textline module</a></li>
 <li><a class="reference internal" href="#module-ted17.w_textline_numbers_only">ted17.w_textline_numbers_only module</a></li>
