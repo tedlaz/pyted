@@ -89,7 +89,7 @@ class Find(Qw.QDialog):
         self.tbl.setSortingEnabled(True)
         self.tbl.wordWrap()
         layout.addWidget(self.tbl)
-        self.resize(900, 700)
+        self.resize(300, 200)
         self.populate()
 
     def contextMenuEvent(self, event):

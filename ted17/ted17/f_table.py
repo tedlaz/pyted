@@ -102,7 +102,7 @@ class Form_find(Qw.QDialog):
         layout.addWidget(self.tbl)
         self.setLayout(layout)
         self.setWindowTitle(title)
-        self.resize(900, 700)
+        self.resize(550, 400)
 
     def _setvals(self):
         self.vals = []

@@ -9,76 +9,78 @@ import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
 from .f_table import Form_find
 from . import db as dbm
-
 from .grup import grup
 
 
 class Text_button(Qw.QWidget):
-    """Button text class """
+    """Advanced control for foreign key fields
+
+    :param val: the id value of foreign relation
+    :param table: Table or View
+    :param parent: The parent object
+
+    .. warning:: Parent object must have db member
+
+    """
     # SIGNALS HERE
     valNotFound = Qc.pyqtSignal(str)
 
     def __init__(self, val, table, parent):
-        '''
-        val : The actual value
-        '''
+        """Init"""
         super().__init__(parent)
-        self.table = table
-        self.dbm = dbm.SqliteManager(parent.db)
+        self.table = table  # the table or view name
+        self.dbm = dbm.SqliteManager(parent.dbf)  # parent must have .dbf
+        # create gui
         self.text = Qw.QLineEdit(self)
         self.button = Qw.QToolButton(self)
+        self.button.setText('?')
+        self.button.setFocusPolicy(Qc.Qt.NoFocus)
         layout = Qw.QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
         self.setLayout(layout)
         layout.addWidget(self.text)
         layout.addWidget(self.button)
-        self.red()  # We start with red Button
+        # connections
         self.text.textChanged.connect(self.text_changed)
-        self.button.setFocusPolicy(Qc.Qt.NoFocus)
         self.button.clicked.connect(self.button_clicked)
-        self.find_record(val)
+        # init gui as red and try to fill it with existing value from db
+        self.red()
+        self.set(val)
 
-    def _set(self, dic_from_db, isGreen):
-        self.val = dic_from_db
+    def set(self, idv):
+        self.val = self.dbm.find_record_by_id(self.table, idv, 'names-tuples')
         self.vap = self.txt_val()
         self.text.setText(self.vap)
         self.setToolTip(self.rpr_val())
         self.text.setCursorPosition(0)
-        if isGreen:
+        lval = len(self.val[1])
+        if lval > 0:
             self.green()
         else:
             self.red()
 
     def txt_val(self):
-        atxt = ''
+        """[('id', 'fld1', ..), [(id0, f0, ...), ...]
+        """
+        atxt = []
+        if self.val[1] == []:
+            return ''
         for i, field in enumerate(self.val[0]):
             if field != 'id':
-                atxt += '%s ' % self.val[1][0][i]
-        return atxt
+                atxt.append('%s' % self.val[1][0][i])
+        return ' '.join(atxt)
 
     def rpr_val(self):
+        """
+        all fields: values of table mainly for tooltip use
+        """
         atxt = ''
+        if self.val[1] == []:
+            return ''
         for i, field_name in enumerate(self.val[0]):
             atxt += '%s : %s\n' % (field_name, self.val[1][0][i])
         return atxt
-
-    def find_record(self, idval):
-        """Find a record by its id value
-
-        :param idval: id value of record
-        """
-        if not idval:
-            self._set(None, False)
-        else:
-            dic_from_db = self.dbm.find_record_by_id(self.table,
-                                                     idval,
-                                                     'names-tuples')
-            if dic_from_db:
-                self._set(dic_from_db, True)
-            else:
-                # There is not an rpr from database
-                self._set(None, False)
 
     def get(self):
         field_names, vals = self.val
@@ -102,12 +104,10 @@ class Text_button(Qw.QWidget):
 
     def green(self):
         self.button.setStyleSheet('background-color: rgba(0, 180, 0);')
-        self.button.setText('?')
         self.isGreen = True
 
     def red(self):
         self.button.setStyleSheet('background-color: rgba(239, 41, 41);')
-        self.button.setText('?')
         self.isGreen = False
 
     def keyPressEvent(self, ev):
@@ -117,14 +117,19 @@ class Text_button(Qw.QWidget):
         return Qw.QWidget.keyPressEvent(self, ev)
 
     def find(self, text):
+        """
+        :param text: text separated by space multi-search values 'va1 val2 ..'
+        """
         oldvalue = self.get()
         vals = self.dbm.find_records(self.table, text, 'names-tuples')
+        # print(vals)
         if len(vals[1]) == 1:
-            self._set(vals, True)
+            # We assume that the first element of first tuple is id
+            self.set(vals[1][0][0])
         elif len(vals[1]) > 1:
-            tf = Form_find(vals[0], vals[1], u'Αναζήτηση', self)
-            if tf.exec_() == Qw.QDialog.Accepted:
-                self.find_record(tf.vals[0])
+            ffind = Form_find(vals[0], vals[1], u'Αναζήτηση', self)
+            if ffind.exec_() == Qw.QDialog.Accepted:
+                self.set(ffind.vals[0])
             else:
                 if oldvalue == self.get():
                     pass

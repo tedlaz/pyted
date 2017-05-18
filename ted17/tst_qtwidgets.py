@@ -13,11 +13,10 @@ def qfl(label, widget):
 
 
 class Test(Qw.QDialog):
+    """Testing my controls"""
     def __init__(self, dbf, parent=None):
         super().__init__()
-        sq1 = "SELECT id || ' ' || lmp FROM lm WHERE id='%s'"
-        sq9 = "SELECT id, id || ' ' || lmp as val FROM lm WHERE grup(val) LIKE '%%%s%%'"
-        self.db = dbf
+        self.dbf = dbf
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
         self.setWindowTitle(u'Δοκιμή qted')
         self.flds = [qfl('CheckBox', tqt.wChekcBox(2, self)),
@@ -31,7 +30,7 @@ class Test(Qw.QDialog):
                      #  qfl('TextButton', tqt.wTxtButton('62.04.05',
                      #                                   sq1,
                      #                                   sq9, self.db, self)),
-                     qfl('TextButton', tqt.wTxtButton('10', 'lm1', self)),
+                     qfl('TextButton', tqt.wTxtButton('19', 'lm1', self)),
                      qfl('Combo', tqt.wTxtCombo(3, [[1, u'Ενα'],
                                                     [2, u'Δύο'],
                                                     [3, u'Τρία']], self)),

@@ -141,6 +141,7 @@ class SqliteManager:
             tstr = " grup(%s) LIKE '%%%s%%'\n" % (search_field, grup_str)
             search_sql.append(tstr)
             where = 'WHERE'
+        # if not search_string sql is simple select
         final_sql = sql + where + ' AND '.join(search_sql)
         return self.select(final_sql, rtype)
 

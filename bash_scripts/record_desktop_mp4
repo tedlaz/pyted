@@ -10,7 +10,7 @@
 type slop ffmpeg play > /dev/null || exit
 
 delay=3
-path="$HOME/Pictures/screenshots/vid_$(date +"%s")"
+path="$HOME/Pictures/vid_$(date +"%s")"
 
 beep() {
     play shutter.ogg

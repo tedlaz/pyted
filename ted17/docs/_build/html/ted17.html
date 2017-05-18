@@ -1186,7 +1186,24 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <dt id="ted17.w_text_button.Text_button">
 <em class="property">class </em><code class="descclassname">ted17.w_text_button.</code><code class="descname">Text_button</code><span class="sig-paren">(</span><em>val</em>, <em>table</em>, <em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
-<p>Button text class</p>
+<p>Advanced control for foreign key fields</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>val</strong> &#8211; the id value of foreign relation</li>
+<li><strong>table</strong> &#8211; Table or View</li>
+<li><strong>parent</strong> &#8211; The parent object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Parent object must have db member</p>
+</div>
 <dl class="method">
 <dt id="ted17.w_text_button.Text_button.button_clicked">
 <code class="descname">button_clicked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.button_clicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.button_clicked" title="Permalink to this definition">¶</a></dt>
@@ -1244,7 +1261,8 @@ Gets / Sets two values : 0 for unchecked , 2 for checked</p>
 <dl class="method">
 <dt id="ted17.w_text_button.Text_button.txt_val">
 <code class="descname">txt_val</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ted17/w_text_button.html#Text_button.txt_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ted17.w_text_button.Text_button.txt_val" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>[(&#8216;id&#8217;, &#8216;fld1&#8217;, ..), [(id0, f0, ...), ...]</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ted17.w_text_button.Text_button.valNotFound">

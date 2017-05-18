@@ -1,0 +1,2 @@
+# to download only sound as mp3 with thumpnails
+youtube-dl -x --audio-format mp3 --embed-thumbnail --add-metadata <url>

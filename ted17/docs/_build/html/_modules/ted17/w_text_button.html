@@ -64,14 +64,20 @@
 
 
 <div class="viewcode-block" id="Text_button"><a class="viewcode-back" href="../../ted17.html#ted17.w_text_button.Text_button">[docs]</a><span class="k">class</span> <span class="nc">Text_button</span><span class="p">(</span><span class="n">Qw</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Button text class &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Advanced control for foreign key fields</span>
+
+<span class="sd">    :param val: the id value of foreign relation</span>
+<span class="sd">    :param table: Table or View</span>
+<span class="sd">    :param parent: The parent object</span>
+
+<span class="sd">    .. warning:: Parent object must have db member</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># SIGNALS HERE</span>
     <span class="n">valNotFound</span> <span class="o">=</span> <span class="n">Qc</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        val : The actual value</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;Init&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span> <span class="o">=</span> <span class="n">dbm</span><span class="o">.</span><span class="n">SqliteManager</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
@@ -101,11 +107,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Text_button.txt_val"><a class="viewcode-back" href="../../ted17.html#ted17.w_text_button.Text_button.txt_val">[docs]</a>    <span class="k">def</span> <span class="nf">txt_val</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">atxt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;[(&#39;id&#39;, &#39;fld1&#39;, ..), [(id0, f0, ...), ...]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atxt</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">field</span> <span class="o">!=</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span>
-                <span class="n">atxt</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">atxt</span></div>
+                <span class="n">atxt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atxt</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Text_button.rpr_val"><a class="viewcode-back" href="../../ted17.html#ted17.w_text_button.Text_button.rpr_val">[docs]</a>    <span class="k">def</span> <span class="nf">rpr_val</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">atxt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -169,6 +177,7 @@
 <div class="viewcode-block" id="Text_button.find"><a class="viewcode-back" href="../../ted17.html#ted17.w_text_button.Text_button.find">[docs]</a>    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="n">oldvalue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbm</span><span class="o">.</span><span class="n">find_records</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="s1">&#39;names-tuples&#39;</span><span class="p">)</span>
+        <span class="c1"># print(vals)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
