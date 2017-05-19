@@ -42,3 +42,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(dt.group_selector(isod, 'w'), '2017w27')
         self.assertEqual(dt.group_selector(isod, 's'), '2016-2017(10)')
         self.assertEqual(dt.group_selector(isod, 'bullsheet'), '2017')
+
+    def test_is_iso_date(self):
+        self.assertEqual(dt.is_iso_date('2015-01-01q'), False)
+        self.assertEqual(dt.is_iso_date('2015/01-01'), False)
+        self.assertEqual(dt.is_iso_date('20150101'), False)
+        self.assertEqual(dt.is_iso_date('201u-01-01'), False)
+        self.assertEqual(dt.is_iso_date('2015-t1-01'), False)
+        self.assertEqual(dt.is_iso_date('2015-01-r1'), False)
+        self.assertEqual(dt.is_iso_date('2015-01-01'), True)

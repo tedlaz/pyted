@@ -163,3 +163,33 @@ def group_selector(iso_date, per='m'):
     else:  # Default is Year
         dat = iso_date[:4]
     return dat
+
+
+def _is_positive_integer(val):
+    intv = 0
+    try:
+        intv = int(val)
+    except ValueError:
+        return False
+    if intv <= 0:
+        return False
+    return True
+
+
+def is_iso_date(strdate):
+    """Check if strdate is isodate (yyyy-mm-dd)"""
+    ldate = len(strdate)
+    if ldate != 10:
+        return False
+    if strdate[4] != '-':
+        return False
+    if strdate[7] != '-':
+        return False
+    yyy, mmm, ddd = strdate.split('-')
+    if not _is_positive_integer(yyy):
+        return False
+    if not _is_positive_integer(mmm):
+        return False
+    if not _is_positive_integer(ddd):
+        return False
+    return True

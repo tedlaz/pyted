@@ -30,7 +30,7 @@ class Test(Qw.QDialog):
                      #  qfl('TextButton', tqt.wTxtButton('62.04.05',
                      #                                   sq1,
                      #                                   sq9, self.db, self)),
-                     qfl('TextButton', tqt.wTxtButton('19', 'lm1', self)),
+                     qfl('TextButton', tqt.wTxtButton('1', 'par', self)),
                      qfl('Combo', tqt.wTxtCombo(3, [[1, u'Ενα'],
                                                     [2, u'Δύο'],
                                                     [3, u'Τρία']], self)),

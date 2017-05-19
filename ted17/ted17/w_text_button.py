@@ -4,12 +4,11 @@ Created on Nov 25, 2014
 
 @author: tedlaz.
 '''
-import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
 from .f_table import Form_find
 from . import db as dbm
-from .grup import grup
+# from .grup import grup
 
 
 class Text_button(Qw.QWidget):
@@ -127,7 +126,7 @@ class Text_button(Qw.QWidget):
             # We assume that the first element of first tuple is id
             self.set(vals[1][0][0])
         elif len(vals[1]) > 1:
-            ffind = Form_find(vals[0], vals[1], u'Αναζήτηση', self)
+            ffind = Form_find(vals, u'Αναζήτηση', self)
             if ffind.exec_() == Qw.QDialog.Accepted:
                 self.set(ffind.vals[0])
             else:
