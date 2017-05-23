@@ -9,6 +9,7 @@ Example::
 >>>     db.select('SELECT * from tbl1')
 '''
 import sqlite3
+import os
 from .grup import grup
 
 
@@ -32,6 +33,233 @@ def dataFromDB(dbf, sql):
     cur.close()
     con.close()
     return rws
+
+
+def connect(dbf):
+    assert os.path.exists(dbf)
+    con = None
+    cur = None
+    try:
+        con = sqlite3.connect(dbf)
+        cur = con.cursor()
+    except:
+        pass
+    return con, cur
+
+
+def close(con, cur):
+    """Close connection"""
+    cur.close()
+    con.close()
+
+
+def select(dbf, sql, return_type=None):
+    """select data records
+
+    :param dbf: Database file path
+    :param sql: SQL to run
+    :param rtype: return type
+    :return: list of tuples [(), (), ...]
+    """
+    if not sql[:6].upper() in ('SELECT', 'PRAGMA'):
+        raise DbException('Wrong sql : %s' % sql)
+    con, cur = connect(dbf)
+    con.create_function("grup", 1, grup)
+    try:
+        cur.execute(sql)
+    except sqlite3.OperationalError:
+        return None
+    column_names = tuple([t[0] for t in cur.description])
+    rows = cur.fetchall()
+    close(con, cur)
+    rtypes = ('names-tuples', 'dicts')
+    if return_type not in rtypes:
+        return rows
+    if return_type == 'names-tuples':
+        return column_names, rows
+    if return_type == 'dicts':
+        diclist = []
+        for row in rows:
+            dic = {}
+            for i, col in enumerate(row):
+                dic[column_names[i]] = col
+            diclist.append(dic)
+        diclen = len(diclist)
+        if diclen > 0:
+            return diclist
+        return [{}]
+
+
+def table_records(dbf, table_name, return_type='tuples'):
+    """Select all values of a table
+    """
+    sql = "SELECT * FROM %s" % table_name
+    return select(dbf, sql, return_type)
+
+
+def find_by_id(dbf, idv, tablemaster, tabledetail=None, id_at_end=True):
+    '''
+    Get a specific record from table tablemaster.
+    If we pass it a tabledetail value, it gets detail records too.
+
+    :param idv: id value of record
+    :param tablemaster: Master table name
+    :param tabledetail: Detail table name
+    :param id_at_end: If True Foreign key is like tablemaster_id
+        else is like id_mastertable
+    :return: dictionary with values
+    '''
+    if id_at_end:
+        fkeytemplate = '%s_id'
+    else:
+        fkeytemplate = 'id_%s'
+
+    id_field = fkeytemplate % tablemaster
+    sql1 = "SELECT * FROM %s WHERE id='%s'" % (tablemaster, idv)
+    sql2 = "SELECT * FROM %s WHERE %s='%s'" % (tabledetail, id_field, idv)
+    dic = select(dbf, sql1, 'dicts')[0]
+    ldic = len(dic)
+    if ldic == 0:
+        return dic
+    if tabledetail:
+        dic['zlines'] = select(dbf, sql2, 'dicts')
+        # Remove id_field key
+        for elm in dic['zlines']:
+            del elm[id_field]
+    return dic
+
+
+def find(dbf, table_name, search_string, rtype='dicts'):
+    """Find records with multiple search strings
+
+    :param table_name: Table or View name
+    :param search_string: A string with space separated search values
+    :return: List of dicts
+    """
+    search_list = search_string.split()
+    search_sql = []
+    flds = fields_of(dbf, table_name, False)
+    search_field = " || ' ' || ".join(flds)
+    sql = "SELECT * FROM %s \n" % table_name
+    where = ''
+    for search_str in search_list:
+        grup_str = grup(search_str)
+        tstr = " grup(%s) LIKE '%%%s%%'\n" % (search_field, grup_str)
+        search_sql.append(tstr)
+        where = 'WHERE'
+    # if not search_string sql is simple select
+    final_sql = sql + where + ' AND '.join(search_sql)
+    return select(dbf, final_sql, rtype)
+
+
+def tables_views(dbf, rel_type=None):
+    """A tuple with database tables
+
+    :param dbf: Database file path
+    :param rel_type: 'tables', 'views' else tables and views
+    """
+    sql = "SELECT name FROM sqlite_master WHERE type='table' OR type='view';"
+    if rel_type == 'tables':
+        sql = "SELECT name FROM sqlite_master WHERE type='table';"
+    elif rel_type == 'views':
+        sql = "SELECT name FROM sqlite_master WHERE type='view';"
+    val = select(dbf, sql)
+    tbl = [el[0] for el in val]
+    tbl.sort()
+    return tuple(tbl)
+
+
+def fields_of(dbf, table_or_view, with_id=True):
+    """A Tuple with table or view fields
+
+    :param table_or_view: Table or View name
+    :param with_id: If True includes field named id
+    """
+    sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
+    con, cur = connect(dbf)
+    cur.execute(sql)
+    if with_id:
+        column_names = [t[0] for t in cur.description]
+    else:
+        column_names = [t[0] for t in cur.description if t[0] != 'id']
+    close(con, cur)
+    return tuple(column_names)
+
+
+def fields(dbf, rtype=None):
+    """Returns fields of database
+
+    :param dbf: Database file path
+    :param rtype: 'table' , 'dict'
+    :return: if rtype==None returns a list of fields sorted by name.
+
+    If rtype=='table' returns a dict with tablenames as keys and list values of
+    fields {table1: [fld1, fld2, ...], table2: [fl1, fl2, ..], ..}
+
+    If rtype=='dict' returns a dict with fields as keys and list values of
+    tables field belongs {fld1: [tbl1, tbl2, ..], fld2: [tbla, ...], ...}
+    """
+    tablesviews = tables_views(dbf)
+    dfields = {}
+    dtbflds = {}
+    for vtv in tablesviews:
+        relfields = fields_of(dbf, vtv)
+        dtbflds[vtv] = list(relfields)
+        for field in relfields:
+            dfields[field] = dfields.get(field, [])
+            dfields[field].append(vtv)
+    if rtype == 'table':
+        return dtbflds
+    elif rtype == 'dict':
+        return dfields
+    return sorted(list(dfields.keys()))
+
+
+def script(dbf, sqlscript):
+    """Execute an sql script against self.dbf
+
+    :param sqlscript: SQL to run
+    :return: True if successfull execution
+    """
+    con, cur = connect(dbf)
+    con.executescript(sqlscript)
+    close(con, cur)
+    return True
+
+
+def insert(dbf, sql):
+    """Execute insert sql and get back id of inserted record
+
+    :param sql: sql to run. Function checks that sql is insert sql
+    :return: id of inserted record or None in case of failure
+    """
+    rid = None
+    if not sql.upper().startswith('INSERT '):
+        raise DbException('Wrong sql : %s' % sql)
+    con, cur = open(dbf)
+    cur.execute(sql)
+    rid = cur.lastrowid
+    close(con, cur)
+    return rid
+
+
+def pragmas(dbf):
+    """Get user version and application id
+    """
+    sql_user_version = 'PRAGMA user_version;'
+    sql_app_id = 'PRAGMA application_id;'
+    user_version = select(dbf, sql_user_version)[0][0]
+    app_id = select(dbf, sql_app_id)[0][0]
+    return {'user_version': user_version, 'app_id': app_id}
+
+
+def set_pragmas(dbf, user_version, app_id=None):
+    """Set pragmas
+    """
+    if user_version:
+        script(dbf, "PRAGMA user_version = %s;" % user_version)
+    if app_id:
+        script(dbf, "PRAGMA application_id = %s;" % app_id)
 
 
 class SqliteManager:
@@ -328,3 +556,14 @@ class SqliteManager:
         self._open()
         self.script('PRAGMA user_version = %s;' % version)
         self._close()
+
+    def get_zlabels(self):
+        sql = "SELECT * FROM zlbl"
+        tuplfld = self.select(sql, return_type='tuples')
+        labels = {}
+        for line in tuplfld:
+            labels[line[0]] = line[1]
+        return labels
+
+    def label(self, field):
+        return self._zlabels.get(field, field)

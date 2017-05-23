@@ -41,13 +41,15 @@ class TestDb(unittest.TestCase):
     def test_tables(self):
         sqm = ("CREATE TABLE ts(id INTEGER PRIMARY KEY, val TEXT);"
                "CREATE TABLE dt(id INTEGER PRIMARY KEY, ts_id INTEGER, v TEXT);"
+               "CREATE TABLE zlbl(fld TEXT PRIMARY KEY, lbl TEXT NOT NULL UNIQUE);"
+               "INSERT INTO zlbl VALUES ('id', 'ΑΑ');"
                "INSERT INTO ts VALUES (1, 'ted');"
                "INSERT INTO ts VALUES (2, 'popi');"
                "INSERT INTO dt VALUES (1, 1, 'Val1');"
                "INSERT INTO dt VALUES (2, 1, 'val2');")
         with db.SqliteManager(':memory:') as dbm:
             dbm.script(sqm)
-            self.assertEqual(dbm.tables(), ('dt', 'ts'))
+            self.assertEqual(dbm.tables(), ('dt', 'ts', 'zlbl'))
             self.assertEqual(dbm.fields('dt'), ('id', 'ts_id', 'v'))
             sqin = "INSERT INTO ts(val) values ('bob')"
             self.assertEqual(dbm.insert(sqin), 3)
@@ -60,4 +62,5 @@ class TestDb(unittest.TestCase):
             ld1 = [{'id': 1, 'val': 'ted'}]
             self.assertEqual(dbm.find_records('ts', 'TE eD'), ld1)
             di2 = {'id': 2, 'val': 'popi'}
-            self.assertEqual(dbm.find_record_by_id('ts', 2), di2)
+            self.assertEqual(dbm.find_record_by_id('ts', 2), [di2])
+            self.assertEqual(dbm.get_zlabels(), {'id': 'ΑΑ'})

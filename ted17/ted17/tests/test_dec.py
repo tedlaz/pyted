@@ -78,4 +78,5 @@ class TestDec(unittest.TestCase):
         self.assertEqual(dec.distribute(10.34, [12.35, ]), (dec.dec(10.34), ))
 
     def test_print(self):
-        print(dec.dec('200.00'))
+        pass
+        # print(dec.dec('200.00'))
