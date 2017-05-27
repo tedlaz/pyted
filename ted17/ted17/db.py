@@ -18,25 +18,13 @@ class DbException(Exception):
     pass
 
 
-def dataFromDB(dbf, sql):
-    """Get data from database
-
-    :param dbf: Database file path
-    :param sql: SQL to run
-    :return: list of tuples [(), (), ...]
+def connect(dbf, new_db=False):
     """
-    con = sqlite3.connect(dbf)
-    con.create_function("grup", 1, grup)
-    cur = con.cursor()
-    cur.execute(sql)
-    rws = cur.fetchall()
-    cur.close()
-    con.close()
-    return rws
-
-
-def connect(dbf):
-    assert os.path.exists(dbf)
+    :param dbf: Database file path
+    :param new_db: True if you want to create a new database
+    """
+    if not new_db:
+        assert os.path.exists(dbf)
     con = None
     cur = None
     try:
@@ -97,7 +85,12 @@ def table_records(dbf, table_name, return_type='tuples'):
     return select(dbf, sql, return_type)
 
 
-def find_by_id(dbf, idv, tablemaster, tabledetail=None, id_at_end=True):
+def find_by_id(dbf, vid, table, rtype):
+    sql1 = "SELECT * FROM %s WHERE id='%s'" % (table, vid)
+    return select(dbf, sql1, rtype)
+
+
+def find_by_id_md(dbf, idv, tablemaster, tabledetail=None, id_at_end=True):
     '''
     Get a specific record from table tablemaster.
     If we pass it a tabledetail value, it gets detail records too.
@@ -223,6 +216,21 @@ def script(dbf, sqlscript):
     """
     con, cur = connect(dbf)
     con.executescript(sqlscript)
+    close(con, cur)
+    return True
+
+
+def create_db(dbf, sqlscript, user_version, app_id):
+    """
+    :param dbf: Database file path
+    :param sqlscript: SQL script to run
+    :param user_version: Set user_version
+    :param app_id: Set application_id
+    """
+    con, cur = connect(dbf, True)
+    con.executescript(sqlscript)
+    con.executescript("PRAGMA user_version = %s" % user_version)
+    con.executescript("PRAGMA application_id = %s" % app_id)
     close(con, cur)
     return True
 

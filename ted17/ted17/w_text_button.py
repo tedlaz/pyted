@@ -28,7 +28,7 @@ class Text_button(Qw.QWidget):
         """Init"""
         super().__init__(parent)
         self.table = table  # the table or view name
-        self.dbm = dbm.SqliteManager(parent.dbf)  # parent must have .dbf
+        self.dbf = parent.dbf  # parent must have .dbf
         # create gui
         self.text = Qw.QLineEdit(self)
         self.button = Qw.QToolButton(self)
@@ -48,7 +48,7 @@ class Text_button(Qw.QWidget):
         self.set(val)
 
     def set(self, idv):
-        self.val = self.dbm.find_record_by_id(self.table, idv, 'names-tuples')
+        self.val = dbm.find_by_id(self.dbf, idv, self.table, 'names-tuples')
         self.vap = self.txt_val()
         self.text.setText(self.vap)
         self.setToolTip(self.rpr_val())
@@ -120,7 +120,7 @@ class Text_button(Qw.QWidget):
         :param text: text separated by space multi-search values 'va1 val2 ..'
         """
         oldvalue = self.get()
-        vals = self.dbm.find_records(self.table, text, 'names-tuples')
+        vals = dbm.find(self.dbf, self.table, text, 'names-tuples')
         # print(vals)
         if len(vals[1]) == 1:
             # We assume that the first element of first tuple is id
