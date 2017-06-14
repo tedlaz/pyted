@@ -1,0 +1,6 @@
+# portainer web gui setup
+docker run --name portainer -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+
+
+# nginx setup
+docker run --name ws -p 80:80 -v /home/tedlaz/http:/usr/share/nginx/html:ro -d nginx:stable-alpine
