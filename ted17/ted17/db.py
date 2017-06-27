@@ -86,6 +86,8 @@ def table_records(dbf, table_name, return_type='tuples'):
 
 
 def find_by_id(dbf, vid, table, rtype):
+    """Find a record by id
+    """
     sql1 = "SELECT * FROM %s WHERE id='%s'" % (table, vid)
     return select(dbf, sql1, rtype)
 
