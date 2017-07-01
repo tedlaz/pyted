@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  pgsql:
+    image: postgres:9.4-alpine
+    container_name: pgsql
+    environment:
+      POSTGRES_USER: ted
+      POSTGRES_PASSWORD: 12341234
+  odoo:
+    image: odoo
+    container_name: odoo
+    depends_on: 
+      - pgsql
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: pgsql
+      USER: ted
+      PASSWORD: 12341234
