@@ -94,7 +94,7 @@ def find_by_id(dbf, vid, table, rtype):
 
 def find_by_id_md(dbf, idv, tablemaster, tabledetail=None, id_at_end=True):
     '''
-    Get a specific record from table tablemaster.
+    Get a specific record from tablemaster.
     If we pass it a tabledetail value, it gets detail records too.
 
     :param idv: id value of record

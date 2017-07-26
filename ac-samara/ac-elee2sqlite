@@ -291,11 +291,12 @@ def parseef(eefile, encoding='WINDOWS-1253'):  # Τελικά θα παραμε�
 
 
 def parseee(eefile, encoding='WINDOWS-1253'):
-    hm = ''  # date for table eet
-    es = ''  # esoda for table eet
-    ej = ''  # ejoda for table eet
-    vs = ''  # fpa esodon
-    vj = ''  # fpa eksodon
+    '''Parse esoda ejoda text file'''
+    hm1 = ''  # date for table eet
+    es1 = ''  # esoda for table eet
+    ej1 = ''  # ejoda for table eet
+    vs1 = ''  # fpa esodon
+    vj1 = ''  # fpa eksodon
     a_eet = []
     with open(eefile) as afile:
         for linee in afile:
@@ -303,19 +304,20 @@ def parseee(eefile, encoding='WINDOWS-1253'):
             # first check if linesize > 152
             if len(line) > 152:
                 if line[53:66] == u'Σύνολα Εσόδων':
-                    hm = iso_date_from_greek(line[31:41])
-                    es = iso_number_from_greek(line[96:113])
-                    vs = iso_number_from_greek(line[117:134])
+                    hm1 = iso_date_from_greek(line[31:41])
+                    es1 = iso_number_from_greek(line[96:113])
+                    vs1 = iso_number_from_greek(line[117:134])
                     # print('%s %s' % (hm, es))
                 if line[53:66] == u'Σύνολα Εξόδων':
-                    ej = iso_number_from_greek(line[96:113])
-                    vj = iso_number_from_greek(line[117:134])
+                    ej1 = iso_number_from_greek(line[96:113])
+                    vj1 = iso_number_from_greek(line[117:134])
                     # print('%s %s %s' % (hm, es, ej))
-                    a_eet.append((hm, es, ej, vs, vj))
+                    a_eet.append((hm1, es1, ej1, vs1, vj1))
     return a_eet
 
 
 def create_sql(elfile, eefile):
+    '''Create SQL'''
     a_lmo, a_tr, a_trd = parseel(elfile)
     a_eef = parseef(eefile)
     # print(array_to_sql(a_eef, sql_eef))
@@ -331,6 +333,7 @@ def create_sql(elfile, eefile):
 
 
 def run(elfile, eefile, dbname=None):
+    '''Main run function'''
     if not dbname:
         imerol = elfile.split('.')
         dbname = '%s.sql3' % imerol[0]
@@ -342,19 +345,19 @@ def run(elfile, eefile, dbname=None):
 if __name__ == '__main__':
     import os.path
     import argparse
-    pars = argparse.ArgumentParser(description='Parse text to sqlite3')
-    pars.add_argument('elfile', help='Imerologio Text FILE to be parsed')
-    pars.add_argument('eefile', help='Esoda-Ejoda Text FILE to be parsed')
-    pars.add_argument('-o', '--Out', help='sqlite3 file name')
-    pars.add_argument('-v', '--verbose', action='store_true',
+    PARS = argparse.ArgumentParser(description='Parse text to sqlite3')
+    PARS.add_argument('elfile', help='Imerologio Text FILE to be parsed')
+    PARS.add_argument('eefile', help='Esoda-Ejoda Text FILE to be parsed')
+    PARS.add_argument('-o', '--Out', help='sqlite3 file name')
+    PARS.add_argument('-v', '--verbose', action='store_true',
                       help='output detailed messages')
-    pars.add_argument('--version', action='version', version='2.0')
-    args = pars.parse_args()
-    if not os.path.isfile(args.elfile):
-        print('No such file : %s' % args.elfile)
-    elif not os.path.isfile(args.eefile):
-        print('No such file : %s' % args.eefile)
+    PARS.add_argument('--version', action='version', version='2.0')
+    ARG = PARS.parse_args()
+    if not os.path.isfile(ARG.elfile):
+        print('No such file : %s' % ARG.elfile)
+    elif not os.path.isfile(ARG.eefile):
+        print('No such file : %s' % ARG.eefile)
     else:
-        ret = run(args.elfile, args.eefile, args.Out)
-        if args.verbose:
-            print(ret)
+        RET = run(ARG.elfile, ARG.eefile, ARG.Out)
+        if ARG.verbose:
+            print(RET)
