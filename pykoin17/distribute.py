@@ -39,6 +39,20 @@ def dec(poso=0, decimals=2):
     return tmp.quantize(PLACES)
 
 
+def multiply(number, array, decimals=2):
+    tarr = []
+    for el in array:
+        tarr.append(dec(dec(number, decimals) * dec(el, decimals), decimals))
+    return tarr
+
+
+def asum(arr1, arr2, decimals=2):
+    farr = []
+    for i, _ in enumerate(arr1):
+        farr.append(dec(arr1[i] + arr2[i], decimals))
+    return farr
+
+
 def distribute(val, distArray, decimals=2):
     """
     input parameters:
@@ -62,6 +76,15 @@ def distribute(val, distArray, decimals=2):
         # Max value Element gets the difference
         tmpArr[tmpArr.index(max(tmpArr))] += dif
     return tmpArr
+
+
+def distribute_per_cent(array, decimals=2):
+    return distribute(1, array, decimals)
+
+
+def dis_round(array, decimals=2):
+    tar = dec(sum(array), decimals)
+    return distribute(tar, array, decimals)
 
 
 def dist_to_dict(val, dist_dic, decimals=2):
