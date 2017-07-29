@@ -5,7 +5,6 @@ from PyQt5 import QtWidgets as Qw
 import sys
 import os
 import ted17 as tqt
-from ted17.dec import dec
 
 
 def qfl(label, widget):
@@ -62,10 +61,8 @@ class Test(Qw.QDialog):
 
 
 if __name__ == '__main__':
-    a = dec('2356.00')
+    a = tqt.dec.dec('2356.00')
     dbf = 'tst_qtwidgets.db'
-    sq1 = ''
-    sq9 = ''
     app = Qw.QApplication(sys.argv)
     ui = Test(dbf)
     ui.show()
