@@ -74,7 +74,6 @@ class Form_dapani(Qw.QDialog):
         sql = "SELECT * FROM dap WHERE id='%s'" % self.id
 
         diam = u_db.select(self.dbf, sql)
-        print(diam[0])
         for i, el in enumerate(diam[0]):
             if i == 0:
                 continue

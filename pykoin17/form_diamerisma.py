@@ -24,26 +24,17 @@ class Form_diamerisma(Qw.QDialog):
         mainlayout = Qw.QVBoxLayout()
         self.setLayout(mainlayout)
 
-        self.dfld = ['diam', 'dno', 'orofos', 'metra', 'owner', 'guest']
+        self.fld = ['diam', 'dno', 'orofos', 'metra', 'owner', 'guest']
+        lbl = ['Όνομα', 'Αριθμός', 'Όροφος', 'Τετραγωνικά', 'Ιδιοκτήτης',
+               'Ένοικος']
         self.labels = []
         self.fields = []
-        self.labels.append(Qw.QLabel('Όνομα'))
-        self.fields.append(Qw.QLineEdit())
-        self.labels.append(Qw.QLabel('Αριθμός'))
-        self.fields.append(Qw.QLineEdit())
-        self.labels.append(Qw.QLabel('Όροφος'))
-        self.fields.append(Qw.QLineEdit())
-        self.labels.append(Qw.QLabel('Τετραγωνικά'))
-        self.fields.append(Qw.QLineEdit())
-        self.labels.append(Qw.QLabel('Ιδιοκτήτης'))
-        self.fields.append(Qw.QLineEdit())
-        self.labels.append(Qw.QLabel('Ένοικος'))
-        self.fields.append(Qw.QLineEdit())
 
         flayout = Qw.QFormLayout()
-        for i, wid in enumerate(self.labels):
-            flayout.insertRow(i, self.labels[i], self.fields[i])
         mainlayout.addLayout(flayout)
+        for i, _ in enumerate(self.fld):
+            self.fields.append(Qw.QLineEdit())
+            flayout.insertRow(i, Qw.QLabel(lbl[i]), self.fields[i])
 
         self.bcanel = Qw.QPushButton(u'Ακύρωση', self)
         self.bsave = Qw.QPushButton(u'Αποθήκευση', self)
@@ -72,7 +63,7 @@ class Form_diamerisma(Qw.QDialog):
             u_db.script(self.dbf, fsql)
             self.accept()
         else:
-            for i, fld in enumerate(self.dfld):
+            for i, fld in enumerate(self.fld):
                 vals.append("%s='%s'" % (fld, self.fields[i].text()))
             fsql = sqlu % (','.join(vals), self.id)
             u_db.script(self.dbf, fsql)
@@ -84,7 +75,6 @@ class Form_diamerisma(Qw.QDialog):
         sql = "SELECT * FROM diam WHERE id='%s'" % self.id
 
         diam = u_db.select(self.dbf, sql)
-        print(diam[0])
         for i, el in enumerate(diam[0]):
             if i == 0:
                 continue
