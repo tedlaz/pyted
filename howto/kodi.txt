@@ -1,0 +1,4 @@
+1. Εγκατάσταση greeksubtitles
+https://github.com/tedlaz/script.module.lamlib/releases/download/0.7/script.module.lamlib.zip
+https://github.com/tedlaz/script.module.lamlib/releases/download/0.7/service.subtitles.subtitles.gr.zip
+
