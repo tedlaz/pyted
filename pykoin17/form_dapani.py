@@ -36,9 +36,11 @@ class Form_dapani(Qw.QDialog):
         mainlayout.addLayout(flayout)
 
         self.bcanel = Qw.QPushButton(u'Ακύρωση', self)
+        self.bdel = Qw.QPushButton(u'Διαγραφή', self)
         self.bsave = Qw.QPushButton(u'Αποθήκευση', self)
         blayout = Qw.QHBoxLayout()
         blayout.addWidget(self.bcanel)
+        blayout.addWidget(self.bdel)
         blayout.addWidget(self.bsave)
         mainlayout.addLayout(blayout)
         self._connect()
@@ -46,10 +48,19 @@ class Form_dapani(Qw.QDialog):
 
     def _connect(self):
         self.bcanel.clicked.connect(self.on_cancel)
+        self.bdel.clicked.connect(self.on_delete)
         self.bsave.clicked.connect(self.on_save)
 
     def on_cancel(self):
         self.close()
+
+    def on_delete(self):
+        if not self.id:
+            return
+        sqld = ("DELETE FROM dap WHERE id='%s';\n"
+                "DELETE FROM xiliosta WHERE dap_id='%s';")
+        u_db.script(self.dbf, sqld % (self.id, self.id))
+        self.accept()
 
     def on_save(self):
         sqli = 'INSERT INTO dap VALUES (null, %s);'
