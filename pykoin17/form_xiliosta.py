@@ -77,8 +77,11 @@ class Form_xiliosta(Qw.QDialog):
                                     Qw.QSizePolicy.Expanding,
                                     Qw.QSizePolicy.Minimum)
         self.btadddi = Qw.QPushButton(u'Νέο Διαμέρισμα', self)
+        self.btadddi.setFocusPolicy(Qc.Qt.NoFocus)
         self.btaddej = Qw.QPushButton(u'Νέο Έξοδο', self)
+        self.btaddej.setFocusPolicy(Qc.Qt.NoFocus)
         self.btnsave = Qw.QPushButton(u'Αποθήκευση', self)
+        self.btnsave.setFocusPolicy(Qc.Qt.NoFocus)
 
         # layout κουμπιών
         buttonlayout = Qw.QHBoxLayout()
@@ -110,6 +113,7 @@ class Form_xiliosta(Qw.QDialog):
             self.fill_tbl()
 
     def edit_diam(self, sval):
+        '''Open diamerismata form'''
         if sval >= len(self._diam):
             return
         vid = self._diam[sval]['id']

@@ -18,6 +18,19 @@ class Combo(Qw.QComboBox):
         if id_:
             self.setCurrentIndex(self.id2index[id_])
 
+    def __init__(self, val=0, vlist=[], parent=None):
+        super().__init__(parent)
+
+        self.populate(vlist)
+        self.set(val)  # val must be a valid id
+
+    def get(self):
+        return self.index2id[self.currentIndex()]
+
+    def set(self, id_):
+        if id_:
+            self.setCurrentIndex(self.id2index[id_])
+
     def populate(self, vlist):
         """
         Here we
@@ -27,6 +40,10 @@ class Combo(Qw.QComboBox):
         """
         self.index2id = {}
         self.id2index = {}
+        for i, elm in enumerate(vlist):
+            self.addItem('%s' % elm[1])
+            self.index2id[i] = elm[0]
+            self.id2index[elm[0]] = i
         for i, elm in enumerate(vlist):
             self.addItem('%s' % elm[1])
             self.index2id[i] = elm[0]

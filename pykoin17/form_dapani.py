@@ -36,8 +36,11 @@ class Form_dapani(Qw.QDialog):
         mainlayout.addLayout(flayout)
 
         self.bcanel = Qw.QPushButton(u'Ακύρωση', self)
+        self.bcanel.setFocusPolicy(Qc.Qt.NoFocus)
         self.bdel = Qw.QPushButton(u'Διαγραφή', self)
+        self.bdel.setFocusPolicy(Qc.Qt.NoFocus)
         self.bsave = Qw.QPushButton(u'Αποθήκευση', self)
+        self.bsave.setFocusPolicy(Qc.Qt.NoFocus)
         blayout = Qw.QHBoxLayout()
         blayout.addWidget(self.bcanel)
         blayout.addWidget(self.bdel)

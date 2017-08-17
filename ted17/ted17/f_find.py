@@ -110,7 +110,7 @@ class Find(Qw.QDialog):
         total = dec.dec(0)
         for i, row in enumerate(rows):
             for j, col in enumerate(row):
-                if dec.isNum(col):
+                if isNum(col):
                     if self.lbl[j][-2:] == 'id':
                         self.tbl.setItem(i, j, item_int(col))
                     elif type(col) is tdec:
@@ -122,7 +122,7 @@ class Find(Qw.QDialog):
                     self.tbl.setItem(i, j, item_date(col))
                 else:
                     self.tbl.setItem(i, j, item_str(col))
-            total += dec.dec(row[-2]) - dec.dec(row[-1])
+            total += dec(row[-2]) - dec.dec(row[-1])
             self.tbl.setItem(i, len(self.lbl) - 1, item_num(total))
         self.tbl.resizeColumnsToContents()
 

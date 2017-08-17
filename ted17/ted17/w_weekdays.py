@@ -11,11 +11,9 @@ BLANK, GREEN = range(2)
 
 
 class Weekdays(Qw.QWidget):
-
     '''
     Weekdays selection ( [1,1,1,1,1,0,0] 7 values 0 or 1, one per weekday)
     '''
-
     def __init__(self, val=[1, 1, 1, 1, 1, 0, 0], parent=None):
         '''pin: {'name': xx, 'vals': [1,1,1,1,1,1,1], 'dayNames': []}'''
         super().__init__(parent)
