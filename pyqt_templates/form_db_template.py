@@ -34,9 +34,7 @@ def select(dbf, sql):
 
 
 def script(db, sql):
-    '''
-    sql   : A set of sql commands (create, insert or update)
-    '''
+    '''sql   : A set of sql commands (create, insert or update)'''
     try:
         con = sqlite3.connect(db)
         cur = con.cursor()
@@ -52,9 +50,8 @@ def script(db, sql):
     return True
 
 
-class FormTemplate(Qw.QDialog):
-    '''Απλή φόρμα για δοκιμή
-    '''
+class FTable(Qw.QDialog):
+    '''Form to display and edit row table data'''
     def __init__(self, dbf, table, did=None, parent=None):
         '''
         :param dbf: Database file path
@@ -166,7 +163,7 @@ class FormTemplate(Qw.QDialog):
                 dtmp[field] = self.widgets[field].text()
         return dtmp
 
-    def is_dirty(self):
+    def is_dirtyt(self):
         '''Check if any value changed by user'''
         startv = {}
         for field in self.data:
@@ -181,7 +178,7 @@ if __name__ == '__main__':
     import sys
     dbf1 = "/home/tedlaz/test"
     app = Qw.QApplication([])
-    dialog = FormTemplate(dbf1, 'pel', 2)
+    dialog = FTable(dbf1, 'pel', 2)
     dialog.show()
     appex = app.exec_()
     sys.exit(appex)

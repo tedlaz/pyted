@@ -126,23 +126,19 @@ class Form_xiliosta(Qw.QDialog):
         self._diam = u_db.select_table(self.db, self.row_tbl)
         self._ej = u_db.select_table(self.db, self.col_tbl)
         self._vals = u_db.select_table(self.db, self.val_tbl)
-
         self.tbl.cellChanged.disconnect()
         n_ej = len(self._ej)  # Πλήθος κατηγοριών εξόδων
         n_diam = len(self._diam)  # Πλήθος διαμερισμάτων
         self.tbl.setColumnCount(n_ej)
         self.tbl.setRowCount(n_diam + 2)
-
         # Τίτλοι στηλών
         for i, _ in enumerate(self._ej):
             self.tbl.setHorizontalHeaderItem(i, item(self._ej[i]['dap'], 'c'))
-
         # Τίτλοι γραμμών
         for i, _ in enumerate(self._diam):
             self.tbl.setVerticalHeaderItem(i, item(self._diam[i]['diam'], 'l'))
         self.tbl.setVerticalHeaderItem(n_diam, itemb(u'Σύνολο', 'c'))
         self.tbl.setVerticalHeaderItem(n_diam + 1, itemb(u'Υπόλοιπο', 'c'))
-
         # Αρχικοποίηση δεδομένων πίνακα με μηδενικές τιμές
         for i in range(n_diam):
             for j in range(n_ej):
@@ -150,11 +146,9 @@ class Form_xiliosta(Qw.QDialog):
         for i in range(n_diam, n_diam + 2):
             for j in range(n_ej):
                 self.tbl.setItem(i, j, iteml('0'))
-
         # Σύνδεση του event μετά από την αρχικοποίηση εδώ
         # έτσι ώστε οι τιμές που εισάγονται παρακάτω να αθροίζονται αυτόματα
         self.tbl.cellChanged.connect(self.cell_changed)
-
         for val in self._vals:
             row = self.find_row(val['diam_id'])
             col = self.find_col(val['dap_id'])
@@ -194,7 +188,6 @@ class Form_xiliosta(Qw.QDialog):
                     dic = {'id': id, 'diam_id': did, 'dap_id': eid, 'val': val}
                     fvals.append(dic)
         save_result = u_db.save_many(self.db, self.val_tbl, fvals)
-
         if len(fvals) == 0:
             Qw.QMessageBox.about(self, u'Οκ', u'Είναι ήδη αποθηκευμένα ...')
         elif save_result:

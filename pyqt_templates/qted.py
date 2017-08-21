@@ -16,6 +16,12 @@ GREEK_DATE_FORMAT = 'd/M/yyyy'
 WEEKDAYS = ['Δε', 'Τρ', 'Τε', 'Πέ', 'Πα', 'Σά', 'Κυ']
 MSG_SELECT_DAYS = 'Επιλέξτε τις Εργάσιμες ημέρες\nΜε δεξί κλικ μηδενίστε'
 BLANK, GREEN = range(2)
+lbl = {'id': 'αα', 'afm': 'ΑΦΜ', 'epon': 'Επώνυμο', 'addr': 'Διεύθυνση'}
+
+
+def get_lbl(fld):
+    '''Return label if exists for fld otherwise fld'''
+    return lbl.get(fld, fld)
 
 
 def grup(txtval):
@@ -35,7 +41,6 @@ def grup(txtval):
 
 def isNum(val):  # is val number or not ?
     """Check if val is number or not
-
     :param val: value to check
     :return: Boolean
     """
@@ -102,6 +107,7 @@ def dec2gr(poso, decimals=2, zero_as_space=False):
 
 
 def is_positive_integer(val):
+    '''True if posotive integer False otherwise'''
     intv = 0
     try:
         intv = int(val)
@@ -219,6 +225,32 @@ def select(dbf, sql, return_type=None):
         return [{}]
 
 
+def select2(dbf, sql):
+    """select data records
+    :param dbf: Database file path
+    :param sql: SQL to run
+    """
+    if not sql[:6].upper() in ('SELECT', 'PRAGMA'):
+        return None
+    con = sqlite3.connect(dbf)
+    cur = con.cursor()
+    cur.execute(sql)
+    column_names = tuple([t[0] for t in cur.description])
+    rows = cur.fetchall()
+    cur.close()
+    con.close()
+    if not rows:
+        return column_names, {}
+    else:
+        dic = {}
+    for i, col in enumerate(rows[0]):
+        if col:
+            dic[column_names[i]] = '%s' % col
+        else:
+            dic[column_names[i]] = ''
+    return column_names, dic
+
+
 def find_by_id(dbf, vid, table, rtype):
     """Find a record by id
     """
@@ -246,6 +278,23 @@ def find(dbf, table_name, search_string, rtype='dicts'):
     # if not search_string sql is simple select
     final_sql = sql + where + ' AND '.join(search_sql)
     return select(dbf, final_sql, rtype)
+
+
+def script(dbf, sql):
+    '''sql   : A set of sql commands (create, insert or update)'''
+    try:
+        con = sqlite3.connect(dbf)
+        cur = con.cursor()
+        cur.executescript(sql)
+        con.commit()
+    except sqlite3.Error:
+        con.rollback()
+        cur.close()
+        con.close()
+        return False
+    cur.close()
+    con.close()
+    return True
 
 
 # My Qt Widgets
@@ -299,7 +348,7 @@ class TDate(Qw.QDateEdit):
         return '%s' % self.date().toString(SQLITE_DATE_FORMAT)
 
 
-class TDate_or_empty(Qw.QToolButton):
+class TDateEmpty(Qw.QToolButton):
     '''Date or empty string values'''
     def __init__(self, val=None, parent=None):
         super().__init__(parent)
@@ -346,7 +395,7 @@ class TDate_or_empty(Qw.QToolButton):
         return '%s' % qdt.toString(SQLITE_DATE_FORMAT)
 
 
-class TInteger_spin(Qw.QSpinBox):
+class TIntegerSpin(Qw.QSpinBox):
     '''
     Integer values (eg 123)
     '''
@@ -400,7 +449,7 @@ class TNumeric(Qw.QLineEdit):
         return dec(tmp.strip())
 
 
-class TNumeric_spin(Qw.QDoubleSpinBox):
+class TNumericSpin(Qw.QDoubleSpinBox):
 
     '''
     Numeric (decimal 2 ) values (eg 999,99)
@@ -454,7 +503,7 @@ class TText(Qw.QTextEdit):
         return tmpval.strip()
 
 
-class TText_line(Qw.QLineEdit):
+class TTextLine(Qw.QLineEdit):
     """Text Line Class"""
     def __init__(self, val='', parent=None):
         super().__init__(parent)
@@ -474,7 +523,7 @@ class TText_line(Qw.QLineEdit):
         return tmp.strip()
 
 
-class TInteger(TText_line):
+class TInteger(TTextLine):
     '''Text field with numeric chars only left aligned.'''
     def __init__(self, val='', parent=None):
         super().__init__(val, parent)
@@ -483,7 +532,7 @@ class TInteger(TText_line):
         self.setAlignment(Qc.Qt.AlignRight)
 
 
-class TTextline_num(TText_line):
+class TTextlineNum(TTextLine):
     '''Text field with numeric chars only left aligned.'''
     def __init__(self, val='', parent=None):
         super().__init__(val, parent)
@@ -491,7 +540,7 @@ class TTextline_num(TText_line):
         self.setValidator(Qg.QRegExpValidator(rval))
 
 
-class TYes_no_combo(Qw.QComboBox):
+class TYesNoCombo(Qw.QComboBox):
     '''Yes/No Combo'''
     def __init__(self, val=0, noyes=['No', 'Yes'], parent=None):
         super().__init__(parent)
@@ -893,7 +942,7 @@ class Form_find(Qw.QDialog):
         Qw.QDialog.keyPressEvent(self, ev)
 
 
-class TText_button(Qw.QWidget):
+class TTextButton(Qw.QWidget):
     """Advanced control for foreign key fields
     :param val: the id value of foreign relation
     :param table: Table or View
@@ -1014,6 +1063,131 @@ class TText_button(Qw.QWidget):
             self.valNotFound.emit(self.text.text())
 
 
+class FTable(Qw.QDialog):
+    '''Form to display and edit row table data'''
+    def __init__(self, dbf, table, did=None, parent=None):
+        '''
+        :param dbf: Database file path
+        :param table: Database table
+        :param did: The id of the record. None for new record.
+        '''
+        super().__init__(parent)
+        self.setAttribute(Qc.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Form template')
+        # basic data here
+        self._db = dbf
+        self._table = table
+        self._id = did
+        self.fields = []
+        self.labels = []
+        self.data = {}
+        # Set main layout
+        self.mainlayout = Qw.QVBoxLayout()
+        self.setLayout(self.mainlayout)
+        # Create widgets here and add them to formlayout
+        self._create_and_fill_fields()
+        self._create_buttons()
+
+    def _create_and_fill_fields(self):
+        self.dbf = self._db
+        if  self._id:
+            sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
+        else:
+            sql = "SELECT * FROM %s limit 0" % self._table
+        self.fields, self.data = select2(self._db, sql)
+        for fld in self.fields:
+            self.labels.append(get_lbl(fld))
+        flayout = Qw.QFormLayout()
+        self.mainlayout.addLayout(flayout)
+        self.widgets = {}
+        # Add fields to form
+        for i, fld in enumerate(self.fields):
+            if fld.endswith('_id'):
+                self.widgets[fld] = TTextButton(None, fld[:-3], self)
+            elif fld == 'id':
+                self.widgets[fld] = TInteger()
+                self.widgets[fld].setEnabled(False)
+            else:
+                self.widgets[fld] = TTextLine()
+            flayout.insertRow(i, Qw.QLabel(self.labels[i]),
+                              self.widgets[fld])
+            if fld in self.data:  # if not None or empty string
+                if self.data[fld]:
+                    self.widgets[fld].set('%s' % self.data[fld])
+                else:
+                    self.data[fld] = ''
+            # replace possible None with empty string for correct comparisson
+            else:
+                self.data[fld] = ''
+        print(self.is_empty(), self._id)
+
+    def is_empty(self):
+        for fld in self.widgets:
+            if self.widgets[fld].text() != '':
+                return False
+        self._id = None
+        return True
+
+    def _create_buttons(self):
+        '''Create buttons for the form'''
+        # Create layout first
+        buttonlayout = Qw.QHBoxLayout()
+        self.mainlayout.addLayout(buttonlayout)
+        # Create buttons here
+        self.bcancel = Qw.QPushButton(u'Ακύρωση', self)
+        self.bsave = Qw.QPushButton(u'Αποθήκευση', self)
+        # Make them loose focus
+        self.bcancel.setFocusPolicy(Qc.Qt.NoFocus)
+        self.bsave.setFocusPolicy(Qc.Qt.NoFocus)
+        # Add them to buttonlayout
+        buttonlayout.addWidget(self.bcancel)
+        buttonlayout.addWidget(self.bsave)
+        # Make connections here
+        self.bcancel.clicked.connect(self.close)
+        self.bsave.clicked.connect(self.save)
+
+    def validate(self):
+        return False
+
+    def save(self):
+        sqli = 'INSERT INTO %s VALUES (null, %s);'
+        sqlu = "UPDATE %s SET %s WHERE id='%s';"
+        vals = []
+        if not self._id:
+            for wid in self.widgets:
+                if wid == 'id':
+                    continue
+                vals.append("'%s'" % self.widgets[wid].get())
+            fsql = sqli % (self._table, ','.join(vals))
+        else:
+            data_for_update = self.get_data_from_form(True)
+            if len(data_for_update) == 1:
+                return None
+            for fld in self.get_data_from_form(True):
+                if fld == 'id':
+                    continue
+                vals.append("%s='%s'" % (fld, self.widgets[fld].get()))
+            fsql = sqlu % (self._table, ','.join(vals), self._id)
+        script(self._db, fsql)
+        print(fsql)
+        self.accept()
+
+    def get_data_from_form(self, only_changed=False):
+        '''Get data from the form. Assume id already exists.
+        '''
+        if 'id' in self.data:
+            dtmp = {'id': self.data['id']}
+        else:
+            dtmp = {'id': ''}
+        for field in self.widgets:
+            if only_changed:
+                if self.data[field] != self.widgets[field].get():
+                    dtmp[field] = self.widgets[field].get()
+            else:
+                dtmp[field] = self.widgets[field].get()
+        return dtmp
+
+
 # Δοκιμαστικά
 def qfl(label, widget):
     return [Qw.QLabel(label), widget]
@@ -1028,13 +1202,13 @@ class Test(Qw.QDialog):
         self.setWindowTitle(u'Δοκιμή qted')
         self.flds = [qfl('TCheckBox', TCheckbox(2, self)),
                      qfl('TDate', TDate('', self)),
-                     qfl('TDate_or_empty', TDate_or_empty('', self)),
+                     qfl('TDateEmpty', TDateEmpty('', self)),
                      qfl('TInteger', TInteger(145, self)),
-                     qfl('TInteger_spin', TInteger_spin(12, self)),
-                     qfl('TNumeric_spin', TNumeric_spin(123.45, self)),
+                     qfl('TIntegerSpin', TIntegerSpin(12, self)),
+                     qfl('TNumericSpin', TNumericSpin(123.45, self)),
                      qfl('TNumeric', TNumeric(11.23, self)),
                      qfl('TText', TText('This is just text', self)),
-                     qfl('TText_button', TText_button('1', 'par', self)),
+                     qfl('TTextButton', TTextButton('1', 'par', self)),
                      qfl('TCombo', TCombo(3,
                                           [[1, u'Ενα'],
                                            [2, u'Δύο'],
@@ -1042,10 +1216,11 @@ class Test(Qw.QDialog):
                                            [4, u'Τέσσερα']
                                            ],
                                           self)),
-                     qfl('TextLine', TText_line('Ted Lazaros', self)),
-                     qfl('TextLineNumbers', TTextline_num(123123123, self)),
+                     qfl('TextLine', TTextLine('Ted Lazaros', self)),
+                     qfl('TextLineNum', TTextlineNum(123123123, self)),
                      qfl('WeekDays', TWeekdays([1, 1, 1, 0, 0, 0, 1], self)),
-                     qfl('YesNo', TYes_no_combo(False, [u'Όχι', u'Ναί'], self))
+                     qfl('YesNoCombo',
+                         TYesNoCombo(False, [u'Όχι', u'Ναί'], self))
                      ]
         layout = Qw.QFormLayout()
         for el in self.flds:
@@ -1070,8 +1245,14 @@ class Test(Qw.QDialog):
 
 if __name__ == '__main__':
     import sys
-    dbf = '/home/tedlaz/pyted/pyqt_templates/tst_qtwidgets.db'
+    dbf0 = '/home/tedlaz/pyted/pyqt_templates/tst_qtwidgets.db'
     app = Qw.QApplication(sys.argv)
-    ui = Test(dbf)
+    ui = Test(dbf0)
     ui.show()
-    sys.exit(app.exec_())
+    # sys.exit(app.exec_())
+    dbf1 = "/home/tedlaz/test"
+    # app = Qw.QApplication([])
+    dialog = FTable(dbf1, 'pel', 3)
+    dialog.show()
+    appex = app.exec_()
+    sys.exit(appex)
