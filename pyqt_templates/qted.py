@@ -319,9 +319,7 @@ class TCheckbox(Qw.QCheckBox):
 
 
 class TDate(Qw.QDateEdit):
-    '''
-    Date values for most cases
-    '''
+    '''Date values for most cases'''
     def __init__(self, val=None, parent=None):
         super().__init__(parent)
         self.set(val)
@@ -396,9 +394,7 @@ class TDateEmpty(Qw.QToolButton):
 
 
 class TIntegerSpin(Qw.QSpinBox):
-    '''
-    Integer values (eg 123)
-    '''
+    '''Integer values (eg 123)'''
     def __init__(self, val=0, parent=None):
         super().__init__(parent)
         self.set(val)
@@ -420,9 +416,7 @@ class TIntegerSpin(Qw.QSpinBox):
 
 
 class TNumeric(Qw.QLineEdit):
-    '''
-    Text field with numeric chars only.
-    '''
+    '''Text field with numeric chars only.'''
     def __init__(self, val='0', parent=None):
         super().__init__(parent)
         self.set(val)
@@ -450,10 +444,7 @@ class TNumeric(Qw.QLineEdit):
 
 
 class TNumericSpin(Qw.QDoubleSpinBox):
-
-    '''
-    Numeric (decimal 2 ) values (eg 999,99)
-    '''
+    '''Numeric (decimal 2 ) values (eg 999,99)'''
     def __init__(self, val=0, parent=None):
         super().__init__(parent)
 
@@ -481,9 +472,7 @@ class TNumericSpin(Qw.QDoubleSpinBox):
 
 
 class TText(Qw.QTextEdit):
-    """
-    Text field
-    """
+    """Text field"""
     def __init__(self, val='', parent=None):
         super().__init__(parent)
 
@@ -839,9 +828,7 @@ class Form_find_2(Qw.QDialog):
             self.accept()
 
     def keyPressEvent(self, ev):
-        '''
-        use enter or return for fast selection nad form close ...
-        '''
+        '''use enter or return for fast selection nad form close ...'''
         if (ev.key() == Qc.Qt.Key_Enter or
                 ev.key() == Qc.Qt.Key_Return):
             self.get_values()
@@ -1173,8 +1160,7 @@ class FTable(Qw.QDialog):
         self.accept()
 
     def get_data_from_form(self, only_changed=False):
-        '''Get data from the form. Assume id already exists.
-        '''
+        '''Get data from the form. Assume id already exists.'''
         if 'id' in self.data:
             dtmp = {'id': self.data['id']}
         else:
@@ -1252,7 +1238,7 @@ if __name__ == '__main__':
     # sys.exit(app.exec_())
     dbf1 = "/home/tedlaz/test"
     # app = Qw.QApplication([])
-    dialog = FTable(dbf1, 'pel', 3)
-    dialog.show()
+    # dialog = FTable(dbf1, 'pel', 3)
+    # dialog.show()
     appex = app.exec_()
     sys.exit(appex)
