@@ -17,7 +17,7 @@ class Form_dapani(Qw.QDialog):
     def __init__(self, dbf, did=None, parent=None):
         super().__init__(parent)
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.setWindowTitle(u'Διαμέρισμα')
+        self.setWindowTitle(u'Δαπάνη')
         # self.setMinimumSize(800, 400)
         self.dbf = dbf
         self.id = did

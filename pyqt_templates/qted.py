@@ -990,7 +990,7 @@ class TTextButton(Qw.QWidget):
         if self.val[1] == []:
             return ''
         for i, field_name in enumerate(self.val[0]):
-            atxt += '%s : %s\n' % (field_name, self.val[1][0][i])
+            atxt += '%s : %s\n' % (get_lbl(field_name), self.val[1][0][i])
         return atxt
 
     def get(self):
@@ -1033,7 +1033,7 @@ class TTextButton(Qw.QWidget):
         """
         oldvalue = self.get()
         vals = find(self.dbf, self.table, text, 'names-tuples')
-        # print(vals)
+        # print('vals:', vals)
         if len(vals[1]) == 1:
             # We assume that the first element of first tuple is id
             self.set(vals[1][0][0])
@@ -1229,8 +1229,19 @@ class Test(Qw.QDialog):
         Qw.QMessageBox.information(self, u"Τιμές πεδίων", ast)
 
 
+def selec():
+    dbf = '/home/tedlaz/tsts.db'
+    val = None
+    with sqlite3.connect(dbf) as con:
+        with con.cursor() as cur:
+            cur.execute('select * from trd')
+            val = cur.fetchall()
+    return val
+
+
 if __name__ == '__main__':
     import sys
+    print(selec())
     dbf0 = '/home/tedlaz/pyted/pyqt_templates/tst_qtwidgets.db'
     app = Qw.QApplication(sys.argv)
     ui = Test(dbf0)
@@ -1242,3 +1253,4 @@ if __name__ == '__main__':
     # dialog.show()
     appex = app.exec_()
     sys.exit(appex)
+

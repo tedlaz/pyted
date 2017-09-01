@@ -78,7 +78,7 @@ class Form_xiliosta(Qw.QDialog):
                                     Qw.QSizePolicy.Minimum)
         self.btadddi = Qw.QPushButton(u'Νέο Διαμέρισμα', self)
         self.btadddi.setFocusPolicy(Qc.Qt.NoFocus)
-        self.btaddej = Qw.QPushButton(u'Νέο Έξοδο', self)
+        self.btaddej = Qw.QPushButton(u'Νέα Δαπάνη', self)
         self.btaddej.setFocusPolicy(Qc.Qt.NoFocus)
         self.btnsave = Qw.QPushButton(u'Αποθήκευση', self)
         self.btnsave.setFocusPolicy(Qc.Qt.NoFocus)
