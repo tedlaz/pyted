@@ -25,21 +25,14 @@ def get_lbl(fld):
 
 
 def grup(txtval):
-    '''
-    Trasforms a string to uppercase special for Greek comparison
-    '''
+    '''Trasforms a string to uppercase special for Greek comparison'''
     ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΐΊκλμνξοόΌπρσςτυύϋΰΎφχψωώΏ"
     ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΪΪΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΫΫΥΦΧΨΩΩΩ"
-    ftxt = u''
-    for letter in txtval:
-        if letter in ar1:
-            ftxt += ar2[ar1.index(letter)]
-        else:
-            ftxt += letter.upper()
-    return ftxt
+    adi = dict(zip(ar1, ar2))
+    return ''.join([adi.get(letter, letter.upper()) for letter in txtval])
 
 
-def isNum(val):  # is val number or not ?
+def isNum(val):  # is val number or not
     """Check if val is number or not
     :param val: value to check
     :return: Boolean
@@ -1077,7 +1070,7 @@ class FTable(Qw.QDialog):
 
     def _create_and_fill_fields(self):
         self.dbf = self._db
-        if  self._id:
+        if self._id:
             sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
         else:
             sql = "SELECT * FROM %s limit 0" % self._table
@@ -1233,15 +1226,17 @@ def selec():
     dbf = '/home/tedlaz/tsts.db'
     val = None
     with sqlite3.connect(dbf) as con:
-        with con.cursor() as cur:
-            cur.execute('select * from trd')
-            val = cur.fetchall()
+        cur = con.cursor()
+        cur.execute('select * from trd')
+        val = cur.fetchall()
+        cur.close()
     return val
 
 
 if __name__ == '__main__':
     import sys
     print(selec())
+    print(grup('καλιά kraσιά και καλά $%^'))
     dbf0 = '/home/tedlaz/pyted/pyqt_templates/tst_qtwidgets.db'
     app = Qw.QApplication(sys.argv)
     ui = Test(dbf0)
@@ -1253,4 +1248,3 @@ if __name__ == '__main__':
     # dialog.show()
     appex = app.exec_()
     sys.exit(appex)
-

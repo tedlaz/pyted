@@ -1,0 +1,13 @@
+Για προσωρινό κλείσιμο :
+$ sudo sh -c 'echo 1 > /proc/sys/net/ipv6/conf/<interface-name>/disable_ipv6'
+Για επαναφορά
+$ sudo sh -c 'echo 0 > /proc/sys/net/ipv6/conf/<interface-name>/disable_ipv6'
+
+Για μόνιμο κλείσιμο:
+
+$ sudo leafpad /etc/sysctl.conf
+   και προσθέτουμε στην αρχή του αρχείου κάτω από το τελευταίο GRUB_CMDLINE_LINUX τη γραμμή:
+   GRUB_CMDLINE_LINUX="ipv6.disable=1"
+   
+   Για να ανανεώσουμε τον grub τρέχουμε:
+$ sudo grub-mkconfig -o /boot/grub/grub.cfg
