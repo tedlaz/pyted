@@ -22,8 +22,7 @@ document.write('\
 <li><a href="webserv.html">Web Υπηρεσίες</a></li>\
 <li><a href="personal.html">Προσωπικά</a></li>\
 <li><a href="hardware.html">Hardware</a></li>\
-<li><a href="remote.html">Remote</a></li>\
-<li><a href="sequrity.html">Sequrity</a></li>\
+<li><a href="sequrity.html">Sequrity - ip tools</a></li>\
 <li><a href="games.html">Games</a></li>\
 </ul>\
 ');
