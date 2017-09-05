@@ -803,7 +803,7 @@ class FTable(Qw.QDialog):
     def __init__(self, dbf, table, did=None, parent=None):
         super().__init__(parent)
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Form template')
+        self.setWindowTitle('Table {}:{}'.format(table, did if did else 'New'))
         # basic data here
         self._db = dbf
         self._table = table
