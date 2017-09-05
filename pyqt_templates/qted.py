@@ -27,8 +27,8 @@ def get_lbl(fld):
 
 def grup(txtval):
     '''Trasforms a string to uppercase special for Greek comparison'''
-    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΐΊκλμνξοόΌπρσςτυύϋΰΎφχψωώΏ"
-    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΪΪΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΫΫΥΦΧΨΩΩΩ"
+    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΐΊΪκλμνξοόΌπρσςτυύϋΰΎΫφχψωώΏ"
+    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΥΥΥΦΧΨΩΩΩ"
     adi = dict(zip(ar1, ar2))
     return ''.join([adi.get(letter, letter.upper()) for letter in txtval])
 
@@ -700,7 +700,7 @@ class TTextButton(Qw.QWidget):
         # create gui
         self.text = Qw.QLineEdit(self)
         self.button = Qw.QToolButton(self)
-        self.button.setText('?')
+        self.button.setArrowType(Qc.Qt.DownArrow)
         self.button.setFocusPolicy(Qc.Qt.NoFocus)
         layout = Qw.QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)

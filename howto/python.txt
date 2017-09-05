@@ -1,0 +1,2 @@
+Για να κάνουμε compile από τον qtDesigner:
+pyuic5 untitled.ui -o output.py
