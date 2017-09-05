@@ -1,3 +1,4 @@
+'''qted module'''
 import decimal
 import datetime
 import textwrap
@@ -16,12 +17,12 @@ GREEK_DATE_FORMAT = 'd/M/yyyy'
 WEEKDAYS = ['Δε', 'Τρ', 'Τε', 'Πέ', 'Πα', 'Σά', 'Κυ']
 MSG_SELECT_DAYS = 'Επιλέξτε τις Εργάσιμες ημέρες\nΜε δεξί κλικ μηδενίστε'
 BLANK, GREEN = range(2)
-lbl = {'id': 'αα', 'afm': 'ΑΦΜ', 'epon': 'Επώνυμο', 'addr': 'Διεύθυνση'}
+LBL = {'id': 'αα', 'afm': 'ΑΦΜ', 'epon': 'Επώνυμο', 'addr': 'Διεύθυνση'}
 
 
 def get_lbl(fld):
     '''Return label if exists for fld otherwise fld'''
-    return lbl.get(fld, fld)
+    return LBL.get(fld, fld)
 
 
 def grup(txtval):
@@ -33,10 +34,7 @@ def grup(txtval):
 
 
 def isNum(val):  # is val number or not
-    """Check if val is number or not
-    :param val: value to check
-    :return: Boolean
-    """
+    """Check if val is number or not"""
     try:
         float(val)
     except ValueError:
@@ -46,45 +44,26 @@ def isNum(val):  # is val number or not
 
 
 def dec(poso=0, decimals=2):
-    """
-    Always returns a decimal number. If poso is not a number or None
-    returns dec(0)
-
-    :param poso: Mumber in any format (string, float, int, ...)
-    :param decimals: Number of decimals (default 2)
-    :return: A decimal number rounded to decimals parameter
-    """
-    if poso is None:
-        poso = 0
-    PLACES = decimal.Decimal(10) ** (-1 * decimals)
-    if isNum(poso):
-        tmp = decimal.Decimal(poso)
-    else:
-        tmp = decimal.Decimal('0')
-    # in case of tmp = -0.00 to remove negative sign
-    if tmp == decimal.Decimal(0):
-        tmp = decimal.Decimal(0)
-    return tmp.quantize(PLACES)
+    """Returns a decimal. If poso is not a number or None returns dec(0)"""
+    poso = 0 if (poso is None) else poso
+    tmp = decimal.Decimal(poso) if isNum(poso) else decimal.Decimal('0')
+    tmp = decimal.Decimal(0) if decimal.Decimal(0) else tmp
+    return tmp.quantize(decimal.Decimal(10) ** (-1 * decimals))
 
 
 def triades(txt, separator='.'):
-    '''
-    Help function to split digits to thousants ( 123456 becomes 123.456 )
-    '''
+    '''Help function to split digits to thousants (123456 becomes 123.456)'''
     return separator.join(textwrap.wrap(txt[::-1], 3))[::-1]
 
 
 def dec2gr(poso, decimals=2, zero_as_space=False):
-    '''
-    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
-    '''
+    '''Returns string formatted as Greek decimal (1234,56 becomes 1.234,56)'''
     dposo = dec(poso, decimals)
     if dposo == dec(0):
         if zero_as_space:
             return ' '
     sdposo = str(dposo)
     meion = '-'
-    separator = '.'
     decimal_ceparator = ','
     prosimo = ''
     if sdposo.startswith(meion):
@@ -100,7 +79,7 @@ def dec2gr(poso, decimals=2, zero_as_space=False):
 
 
 def is_positive_integer(val):
-    '''True if posotive integer False otherwise'''
+    '''True if positive integer False otherwise'''
     intv = 0
     try:
         intv = int(val)
@@ -113,6 +92,8 @@ def is_positive_integer(val):
 
 def is_iso_date(strdate):
     """Check if strdate is isodate (yyyy-mm-dd)"""
+    if strdate is None:
+        return False
     ldate = len(strdate)
     if ldate != 10:
         return False
@@ -120,92 +101,54 @@ def is_iso_date(strdate):
         return False
     if strdate[7] != '-':
         return False
-    yyy, mmm, ddd = strdate.split('-')
-    if not is_positive_integer(yyy):
-        return False
-    if not is_positive_integer(mmm):
-        return False
-    if not is_positive_integer(ddd):
-        return False
+    for number in strdate.split('-'):
+        if not is_positive_integer(number):
+            return False
     return True
 
 
 def date2gr(date, removezero=False):
-    '''
-    :param date: iso date 'yyyy-mm-dd'
-    :type date: iso_date
-    :param removezero: Month, Day without trailing zeros (If True '2017-01-09'
-     => '9/1/2017'. If False '2017-01-09' => '09/01/2017')
-    :return: 'dd/mm/yyyy'
+    """If removezero = True returns d/m/yyyy else dd/mm/yyyy"""
+    assert is_iso_date(date)
 
-    Example::
-
-        >>> import dategr
-        >>> dategr.date2gr('2017-01-15)
-        '15/01/2017'
-        >>> dategr.dat2gr('2017-01-15, True)
-        '15/1/2017'
-    '''
     def remove_zero(stra):
         """Remove trailing zeros"""
-        if len(stra) > 1 and stra[0] == '0':
-            return stra[1:]
-        else:
-            return stra
-    if not date:
-        return ''
+        return stra[1:] if int(stra) < 10 else stra
     year, month, day = date.split('-')
     if removezero:
-        return '%s/%s/%s' % (remove_zero(day), remove_zero(month), year)
-    else:
-        return '%s/%s/%s' % (day, month, year)
+        month, day = remove_zero(month), remove_zero(day)
+    return '{day}/{month}/{year}'.format(year=year, month=month, day=day)
 
 
 # SQLITE FUNCTIONS
-def fields_of(dbf, table_or_view, with_id=True):
-    """A Tuple with table or view fields
-    :param table_or_view: Table or View name
-    :param with_id: If True includes field named id
-    """
+def fields_of(dbf, table_or_view):
+    """A Tuple with table or view fields"""
     sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
-    con = sqlite3.connect(dbf)
-    cur = con.cursor()
-    cur.execute(sql)
-    if with_id:
+    with sqlite3.connect(dbf) as con:
+        cur = con.cursor()
+        cur.execute(sql)
         column_names = [t[0] for t in cur.description]
-    else:
-        column_names = [t[0] for t in cur.description if t[0] != 'id']
-    cur.close()
-    con.close()
+        cur.close()
     return tuple(column_names)
 
 
 def select(dbf, sql, return_type=None):
-    """select data records
-    :param dbf: Database file path
-    :param sql: SQL to run
-    :param rtype: return type
-    :return: list of tuples [(), (), ...]
-    """
+    """select data records"""
     if not sql[:6].upper() in ('SELECT', 'PRAGMA'):
-        raise DbException('Wrong sql : %s' % sql)
-    con = sqlite3.connect(dbf)
-    cur = con.cursor()
-    con.create_function("grup", 1, grup)
-    try:
-        cur.execute(sql)
-    except sqlite3.OperationalError:
-        return None
-    column_names = tuple([t[0] for t in cur.description])
-    rows = cur.fetchall()
-    cur.close()
-    con.close()
-    rtypes = ('names-tuples', 'dicts')
-    if return_type not in rtypes:
-        return rows
+        raise Exception('Wrong sql : %s' % sql)
+    with sqlite3.connect(dbf) as con:
+        cur = con.cursor()
+        con.create_function("grup", 1, grup)
+        try:
+            cur.execute(sql)
+        except sqlite3.OperationalError:
+            return None
+        column_names = tuple([t[0] for t in cur.description])
+        rows = cur.fetchall()
+        cur.close()
     if return_type == 'names-tuples':
         return column_names, rows
-    if return_type == 'dicts':
+    elif return_type == 'dicts':
         diclist = []
         for row in rows:
             dic = {}
@@ -216,50 +159,32 @@ def select(dbf, sql, return_type=None):
         if diclen > 0:
             return diclist
         return [{}]
-
-
-def select2(dbf, sql):
-    """select data records
-    :param dbf: Database file path
-    :param sql: SQL to run
-    """
-    if not sql[:6].upper() in ('SELECT', 'PRAGMA'):
-        return None
-    con = sqlite3.connect(dbf)
-    cur = con.cursor()
-    cur.execute(sql)
-    column_names = tuple([t[0] for t in cur.description])
-    rows = cur.fetchall()
-    cur.close()
-    con.close()
-    if not rows:
-        return column_names, {}
-    else:
-        dic = {}
-    for i, col in enumerate(rows[0]):
-        if col:
-            dic[column_names[i]] = '%s' % col
+    elif return_type == 'one':
+        if not rows:
+            return column_names, {}
         else:
-            dic[column_names[i]] = ''
-    return column_names, dic
+            dic = {}
+        for i, col in enumerate(rows[0]):
+            if col:
+                dic[column_names[i]] = '%s' % col
+            else:
+                dic[column_names[i]] = ''
+        return column_names, dic
+    else:
+        return rows
 
 
 def find_by_id(dbf, vid, table, rtype):
-    """Find a record by id
-    """
+    """Find a record by id"""
     sql1 = "SELECT * FROM %s WHERE id='%s'" % (table, vid)
     return select(dbf, sql1, rtype)
 
 
 def find(dbf, table_name, search_string, rtype='dicts'):
-    """Find records with multiple search strings
-    :param table_name: Table or View name
-    :param search_string: A string with space separated search values
-    :return: List of dicts
-    """
+    """Find records with many key words in search_string"""
     search_list = search_string.split()
     search_sql = []
-    flds = fields_of(dbf, table_name, False)
+    flds = fields_of(dbf, table_name)
     search_field = " || ' ' || ".join(flds)
     sql = "SELECT * FROM %s \n" % table_name
     where = ''
@@ -292,20 +217,14 @@ def script(dbf, sql):
 
 # My Qt Widgets
 class TCheckbox(Qw.QCheckBox):
-    """
-    True or False field
-    Gets / Sets two values : 0 for unchecked , 2 for checked
-    """
+    """True or False field: 0 for unchecked , 2 for checked"""
     def __init__(self, val=False, parent=None):
         super().__init__(parent)
         self.set(val)
         self.setMinimumHeight(MIN_HEIGHT)
 
     def set(self, txtVal):
-        if txtVal:
-            self.setChecked(txtVal)
-        else:
-            self.setChecked(False)
+        self.setChecked(txtVal) if txtVal else self.setChecked(False)
 
     def get(self):
         return self.checkState() != 0
@@ -402,10 +321,7 @@ class TIntegerSpin(Qw.QSpinBox):
         return self.value()
 
     def set(self, val):
-        if val:
-            self.setValue(int(val))
-        else:
-            self.setValue(0)
+        self.setValue(int(val)) if val else self.setValue(0)
 
 
 class TNumeric(Qw.QLineEdit):
@@ -422,10 +338,7 @@ class TNumeric(Qw.QLineEdit):
         Qw.QLineEdit.focusOutEvent(self, ev)
 
     def set(self, txt):
-        if txt:
-            self.setText(dec2gr(txt))
-        else:
-            self.setText(dec2gr(0))
+        self.setText(dec2gr(txt)) if txt else self.setText(dec2gr(0))
 
     def get(self):
         greek_div = ','
@@ -458,17 +371,13 @@ class TNumericSpin(Qw.QDoubleSpinBox):
         return dec(self.value())
 
     def set(self, val):
-        if val:
-            self.setValue(val)
-        else:
-            self.setValue(0)
+        self.setValue(val) if val else self.setValue(0)
 
 
 class TText(Qw.QTextEdit):
     """Text field"""
     def __init__(self, val='', parent=None):
         super().__init__(parent)
-
         self.set(val)
 
     def set(self, txt):
@@ -541,9 +450,7 @@ class TYesNoCombo(Qw.QComboBox):
 
 
 class TWeekdays(Qw.QWidget):
-    '''
-    Weekdays selection ( [1,1,1,1,1,0,0] 7 values 0 or 1, one per weekday)
-    '''
+    '''Weekdays selection ([1,1,1,1,1,0,0] 7 values 0 or 1, one per weekday)'''
     def __init__(self, val=[1, 1, 1, 1, 1, 0, 0], parent=None):
         '''pin: {'name': xx, 'vals': [1,1,1,1,1,1,1], 'dayNames': []}'''
         super().__init__(parent)
@@ -666,18 +573,6 @@ class TCombo(Qw.QComboBox):
         if id_:
             self.setCurrentIndex(self.id2index[id_])
 
-    def __init__(self, val=0, vlist=[], parent=None):
-        super().__init__(parent)
-        self.populate(vlist)
-        self.set(val)  # val must be a valid id
-
-    def get(self):
-        return self.index2id[self.currentIndex()]
-
-    def set(self, id_):
-        if id_:
-            self.setCurrentIndex(self.id2index[id_])
-
     def populate(self, vlist):
         """
         1.get values from Database
@@ -700,136 +595,6 @@ class SortWidgetItem(Qw.QTableWidgetItem):
 
     def __lt__(self, other):
         return self.sortKey < other.sortKey
-
-
-def item_int(num):
-    '''Returns integer item'''
-    item = Qw.QTableWidgetItem()
-    # item.setData(QtCore.Qt.DisplayRole, QtCore.QVariant(num))
-    item.setData(Qc.Qt.DisplayRole, num)
-    item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
-    return item
-
-
-def item_num(num):
-    '''Returns Numeric item'''
-    item = sortWidgetItem(dec2gr(num), num)
-    item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
-    return item
-
-
-def item_str(strv):
-    '''Returns String item'''
-    st = '%s' % strv
-    if st == 'None':
-        st = ''
-    item = Qw.QTableWidgetItem(st)
-    return item
-
-
-def item_date(strv):
-    '''Returns Date item'''
-    strv = '%s' % strv
-    if len(strv) < 10:
-        item = sortWidgetItem(strv, strv)
-    else:
-        y, m, d = strv.split('-')
-        item = sortWidgetItem('%s/%s/%s' % (d, m, y), strv)
-    return item
-
-
-class Form_find_2(Qw.QDialog):
-    signal_selected_id = Qc.pyqtSignal(str)
-    signal_make_new = Qc.pyqtSignal(str)
-
-    def __init__(self, dbf, sql, lbl, parent=None, frm=None,
-                 sclose=True, title=None):
-        """
-        dbf : Database file path
-        sql : final sql to run
-        lbl : column labels
-        frm : Name of the form to edit or add records
-        sclose : True if immediately closing form after record selection
-                 False otherwise
-        title : Form Title
-        """
-        super().__init__(parent)
-        self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.setWindowTitle(title)
-        # Save initialization data
-        self.dbf = dbf
-        self.sql = sql
-        self.lbl = lbl
-        self.parent = parent
-        self.frm = frm
-        self.sclose = sclose
-        layout = Qw.QVBoxLayout()
-        self.setLayout(layout)
-        self.tbl = Qw.QTableWidget()
-        self.tbl.cellDoubleClicked.connect(self.get_values)
-        self.tbl.verticalHeader().setStretchLastSection(False)
-        self.tbl.verticalHeader().setVisible(False)
-        self.tbl.setSelectionMode(Qw.QAbstractItemView.SingleSelection)
-        self.tbl.setSelectionBehavior(Qw.QAbstractItemView.SelectRows)
-        self.tbl.setEditTriggers(Qw.QAbstractItemView.NoEditTriggers)
-        self.tbl. setAlternatingRowColors(True)
-        # self.setStyleSheet("alternate-background-color: rgba(208,246,230);")
-        self.tbl.setSortingEnabled(True)
-        self.tbl.wordWrap()
-        layout.addWidget(self.tbl)
-        self.resize(300, 200)
-        self.populate()
-
-    def contextMenuEvent(self, event):
-        menu = Qw.QMenu(self)
-        Action = menu.addAction(u"Δημιουργία νέας παρόμοιας εγγραφής")
-        Action.triggered.connect(self.make_new)
-        menu.exec_(event.globalPos())
-
-    def make_new(self):
-        i = self.tbl.currentRow()
-        self.signal_make_new.emit('%s' % self.tbl.item(i, 0).text())
-
-    def populate(self):
-        rows = db.rowst(self.dbf, self.sql)
-        self.tbl.setRowCount(len(rows))
-        self.tbl.setColumnCount(len(self.lbl))
-        self.tbl.setHorizontalHeaderLabels(self.lbl)
-        total = dec.dec(0)
-        for i, row in enumerate(rows):
-            for j, col in enumerate(row):
-                if dec.isNum(col):
-                    if self.lbl[j][-2:] == 'id':
-                        self.tbl.setItem(i, j, item_int(col))
-                    elif type(col) is tdec:
-                        self.tbl.setItem(i, j, item_num(col))
-                    else:
-                        # self.setItem(i, j, self._numItem(col))
-                        self.tbl.setItem(i, j, item_num(col))
-                elif (len(col) == 10) and (col[4] == '-'):
-                    self.tbl.setItem(i, j, item_date(col))
-                else:
-                    self.tbl.setItem(i, j, item_str(col))
-            total += dec.dec(row[-2]) - dec.dec(row[-1])
-            self.tbl.setItem(i, len(self.lbl) - 1, item_num(total))
-        self.tbl.resizeColumnsToContents()
-
-    def get_values(self):
-        i = self.tbl.currentRow()
-        self.signal_selected_id.emit('%s' % self.tbl.item(i, 0).text())
-        if self.sclose:
-            self.accept()
-
-    def keyPressEvent(self, ev):
-        '''use enter or return for fast selection nad form close ...'''
-        if (ev.key() == Qc.Qt.Key_Enter or
-                ev.key() == Qc.Qt.Key_Return):
-            self.get_values()
-        Qw.QDialog.keyPressEvent(self, ev)
-
-    @Qc.pyqtSlot()
-    def slot_updated(self):
-        self.populate()
 
 
 class Table_widget(Qw.QTableWidget):
@@ -923,12 +688,7 @@ class Form_find(Qw.QDialog):
 
 
 class TTextButton(Qw.QWidget):
-    """Advanced control for foreign key fields
-    :param val: the id value of foreign relation
-    :param table: Table or View
-    :param parent: The parent object
-    .. warning:: Parent object must have db member
-    """
+    """Advanced control for foreign key fields"""
     # SIGNALS HERE
     valNotFound = Qc.pyqtSignal(str)
 
@@ -1046,11 +806,6 @@ class TTextButton(Qw.QWidget):
 class FTable(Qw.QDialog):
     '''Form to display and edit row table data'''
     def __init__(self, dbf, table, did=None, parent=None):
-        '''
-        :param dbf: Database file path
-        :param table: Database table
-        :param did: The id of the record. None for new record.
-        '''
         super().__init__(parent)
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Form template')
@@ -1074,7 +829,7 @@ class FTable(Qw.QDialog):
             sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
         else:
             sql = "SELECT * FROM %s limit 0" % self._table
-        self.fields, self.data = select2(self._db, sql)
+        self.fields, self.data = select(self._db, sql, 'one')
         for fld in self.fields:
             self.labels.append(get_lbl(fld))
         flayout = Qw.QFormLayout()
@@ -1099,7 +854,7 @@ class FTable(Qw.QDialog):
             # replace possible None with empty string for correct comparisson
             else:
                 self.data[fld] = ''
-        print(self.is_empty(), self._id)
+        # print(self.is_empty(), self._id)
 
     def is_empty(self):
         for fld in self.widgets:
@@ -1235,16 +990,14 @@ def selec():
 
 if __name__ == '__main__':
     import sys
-    print(selec())
-    print(grup('καλιά kraσιά και καλά $%^'))
     dbf0 = '/home/tedlaz/pyted/pyqt_templates/tst_qtwidgets.db'
+    dbf1 = "/home/tedlaz/aaa"
     app = Qw.QApplication(sys.argv)
     ui = Test(dbf0)
     ui.show()
     # sys.exit(app.exec_())
-    dbf1 = "/home/tedlaz/test"
     # app = Qw.QApplication([])
-    # dialog = FTable(dbf1, 'pel', 3)
-    # dialog.show()
+    dialog = FTable(dbf1, 'pel', 1)
+    dialog.show()
     appex = app.exec_()
     sys.exit(appex)
