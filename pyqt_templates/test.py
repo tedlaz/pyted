@@ -13,14 +13,14 @@ class Test(Qw.QDialog):
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
         self.setWindowTitle(u'Δοκιμή qted')
         self.flds = [qfl('TCheckBox', TCheckbox(2, self)),
-                     qfl('TDate', TDate('', self)),
-                     qfl('TDateEmpty', TDateEmpty('', self)),
+                     qfl('TDate', TDate('2014-01-20', self)),
+                     qfl('TDateEmpty', TDateEmpty('2015-10-21', self)),
                      qfl('TInteger', TInteger(145, self)),
                      qfl('TIntegerSpin', TIntegerSpin(12, self)),
                      qfl('TNumericSpin', TNumericSpin(123.45, self)),
                      qfl('TNumeric', TNumeric(11.23, self)),
                      qfl('TText', TText('This is just text', self)),
-                     qfl('TTextButton', TTextButton('1', 'par', self)),
+                     qfl('TTextButton', TTextButton('2', 'par', self.dbf, self)),
                      qfl('TCombo', TCombo(3,
                                           [[1, u'Ενα'],
                                            [2, u'Δύο'],
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     ui.show()
     # sys.exit(app.exec_())
     # app = Qw.QApplication([])
-    dialog = FTable(dbf1, 'pel', 1)
+    dialog = FTable(dbf1, 'pel', 2)
     dialog.show()
     appex = app.exec_()
     sys.exit(appex)

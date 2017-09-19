@@ -97,3 +97,8 @@ Git Δημιουργία κεντρικού αποθετηρίου
   git push --set-upstream origin master
   Είμαστε έτοιμοι να δώσουμε εντολές git (add, commit, push)
 git clone name@server:/path/to/repo.git
+
+Για επαναλαμβανόμενη εύρεση αρχείων:
+find . -name "*.bak" -type f
+και για διαγραφή
+find . -name "*.bak" -type f -delete

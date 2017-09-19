@@ -115,6 +115,65 @@ def date2gr(date, removezero=False):
     return '{day}/{month}/{year}'.format(year=year, month=month, day=day)
 
 
+class NamesTuples():
+    def __init__(self, names, rows):
+        self.names = names
+        self.rows = rows
+        self.lines = len(self.rows)
+        self.number_of_columns = len(names)
+        if rows:
+            assert len(names) == len(rows[0])
+
+    def list_of_dic(self):
+        tmpl = []
+        for row in self.rows:
+            dic = {}
+            for i, name in enumerate(self.names):
+                dic[name] = row[i]
+            tmpl.append(dic)
+        return tmpl
+
+    def idv(self):
+        return self.list_of_dic()[0].get('id', '')
+
+    def list_of_labels(self):
+        return [LBL.get(name, name) for name in self.names]
+
+    def lbl(self, name):
+        return LBL.get(name, name)
+
+    def names_tuples(self):
+        return self.names, self.rows
+
+    def labels_tuples(self):
+        return self.list_of_labels(), self.rows
+
+    def one(self, with_names=True):
+        if self.lines > 0:
+            dic = {}
+            for i, name in enumerate(self.names):
+                dic[name] = self.rows[0][i]
+            return (self.names, dic) if with_names else dic
+
+        return (self.names, {}) if with_names else {}
+
+    def value(self, line, field):
+        if field not in self.names:
+            return None
+        if line < self.lines:
+            return self.list_of_dic()[line-1][field]
+        return None
+
+    def values(self, *fields):
+        # Experimental Function
+        if sum([1  for fld in fields if fld not in self.names]):
+            return None
+        return 'ok'
+
+    def __str__(self):
+        return '%s\n%s\n%s' % (self.names, self.list_of_labels(), self.rows)
+
+
 # SQLITE FUNCTIONS
 def fields_of(dbf, table_or_view):
     """A Tuple with table or view fields"""
@@ -127,10 +186,7 @@ def fields_of(dbf, table_or_view):
     return tuple(column_names)
 
 
-def select(dbf, sql, return_type=None):
-    """select data records"""
-    if not sql[:6].upper() in ('SELECT', 'PRAGMA'):
-        raise Exception('Wrong sql : %s' % sql)
+def select(dbf, sql):
     with sqlite3.connect(dbf) as con:
         cur = con.cursor()
         con.create_function("grup", 1, grup)
@@ -138,44 +194,12 @@ def select(dbf, sql, return_type=None):
             cur.execute(sql)
         except sqlite3.OperationalError:
             return None
-        column_names = tuple([t[0] for t in cur.description])
+        names = tuple([t[0] for t in cur.description])
         rows = cur.fetchall()
-        cur.close()
-    if return_type == 'names-tuples':
-        return column_names, rows
-    elif return_type == 'dicts':
-        diclist = []
-        for row in rows:
-            dic = {}
-            for i, col in enumerate(row):
-                dic[column_names[i]] = col
-            diclist.append(dic)
-        diclen = len(diclist)
-        if diclen > 0:
-            return diclist
-        return [{}]
-    elif return_type == 'one':
-        if not rows:
-            return column_names, {}
-        else:
-            dic = {}
-        for i, col in enumerate(rows[0]):
-            if col:
-                dic[column_names[i]] = '%s' % col
-            else:
-                dic[column_names[i]] = ''
-        return column_names, dic
-    else:
-        return rows
+    return NamesTuples(names, rows)
 
 
-def find_by_id(dbf, vid, table, rtype):
-    """Find a record by id"""
-    sql1 = "SELECT * FROM %s WHERE id='%s'" % (table, vid)
-    return select(dbf, sql1, rtype)
-
-
-def find(dbf, table_name, search_string, rtype='dicts'):
+def search_complex_sql(dbf, table_name, search_string):
     """Find records with many key words in search_string"""
     search_list = search_string.split()
     search_sql = []
@@ -189,11 +213,10 @@ def find(dbf, table_name, search_string, rtype='dicts'):
         search_sql.append(tstr)
         where = 'WHERE'
     # if not search_string sql is simple select
-    final_sql = sql + where + ' AND '.join(search_sql)
-    return select(dbf, final_sql, rtype)
+    return sql + where + ' AND '.join(search_sql)
 
 
-def script(dbf, sql):
+def sqlscript(dbf, sql):
     '''sql   : A set of sql commands (create, insert or update)'''
     try:
         con = sqlite3.connect(dbf)
@@ -597,7 +620,8 @@ class Table_widget(Qw.QTableWidget):
     def __init__(self, data, parent=None):
         super().__init__(parent)
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.labels, self.rows = data
+        self.data = data
+        # self.labels, self.rows = data.labels_tuples()
         self.parent = parent
         # Εδώ ορίζουμε το πλάτος της γραμμής του grid
         # self.verticalHeader().setDefaultSectionSize(20)
@@ -631,14 +655,14 @@ class Table_widget(Qw.QTableWidget):
         return item
 
     def populate(self):
-        self.setRowCount(len(self.rows))
-        self.setColumnCount(len(self.labels))
-        self.setHorizontalHeaderLabels(self.labels)
-        for i, row in enumerate(self.rows):
+        self.setRowCount(self.data.lines)
+        self.setColumnCount(self.data.number_of_columns)
+        self.setHorizontalHeaderLabels(self.data.list_of_labels())
+        for i, row in enumerate(self.data.rows):
             for j, col in enumerate(row):
                 if isNum(col):
                     # if col == 'id' or col ends with id (e.g. erg_id)
-                    if self.labels[j].endswith('id'):
+                    if self.data.names[j].endswith('id'):
                         self.setItem(i, j, self._intItem(col))
                     elif type(col) is decimal.Decimal:
                         self.setItem(i, j, self._numItem(col))
@@ -677,22 +701,21 @@ class Form_find(Qw.QDialog):
 
     def keyPressEvent(self, ev):
         '''use enter or return for fast selection'''
-        if (ev.key() == Qc.Qt.Key_Enter or ev.key() == Qc.Qt.Key_Return):
+        if ev.key() in (Qc.Qt.Key_Enter, Qc.Qt.Key_Return):
             self._setvals()
         Qw.QDialog.keyPressEvent(self, ev)
 
 
 class TTextButton(Qw.QWidget):
-    """Advanced control for foreign key fields"""
-    # SIGNALS HERE
     valNotFound = Qc.pyqtSignal(str)
 
-    def __init__(self, val, table, parent):
-        """Init"""
+    def __init__(self, idv, table, dbf, parent):
         super().__init__(parent)
-        self.table = table  # the table or view name
-        self.dbf = parent.dbf  # parent must have .dbf
-        # create gui
+        self.table = table
+        self.dbf = dbf
+        self.dval = None
+        self._state = None
+        # Create Gui
         self.text = Qw.QLineEdit(self)
         self.button = Qw.QToolButton(self)
         self.button.setArrowType(Qc.Qt.DownArrow)
@@ -704,98 +727,66 @@ class TTextButton(Qw.QWidget):
         layout.addWidget(self.text)
         layout.addWidget(self.button)
         # connections
-        self.text.textChanged.connect(self.text_changed)
-        self.button.clicked.connect(self.button_clicked)
-        # init gui as red and try to fill it with existing value from db
-        self.red()
-        self.set(val)
+        self.text.textChanged.connect(self._text_changed)
+        self.button.clicked.connect(self._button_clicked)
+        # Try to set value
+        self.set(idv)
 
-    def set(self, idv):
-        self.val = find_by_id(self.dbf, idv, self.table, 'names-tuples')
-        self.vap = self.txt_val()
-        self.text.setText(self.vap)
-        self.setToolTip(self.rpr_val())
-        self.text.setCursorPosition(0)
-        lval = len(self.val[1])
-        if lval > 0:
-            self.green()
-        else:
-            self.red()
+    def _set_state(self, state):
+        self._state = state
+        sred = 'background-color: rgba(239, 41, 41);'
+        sgreen = 'background-color: rgba(0, 180, 0);'
+        self.button.setStyleSheet(sred if state == 0 else sgreen)
 
-    def txt_val(self):
-        """[('id', 'fld1', ..), [(id0, f0, ...), ...]"""
-        atxt = []
-        if self.val[1] == []:
-            return ''
-        for i, field in enumerate(self.val[0]):
-            if field != 'id':
-                atxt.append('%s' % self.val[1][0][i])
-        return ' '.join(atxt)
+    def _text_changed(self):
+        self._set_state(0 if self.txt != self.text.text() else 1)
 
-    def rpr_val(self):
-        """all fields: values of table mainly for tooltip use"""
-        atxt = ''
-        if self.val[1] == []:
-            return ''
-        for i, fnam in enumerate(self.val[0]):
-            atxt += '%s : %s\n' % (LBL.get(fnam, fnam), self.val[1][0][i])
-        return atxt
-
-    def get(self):
-        field_names, vals = self.val
-        if 'id' not in field_names:
-            return ''
-        id_index = field_names.index('id')
-        if self.isGreen:
-            return '%s' % vals[0][id_index]
-        else:
-            return ''
-
-    def text_changed(self):
-        if self.vap != self.text.text():
-            self.red()
-        else:
-            self.green()
-
-    def button_clicked(self):
+    def _button_clicked(self):
         self.button.setFocus()
-        self.find('')
-
-    def green(self):
-        self.button.setStyleSheet('background-color: rgba(0, 180, 0);')
-        self.isGreen = True
-
-    def red(self):
-        self.button.setStyleSheet('background-color: rgba(239, 41, 41);')
-        self.isGreen = False
+        self._find('')
 
     def keyPressEvent(self, ev):
         if ev.key() == Qc.Qt.Key_Enter or ev.key() == Qc.Qt.Key_Return:
-            if self.vap != self.text.text():
-                self.find(self.text.text())
+            if self.txt != self.text.text():
+                self._find(self.text.text())
         return Qw.QWidget.keyPressEvent(self, ev)
 
-    def find(self, text):
+    def _find(self, text):
         """
         :param text: text separated by space multi-search values 'va1 val2 ..'
         """
-        oldvalue = self.get()
-        vals = find(self.dbf, self.table, text, 'names-tuples')
-        # print('vals:', vals)
-        if len(vals[1]) == 1:
-            # We assume that the first element of first tuple is id
-            self.set(vals[1][0][0])
-        elif len(vals[1]) > 1:
+        sql = search_complex_sql(self.dbf, self.table, text)
+        vals = select(self.dbf, sql)
+        if vals.lines == 1:
+            self.set(vals.list_of_dic()[0]['id'])
+        elif vals.lines > 1:
             ffind = Form_find(vals, u'Αναζήτηση', self)
             if ffind.exec_() == Qw.QDialog.Accepted:
                 self.set(ffind.vals[0])
             else:
-                if oldvalue == self.get():
-                    pass
-                else:
-                    self.red()
+                self._set_state(1 if self.txt == self.text.text() else 0)
         else:
             self.valNotFound.emit(self.text.text())
+
+    def set(self, idv):
+        sql1 = "SELECT * FROM %s WHERE id='%s'" % (self.table, idv)
+        self.dval = select(self.dbf, sql1)
+        val = self.dval.one(False)
+        self._set_state(1 if val else 0)
+        vtxt = []
+        vrpr = []
+        for key in val:
+            if key != 'id':
+                vtxt.append(str(val[key]))
+            vrpr.append('%s : %s\n' % (self.dval.lbl(key), val[key]))
+        self.txt = ' '.join(vtxt) if val else ''
+        self.rpr = ' '.join(vrpr) if val else ''
+        self.text.setText(self.txt)
+        self.setToolTip(self.rpr)
+        self.text.setCursorPosition(0)
+
+    def get(self):
+        return self.dval.idv() if self._state else None
 
 
 class FTable(Qw.QDialog):
@@ -824,7 +815,7 @@ class FTable(Qw.QDialog):
             sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
         else:
             sql = "SELECT * FROM %s limit 0" % self._table
-        self.fields, self.data = select(self._db, sql, 'one')
+        self.fields, self.data = select(self._db, sql).one()
         for fld in self.fields:
             self.labels.append(LBL.get(fld, fld))
         flayout = Qw.QFormLayout()
@@ -833,7 +824,7 @@ class FTable(Qw.QDialog):
         # Add fields to form
         for i, fld in enumerate(self.fields):
             if fld.endswith('_id'):
-                self.widgets[fld] = TTextButton(None, fld[:-3], self)
+                self.widgets[fld] = TTextButton(None, fld[:-3], self._db, self)
             elif fld == 'id':
                 self.widgets[fld] = TInteger()
                 self.widgets[fld].setEnabled(False)
@@ -842,14 +833,13 @@ class FTable(Qw.QDialog):
             flayout.insertRow(i, Qw.QLabel(self.labels[i]),
                               self.widgets[fld])
             if fld in self.data:  # if not None or empty string
-                if self.data[fld]:
+                if self.data[fld] not in [None, '']:
                     self.widgets[fld].set('%s' % self.data[fld])
                 else:
                     self.data[fld] = ''
             # replace possible None with empty string for correct comparisson
             else:
                 self.data[fld] = ''
-        # print(self.is_empty(), self._id)
 
     def is_empty(self):
         for fld in self.widgets:
@@ -880,34 +870,32 @@ class FTable(Qw.QDialog):
         return False
 
     def save(self):
-        sqli = 'INSERT INTO %s VALUES (null, %s);'
-        sqlu = "UPDATE %s SET %s WHERE id='%s';"
+        sqlscript(self._db, self.create_sql())
+        self.accept()
+
+    def create_sql(self):
+        sqlinsert = "INSERT INTO %s (%s) VALUES (%s);"
+        sqlupdate = "UPDATE %s SET %s WHERE id='%s';"
+        datadic = self.get_data_from_form(True)
+        flds = []
         vals = []
-        if not self._id:
-            for wid in self.widgets:
-                if wid == 'id':
-                    continue
-                vals.append("'%s'" % self.widgets[wid].get())
-            fsql = sqli % (self._table, ','.join(vals))
+        if datadic.get('id', '') == '':
+            datadic['id'] = 'null'
+            for fld in datadic:
+                flds.append(fld)
+                vals.append(datadic[fld])
+            sql = sqlinsert % (self._table, ', '.join(flds), ', '.join(vals))
         else:
-            data_for_update = self.get_data_from_form(True)
-            if len(data_for_update) == 1:
-                return None
-            for fld in self.get_data_from_form(True):
+            for fld in datadic:
                 if fld == 'id':
                     continue
-                vals.append("%s='%s'" % (fld, self.widgets[fld].get()))
-            fsql = sqlu % (self._table, ','.join(vals), self._id)
-        script(self._db, fsql)
-        print(fsql)
-        self.accept()
+                vals.append("%s='%s'" % (fld, datadic[fld]))
+            sql = sqlupdate % (self._table, ', '.join(vals), datadic['id'])
+        return sql
 
     def get_data_from_form(self, only_changed=False):
         '''Get data from the form. Assume id already exists.'''
-        if 'id' in self.data:
-            dtmp = {'id': self.data['id']}
-        else:
-            dtmp = {'id': ''}
+        dtmp = {'id': self.data['id']} if 'id' in self.data else {'id': None}
         for field in self.widgets:
             if only_changed:
                 if self.data[field] != self.widgets[field].get():
@@ -915,3 +903,11 @@ class FTable(Qw.QDialog):
             else:
                 dtmp[field] = self.widgets[field].get()
         return dtmp
+
+if __name__ == '__main__':
+    ntp = NamesTuples(('epo', 'ono'), [('laz', 'ted'), ('daz', 'popi')])
+    print(ntp.list_of_dic())
+    print(ntp.names_tuples())
+    print(ntp.value(0, 'epo'))
+    print(ntp.values('epo', 'ono'))
+    print(ntp.one())
