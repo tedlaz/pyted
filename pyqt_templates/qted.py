@@ -18,6 +18,7 @@ GREEK_DATE_FORMAT = 'd/M/yyyy'
 WEEKDAYS = ['Δε', 'Τρ', 'Τε', 'Πέ', 'Πα', 'Σά', 'Κυ']
 MSG_SELECT_DAYS = 'Επιλέξτε τις Εργάσιμες ημέρες\nΜε δεξί κλικ μηδενίστε'
 BLANK, GREEN = range(2)
+DELETE, INSERT, UPDATE = range(3)
 
 
 def grup(txtval):
@@ -134,7 +135,7 @@ class NamesTuples():
         return tmpl
 
     def idv(self):
-        return self.list_of_dic()[0].get('id', '')
+        return self.list_of_dic()[0].get('id', '') if self.lines > 0 else ''
 
     def list_of_labels(self):
         return [LBL.get(name, name) for name in self.names]
@@ -228,9 +229,27 @@ def sqlscript(dbf, sql):
         cur.close()
         con.close()
         return False
+    last_inserted_id = cur.lastrowid
     cur.close()
     con.close()
-    return True
+    return last_inserted_id
+
+
+def insert(dbf, sql):
+    try:
+        con = sqlite3.connect(dbf)
+        cur = con.cursor()
+        cur.execute(sql)
+        con.commit()
+    except sqlite3.Error as err:
+        con.rollback()
+        cur.close()
+        con.close()
+        return False, str(err)
+    last_inserted_id = cur.lastrowid
+    cur.close()
+    con.close()
+    return True, last_inserted_id
 
 
 # My Qt Widgets
@@ -678,24 +697,45 @@ class Table_widget(Qw.QTableWidget):
 class Form_find(Qw.QDialog):
     valselected = Qc.pyqtSignal(str)
 
-    def __init__(self, data, title, parent=None, selectAndClose=True):
+    def __init__(self, data, title, dbf, tbl, parent, selectAndClose=True):
         super().__init__(parent)
         self.selectAndClose = selectAndClose
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
+        self._db = dbf
+        self.table = tbl
+        self.final_value = ''
         layout = Qw.QVBoxLayout()
+        self.setLayout(layout)
         self.tbl = Table_widget(data, parent)
         self.tbl.cellDoubleClicked.connect(self._setvals)
         layout.addWidget(self.tbl)
-        self.setLayout(layout)
+        self.bnew = Qw.QPushButton('Νέα εγγραφή')
+        self.bnew.setFocusPolicy(Qc.Qt.NoFocus)
+        self.bnew.clicked.connect(self._new_record)
+        layout.addWidget(self.bnew)
         self.setWindowTitle(title)
         self.resize(550, 400)
+
+    def _new_record(self):
+        dialog = FTable(self._db, self.table, None, self)
+        if dialog.exec_() == Qw.QDialog.Accepted:
+            # self.valselected.emit('1')
+            # self.accept()
+            # self.valselected.emit(str(dialog._id))
+            self._setvalue_from_new_record(dialog._id)
+        else:
+            return False
+
+    def _setvalue_from_new_record(self, vid):
+        self.final_value = str(vid)
+        self.valselected.emit(self.final_value)
+        self.accept()
 
     def _setvals(self):
         self.vals = []
         i = self.tbl.currentRow()
-        for j in range(self.tbl.columnCount()):
-            self.vals.append(self.tbl.item(i, j).text())
-        self.valselected.emit('%s' % self.vals[0])
+        self.final_value = self.tbl.item(i, 0).text()
+        self.valselected.emit(self.final_value)
         if self.selectAndClose:
             self.accept()
 
@@ -760,9 +800,9 @@ class TTextButton(Qw.QWidget):
         if vals.lines == 1:
             self.set(vals.list_of_dic()[0]['id'])
         elif vals.lines > 1:
-            ffind = Form_find(vals, u'Αναζήτηση', self)
+            ffind = Form_find(vals, u'Αναζήτηση', self.dbf, self.table, self)
             if ffind.exec_() == Qw.QDialog.Accepted:
-                self.set(ffind.vals[0])
+                self.set(ffind.final_value)
             else:
                 self._set_state(1 if self.txt == self.text.text() else 0)
         else:
@@ -771,7 +811,7 @@ class TTextButton(Qw.QWidget):
     def set(self, idv):
         sql1 = "SELECT * FROM %s WHERE id='%s'" % (self.table, idv)
         self.dval = select(self.dbf, sql1)
-        val = self.dval.one(False)
+        val = self.dval.one(with_names=False)
         self._set_state(1 if val else 0)
         vtxt = []
         vrpr = []
@@ -786,7 +826,7 @@ class TTextButton(Qw.QWidget):
         self.text.setCursorPosition(0)
 
     def get(self):
-        return self.dval.idv() if self._state else None
+        return self.dval.idv() if self._state else ''
 
 
 class FTable(Qw.QDialog):
@@ -870,8 +910,30 @@ class FTable(Qw.QDialog):
         return False
 
     def save(self):
-        sqlscript(self._db, self.create_sql())
-        self.accept()
+        if not self.is_dirty():
+            return
+        sql, typ = self.create_sql()
+        status, response = insert(self._db, sql)
+        msg = response
+        if status:
+            if typ == INSERT:
+                self._id = response
+                msg = "Η εγγραφή καταχωρήθηκε με αριθμό : %s" % response
+                Qw.QMessageBox.information(self, "Αποθήκευση", msg)
+            elif typ == UPDATE:
+                msg = "Η εγγραφή No : %s  ενημερώθηκε" % self._id
+                Qw.QMessageBox.information(self, "Αποθήκευση", msg)
+            self.accept()
+        else:
+            if response.startswith('UNIQUE constraint failed:'):
+                fld = response.split(':')[1].strip().split('.')[1]
+                lfld = LBL.get(fld, fld)
+                msg = 'Υπάρχει εγγραφή με ίδια τιμή για το πεδίο %s' % lfld
+            elif response.startswith('NOT NULL constraint failed:'):
+                fld = response.split(':')[1].strip().split('.')[1]
+                lfld = LBL.get(fld, fld)
+                msg = 'Tο πεδίο %s δεν έχει συμπληρωθεί' % lfld
+            Qw.QMessageBox.critical(self, 'Λάθη', msg)
 
     def create_sql(self):
         sqlinsert = "INSERT INTO %s (%s) VALUES (%s);"
@@ -882,16 +944,18 @@ class FTable(Qw.QDialog):
         if datadic.get('id', '') == '':
             datadic['id'] = 'null'
             for fld in datadic:
-                flds.append(fld)
-                vals.append(datadic[fld])
+                flds.append(str(fld))
+                vals.append("'%s'" % datadic[fld] if fld != 'id' else 'null')
             sql = sqlinsert % (self._table, ', '.join(flds), ', '.join(vals))
+            typ = INSERT
         else:
             for fld in datadic:
                 if fld == 'id':
                     continue
                 vals.append("%s='%s'" % (fld, datadic[fld]))
             sql = sqlupdate % (self._table, ', '.join(vals), datadic['id'])
-        return sql
+            typ = UPDATE
+        return sql, typ
 
     def get_data_from_form(self, only_changed=False):
         '''Get data from the form. Assume id already exists.'''
@@ -903,6 +967,10 @@ class FTable(Qw.QDialog):
             else:
                 dtmp[field] = self.widgets[field].get()
         return dtmp
+
+    def is_dirty(self):
+        return True if len(self.get_data_from_form(True)) > 1 else False
+
 
 if __name__ == '__main__':
     ntp = NamesTuples(('epo', 'ono'), [('laz', 'ted'), ('daz', 'popi')])
