@@ -9,7 +9,7 @@ import PyQt5.QtGui as Qg
 from labels import LBL
 
 GRLOCALE = Qc.QLocale(Qc.QLocale.Greek, Qc.QLocale.Greece)
-MSG_RESET_DATE = u'right mouse click sets Date to empty string'
+MSG_RESET_DATE = u'Με δεξί κλίκ του ποντικιού μηδενίζει'
 MIN_HEIGHT = 30
 MAX_HEIGHT = 40
 DATE_MAX_WIDTH = 120
@@ -34,6 +34,8 @@ def isNum(val):  # is val number or not
     try:
         float(val)
     except ValueError:
+        return False
+    except TypeError:
         return False
     else:
         return True
@@ -200,6 +202,18 @@ def select(dbf, sql):
     return NamesTuples(names, rows)
 
 
+def select_simple_safe(pardic):
+    with sqlite3.connect(pardic['db']) as con:
+        cur = con.cursor()
+        try:
+            cur.execute(pardic['sql'])
+            # cur.execute("SELECT * FROM ?", ('cdb',))
+        except sqlite3.OperationalError as err:
+            print(err)
+        rows = cur.fetchall()
+    return rows
+
+
 def search_complex_sql(dbf, table_name, search_string):
     """Find records with many key words in search_string"""
     search_list = search_string.split()
@@ -252,6 +266,45 @@ def insert(dbf, sql):
     return True, last_inserted_id
 
 
+def save_to_db(dbf, sql_par):
+    """Safely save data to database"""
+    try:
+        con = sqlite3.connect(dbf)
+        cur = con.cursor()
+        # 'INSERT INTO erg VALUES(?,?,?)', ('id', 'epo', 'ono')
+        cur.execute(sql_par['sql'], sql_par['par'])
+        con.commit()
+    except sqlite3.Error as err:
+        con.rollback()
+        cur.close()
+        con.close()
+        return False, str(err)
+    last_inserted_id = cur.lastrowid
+    cur.close()
+    con.close()
+    return True, last_inserted_id
+
+
+def create_sql(table, flds, vals, typ=INSERT):
+    """flds, vals are tuples"""
+    assert len(flds) == len(vals)
+    assert flds[0] == 'id'
+    sqlinsert = "INSERT INTO %s (%s) VALUES (%s)"
+    sqlupdate = "UPDATE %s SET %s WHERE id=?"
+    if typ == INSERT:
+        qms = ['?' for fld in flds]
+        sql = sqlinsert % (table, ', '.join(flds), ', '.join(qms))
+        return {'sql': sql, 'par': vals}
+    elif typ == UPDATE:
+        qms = ['%s=?' % fld for fld in flds if fld != 'id']
+        sql = sqlupdate % (table, ', '.join(qms))
+        return {'sql': sql, 'par': vals[1:] + (vals[0],)}
+    elif typ == DELETE:
+        sql = "DELETE FROM %s WHERE id=?" % table
+        return {'sql': sql, 'par': (vals[0],)}
+    return None
+
+
 # My Qt Widgets
 class TCheckbox(Qw.QCheckBox):
     """True or False field: 0 for unchecked , 2 for checked"""
@@ -261,10 +314,10 @@ class TCheckbox(Qw.QCheckBox):
         self.setMinimumHeight(MIN_HEIGHT)
 
     def set(self, txtVal):
-        self.setChecked(txtVal) if txtVal else self.setChecked(False)
+        self.setChecked(int(txtVal)) if txtVal else self.setChecked(False)
 
     def get(self):
-        return self.checkState() != 0
+        return self.checkState()
 
 
 class TDate(Qw.QDateEdit):
@@ -415,6 +468,8 @@ class TText(Qw.QTextEdit):
     """Text field"""
     def __init__(self, val='', parent=None):
         super().__init__(parent)
+        self.setFixedHeight(60)
+        # self.setMinimumHeight(60)
         self.set(val)
 
     def set(self, txt):
@@ -624,6 +679,36 @@ class TCombo(Qw.QComboBox):
             self.id2index[elm[0]] = i
 
 
+class TComboDB(Qw.QComboBox):
+    '''Combo'''
+    def __init__(self, val, table, dbf, parent):
+        super().__init__(parent)
+        self.pdic = {'db': dbf, 'sql': 'SELECT * FROM %s' % table}
+        self.populate()
+        self.set(val)  # val must be a valid id
+
+    def get(self):
+        return self.index2id[self.currentIndex()]
+
+    def set(self, id_):
+        if id_:
+            self.setCurrentIndex(self.id2index[int(id_)])
+
+    def populate(self):
+        """
+        1.get values from Database
+        2.fill Combo
+        3.set current index to initial value
+        """
+        vlist = select_simple_safe(self.pdic)
+        self.index2id = {}
+        self.id2index = {}
+        for i, elm in enumerate(vlist):
+            self.addItem('%s' % elm[1])
+            self.index2id[i] = elm[0]
+            self.id2index[elm[0]] = i
+
+
 class SortWidgetItem(Qw.QTableWidgetItem):
     """Sorting"""
     def __init__(self, text, sortKey):
@@ -817,8 +902,10 @@ class TTextButton(Qw.QWidget):
         vrpr = []
         for key in val:
             if key != 'id':
-                vtxt.append(str(val[key]))
-            vrpr.append('%s : %s\n' % (self.dval.lbl(key), val[key]))
+                if val[key]:
+                    vtxt.append(str(val[key]))
+            vrpr.append('%s : %s\n' % (self.dval.lbl(key),
+                        val[key] if val[key] else ''))
         self.txt = ' '.join(vtxt) if val else ''
         self.rpr = ' '.join(vrpr) if val else ''
         self.text.setText(self.txt)
@@ -827,6 +914,33 @@ class TTextButton(Qw.QWidget):
 
     def get(self):
         return self.dval.idv() if self._state else ''
+
+
+def widget_selector(fld, dbf, parent):
+    if fld == 'id':
+        return TInteger(parent=parent)
+    elif fld.endswith('_id'):
+        return TTextButton(None, fld[:-3], dbf, parent)
+    elif fld.endswith('_cd'):
+        return TComboDB(None, fld[:-3], dbf, parent)
+    elif fld.startswith('b'):
+        return TCheckbox(parent=parent)
+    elif fld.startswith('d'):
+        return TDate(parent=parent)
+    elif fld.startswith('e'):
+        return TDateEmpty(parent=parent)
+    elif fld.startswith('i'):
+        return TInteger(parent=parent)
+    elif fld.startswith('n'):
+        return TNumeric(parent=parent)
+    elif fld.startswith('q'):
+        return TTextlineNum(parent=parent)
+    elif fld.startswith('t'):
+        return TText(parent=parent)
+    elif fld.startswith('w'):
+        return TWeekdays(parent=parent)
+    else:
+        return TTextLine(parent=parent)
 
 
 class FTable(Qw.QDialog):
@@ -863,16 +977,10 @@ class FTable(Qw.QDialog):
         self.widgets = {}
         # Add fields to form
         for i, fld in enumerate(self.fields):
-            if fld.endswith('_id'):
-                self.widgets[fld] = TTextButton(None, fld[:-3], self._db, self)
-            elif fld == 'id':
-                self.widgets[fld] = TInteger()
-                self.widgets[fld].setEnabled(False)
-            else:
-                self.widgets[fld] = TTextLine()
+            self.widgets[fld] = widget_selector(fld, self._db, self)
             flayout.insertRow(i, Qw.QLabel(self.labels[i]),
                               self.widgets[fld])
-            if fld in self.data:  # if not None or empty string
+            if fld in self.data:  # if not None or empty string populate form
                 if self.data[fld] not in [None, '']:
                     self.widgets[fld].set('%s' % self.data[fld])
                 else:
@@ -880,6 +988,9 @@ class FTable(Qw.QDialog):
             # replace possible None with empty string for correct comparisson
             else:
                 self.data[fld] = ''
+            if fld.startswith('n'):  # Workaround to make proper comparisons
+                self.data[fld] = str(dec(self.data[fld]))
+        self.widgets['id'].setEnabled(False)
 
     def is_empty(self):
         for fld in self.widgets:
@@ -910,9 +1021,10 @@ class FTable(Qw.QDialog):
         return False
 
     def save(self):
-        if not self.is_dirty():
+        datadic = self.get_data_from_form(True)
+        if len(datadic) <= 1:
             return
-        sql, typ = self.create_sql()
+        sql, typ = self.create_sql(datadic)
         status, response = insert(self._db, sql)
         msg = response
         if status:
@@ -935,10 +1047,10 @@ class FTable(Qw.QDialog):
                 msg = 'Tο πεδίο %s δεν έχει συμπληρωθεί' % lfld
             Qw.QMessageBox.critical(self, 'Λάθη', msg)
 
-    def create_sql(self):
+    def create_sql(self, datadic):
         sqlinsert = "INSERT INTO %s (%s) VALUES (%s);"
         sqlupdate = "UPDATE %s SET %s WHERE id='%s';"
-        datadic = self.get_data_from_form(True)
+        # datadic = self.get_data_from_form(only_changed=True)
         flds = []
         vals = []
         if datadic.get('id', '') == '':
@@ -962,7 +1074,7 @@ class FTable(Qw.QDialog):
         dtmp = {'id': self.data['id']} if 'id' in self.data else {'id': None}
         for field in self.widgets:
             if only_changed:
-                if self.data[field] != self.widgets[field].get():
+                if str(self.data[field]) != str(self.widgets[field].get()):
                     dtmp[field] = self.widgets[field].get()
             else:
                 dtmp[field] = self.widgets[field].get()

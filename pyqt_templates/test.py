@@ -21,11 +21,11 @@ class Test(Qw.QDialog):
                      qfl('TNumeric', TNumeric(11.23, self)),
                      qfl('TText', TText('This is just text', self)),
                      qfl('TTextButton', TTextButton('2', 'par', self.dbf, self)),
-                     qfl('TCombo', TCombo(3,
+                     qfl('TCombo', TCombo(13,
                                           [[1, u'Ενα'],
                                            [2, u'Δύο'],
-                                           [3, u'Τρία'],
-                                           [4, u'Τέσσερα']
+                                           [13, u'Τρία'],
+                                           [14, u'Τέσσερα']
                                            ],
                                           self)),
                      qfl('TextLine', TTextLine('Ted Lazaros', self)),
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     ui.show()
     # sys.exit(app.exec_())
     # app = Qw.QApplication([])
-    dialog = FTable(dbf1, 'pel', 2)
+    dialog = FTable(dbf1, 'tst', 2)
     dialog.show()
     appex = app.exec_()
     sys.exit(appex)
