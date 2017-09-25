@@ -64,7 +64,7 @@ if __name__ == '__main__':
     ui.show()
     # sys.exit(app.exec_())
     # app = Qw.QApplication([])
-    dialog = FTable(dbf1, 'tst', 2)
+    dialog = FTable(dbf0, 'pro', 2)
     dialog.show()
     appex = app.exec_()
     sys.exit(appex)

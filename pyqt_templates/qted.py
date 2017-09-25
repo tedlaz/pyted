@@ -868,7 +868,12 @@ class TTextButton(Qw.QWidget):
 
     def _button_clicked(self):
         self.button.setFocus()
-        self._find('')
+        vals = select(self.dbf, 'SELECT * FROM %s' % self.table)
+        ffind = Form_find(vals, u'Αναζήτηση', self.dbf, self.table, self)
+        if ffind.exec_() == Qw.QDialog.Accepted:
+            self.set(ffind.final_value)
+        else:
+            self._set_state(1 if self.txt == self.text.text() else 0)
 
     def keyPressEvent(self, ev):
         if ev.key() == Qc.Qt.Key_Enter or ev.key() == Qc.Qt.Key_Return:
@@ -1021,7 +1026,10 @@ class FTable(Qw.QDialog):
         return False
 
     def save(self):
-        datadic = self.get_data_from_form(True)
+        if self.widgets['id'].get() == '':  # Σε νέα εγγραφή τα παίρνουμε όλα
+            datadic = self.get_data_from_form(only_changed=False)
+        else:  # Διαφορετικά παίρνουμε μόνο τα αλλαγμένα
+            datadic = self.get_data_from_form(only_changed=True)
         if len(datadic) <= 1:
             return
         sql, typ = self.create_sql(datadic)
