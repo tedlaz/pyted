@@ -19,11 +19,11 @@ virtualenv tstvenv για python 3
 και μετά source tstvenv/bin/activate
 και για έξοδο : deactivate
 
-How to correct what application to lounch chrome on click : 
+How to correct what application to lounch chrome on click :
     gvfs-mime --set x-scheme-handler/magnet deluge.desktop
     if you want to open magnet links with deluge
 
-totally remove app : sudo pacman -Rns <appname> 
+totally remove app : sudo pacman -Rns <appname>
 
 raspberry pi mount external disk
 Note:
@@ -31,7 +31,7 @@ ntfs-3g for NTFS Drives
 vfat for FAT32 Drives
 ext4 for ext4 Drives
 --------------------------------------
-sudo apt-get install ntfs-3g 
+sudo apt-get install ntfs-3g
 sudo mkdir /mnt/EXTERNAL
 sudo chmod 770 /mnt/EXTERNAL
 sudo mount -t ntfs-3g -o uid=1000,gid=1000,umask=007 /dev/sda1 /mnt/EXTERNAL
@@ -71,10 +71,10 @@ ssh-keygen -R <ip address εδώ>
   jupyter notebook
 
 Για έναρξη cups (server εκτύπωσης)
-  sudo systemctl start org.cups.cupsd.service 
+  sudo systemctl start org.cups.cupsd.service
   η διεύθυνση του cups είναι : http://localhost:631
 
-Ελληνικά 
+Ελληνικά
   setxkbmap -layout us,el -variant -option grp:alt_shift_toggle,terminate:ctrl_alt_bksp &
 
 Για Εγκατάσταση fonts στο τερματικό
@@ -102,3 +102,7 @@ git clone name@server:/path/to/repo.git
 find . -name "*.bak" -type f
 και για διαγραφή
 find . -name "*.bak" -type f -delete
+
+Για κατέβασμα στον τρέχοντα φάκελο πολλαπλών αρχείων:
+wget -A <filetype> -m -p -E -k -K -np <path to files>
+πχ wget -Α mp4,pdf -m -p -E -k -K -np <path to files>
