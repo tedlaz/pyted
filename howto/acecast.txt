@@ -1,0 +1,5 @@
+0. install xfce4-notifyd        sudo pacman -S xfce4-notifyd 
+1. install acestream-engine     yaourt acestream
+2. install acestream-launcher
+
+
