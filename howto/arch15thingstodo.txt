@@ -1,7 +1,7 @@
 15 things to do after installing Arch Linux:
 
-   
-1. Add user to sudoers file: 
+
+1. Add user to sudoers file:
    -sign in as root
    -open the sudoers file: (leafpad /etc/sudoers)
    -add user below sudoers section same format as file
@@ -31,9 +31,9 @@
    [archlinuxfr]
    SigLevel = Never
    Server = http://repo.archlinux.fr/$arch
-      
+
    go to next step (enable multilib)
-   
+
 6. ** Before saving file enable multilib
 
    save file
@@ -49,7 +49,7 @@
    yaourt -S pamac-aur
 
 9. Add downgrade ability:
-   
+   sudo pacman -S downgrade
    sudo pacman -S expac
 
 10.Install user folders:
@@ -67,12 +67,12 @@
    sudo brsaneconfig4 -a name=Brother model=mfcj870dw ip=192.168.1.6
 
 13.Install multimedia codecs:
-   sudo pacman -S gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg 
-   sudo pacman -S gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav gst-plugins-bad 
+   sudo pacman -S gstreamer0.10-bad-plugins gstreamer0.10-base-plugins gstreamer0.10-ffmpeg
+   sudo pacman -S gstreamer0.10-good-plugins gstreamer0.10-ugly-plugins gst-libav gst-plugins-bad
    sudo pacman -S gst-plugins-base gst-plugins-good gst-plugins-ugly ffmpegthumbnailer
 
 14.Install proprietary video drivers:
-   sudo pacman -S nvidia nvidia-libgl nvidia-settings lib32-libldap lib32-nvidia-utils lib32-nvidia-libgl 
+   sudo pacman -S nvidia nvidia-libgl nvidia-settings lib32-libldap lib32-nvidia-utils lib32-nvidia-libgl
    sudo pacman -S lib32-alsa-lib lib32-alsa-plugins lib32-libpulse lib32-alsa-oss lib32-openal
 
 15.Install audio apps:

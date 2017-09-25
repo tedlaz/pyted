@@ -1,0 +1,6 @@
+0. install xfce4-notifyd        sudo pacman -S xfce4-notifyd
+downgrade python2-m2crypto to version 0.23.0-2
+1. install acestream-engine     yaourt acestream
+2. install acestream-launcher
+
+
