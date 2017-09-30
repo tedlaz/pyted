@@ -50,12 +50,13 @@ class Fwget(Qw.QDialog):
         sp2 = Qw.QSpacerItem(40, 20, Qw.QSizePolicy.Expanding,
                              Qw.QSizePolicy.Minimum)
         button_layout.addItem(sp2)
-        self.bexec = Qw.QPushButton('Save files', self)
+        self.bexec = Qw.QPushButton('run wget', self)
+        self.bexec.setFocusPolicy(Qc.Qt.NoFocus)
         button_layout.addWidget(self.bexec)
         # Connections
         self.burl.clicked.connect(self.update_web)
         self.bpath.clicked.connect(self.update_path)
-        self.bexec.clicked.connect(self.execute)
+        self.bexec.clicked.connect(self.open_run_window)
         self.web.urlChanged.connect(self.update_url)
 
     def update_path(self):
@@ -65,16 +66,17 @@ class Fwget(Qw.QDialog):
         if path:
             self.save_path.setText(path)
 
-    def execute(self):
+    def open_run_window(self):
+        runwindow = RunWindow(self.wget_param(), self)
+        runwindow.exec_()
+
+    def wget_param(self):
         url = self.url.text()
         save_path = self.save_path.text()
         ext = self.extensions.text()
         os.chdir(save_path)
-        # print(subprocess.run(["ls", "-l"], stdout=subprocess.PIPE))
-        # wget -A <filetype> -m -p -E -k -K -np <path to files>
-        par = ['wget', '-A', ext, '-m', '-p', '-E', '-k', '-K', '-np', url]
-        # print(' '.join(par))
-        print(subprocess.run(par, stdout=subprocess.PIPE))
+        return ['-A', ext, '-m', '-p', '-E', '-k', '-K', '-np', url]
+
 
     def update_web(self):
         self.web.setUrl(Qc.QUrl(self.url.text()))
@@ -83,14 +85,54 @@ class Fwget(Qw.QDialog):
         self.url.setText(self.web.url().toString())
 
 
-if __name__ == '__main__':
+class RunWindow(Qw.QDialog):
+    def __init__(self, wget_par, parent):
+        super().__init__(parent)
+        self.resize(600, 250)
+        self.wget_params = wget_par
+        layout = Qw.QVBoxLayout(self)
+        self.out = Qw.QTextEdit()
+        self.out.setReadOnly(True)
+        layout.addWidget(self.out)
+        self.progressBar = Qw.QProgressBar(self)
+        self.progressBar.setRange(0, 1)
+        layout.addWidget(self.progressBar)
+        self.button = Qw.QPushButton('Return')
+        self.button.setFocusPolicy(Qc.Qt.NoFocus)
+        layout.addWidget(self.button)
+        # pyQt process
+        self.process = Qc.QProcess(self)
+        self.process.setProcessChannelMode(Qc.QProcess.MergedChannels)
+        # self.process.readyRead.connect(self.data_ready)
+        self.process.readyReadStandardOutput.connect(self.data_ready)
+        # connect
+        self.button.clicked.connect(self.accept)
+        self.process.started.connect(lambda: self.button.setEnabled(False))
+        self.process.finished.connect(lambda: self.button.setEnabled(True))
+        self.call_program()
 
+    def call_program(self):
+        txt = 'running wget %s\n'
+        self.out.append(txt % ' '.join(self.wget_params))
+        self.progressBar.setRange(0, 0)
+        self.process.start('wget', self.wget_params)
+
+    @Qc.pyqtSlot()
+    def data_ready(self):
+        txt = self.process.readAllStandardOutput().data().decode('utf-8')
+        # cursor = self.out.textCursor()
+        # cursor.movePosition(cursor.End)
+        # cursor.insertText('.')
+        # self.out.ensureCursorVisible()
+        if 'FINISHED' in txt:
+            self.out.append(txt)
+            self.progressBar.setRange(0, 1)
+
+
+if __name__ == '__main__':
     app = Qw.QApplication(sys.argv)
+    app.setWindowIcon(Qg.QIcon('/home/tedlaz/pyted/pyqt_templates/qwget.png'))
     ui = Fwget()
     ui.show()
     appex = app.exec_()
     sys.exit(appex)
-
-
-
-
