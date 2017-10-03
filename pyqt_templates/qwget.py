@@ -1,10 +1,15 @@
 import sys
 import os
+import re
 import subprocess
 from PyQt5 import QtCore as Qc
 from PyQt5 import QtGui as Qg
 from PyQt5 import QtWidgets as Qw
 from PyQt5 import QtWebKitWidgets as Qwkit
+
+
+rex = re.compile("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.*?saved")
+
 
 
 class Fwget(Qw.QDialog):
@@ -42,7 +47,7 @@ class Fwget(Qw.QDialog):
         vlayout.addLayout(ext_layout)
         ext_layout.addWidget(Qw.QLabel('extensions :'))
         self.extensions = Qw.QLineEdit(self)
-        self.extensions.setText('mp4,pdf')
+        self.extensions.setText('mp4,mp3,pdf,jpg')
         ext_layout.addWidget(self.extensions)
 
         button_layout = Qw.QHBoxLayout()
@@ -58,6 +63,13 @@ class Fwget(Qw.QDialog):
         self.bpath.clicked.connect(self.update_path)
         self.bexec.clicked.connect(self.open_run_window)
         self.web.urlChanged.connect(self.update_url)
+        Qw.QApplication.clipboard().dataChanged.connect(self.clip_changed)
+
+    def clip_changed(self):
+        text = Qw.QApplication.clipboard().text()
+        if text.startswith('http://') or text.startswith('https://'):
+            self.url.setText(text)
+            self.update_web()
 
     def update_path(self):
         old = self.save_path.text()
@@ -77,7 +89,6 @@ class Fwget(Qw.QDialog):
         os.chdir(save_path)
         return ['-A', ext, '-m', '-p', '-E', '-k', '-K', '-np', url]
 
-
     def update_web(self):
         self.web.setUrl(Qc.QUrl(self.url.text()))
 
@@ -90,8 +101,10 @@ class RunWindow(Qw.QDialog):
         super().__init__(parent)
         self.resize(600, 250)
         self.wget_params = wget_par
+        self.files_down = 0
         layout = Qw.QVBoxLayout(self)
         self.out = Qw.QTextEdit()
+        self.out.setLineWrapMode(0)  # No text wrap
         self.out.setReadOnly(True)
         layout.addWidget(self.out)
         self.progressBar = Qw.QProgressBar(self)
@@ -112,7 +125,7 @@ class RunWindow(Qw.QDialog):
         self.call_program()
 
     def call_program(self):
-        txt = 'running wget %s\n'
+        txt = 'running wget %s\n\nresults:\n=======\n'
         self.out.append(txt % ' '.join(self.wget_params))
         self.progressBar.setRange(0, 0)
         self.process.start('wget', self.wget_params)
@@ -120,12 +133,17 @@ class RunWindow(Qw.QDialog):
     @Qc.pyqtSlot()
     def data_ready(self):
         txt = self.process.readAllStandardOutput().data().decode('utf-8')
-        # cursor = self.out.textCursor()
-        # cursor.movePosition(cursor.End)
-        # cursor.insertText('.')
-        # self.out.ensureCursorVisible()
+        foun = []
+        foun = rex.findall(txt)
+        if foun:
+            if ".tmp.html’ saved" not in foun[0]:
+                cursor = self.out.textCursor()
+                cursor.movePosition(cursor.End)
+                cursor.insertText(foun[0] + '\n')
+                self.out.ensureCursorVisible()
+                self.files_down += 1
         if 'FINISHED' in txt:
-            self.out.append(txt)
+            self.out.append("Total downloaded files: %s" % self.files_down)
             self.progressBar.setRange(0, 1)
 
 

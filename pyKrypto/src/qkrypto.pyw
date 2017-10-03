@@ -71,7 +71,7 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.txtKeyFile.setText(self.kryptoKey)
         QtCore.QObject.connect(self.ui.button_openkey, QtCore.SIGNAL("clicked()"), self.file_dialog)
         QtCore.QObject.connect(self.ui.button_save, QtCore.SIGNAL("clicked()"), self.file_save)
-        QtCore.QObject.connect(self.ui.button_open QtCore.SIGNAL("clicked()"), self.file_open)
+        QtCore.QObject.connect(self.ui.button_open, QtCore.SIGNAL("clicked()"), self.file_open)
         QtCore.QObject.connect(self.ui.button_makeKey, QtCore.SIGNAL("clicked()"), self.create_key)
 
     def file_dialog(self):
