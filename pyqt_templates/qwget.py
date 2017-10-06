@@ -15,9 +15,9 @@ rex = re.compile("\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.*?saved")
 class Fwget(Qw.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.settings = Qc.QSettings()
         vlayout = Qw.QVBoxLayout(self)
         url_layout = Qw.QHBoxLayout()
-
         self.url = Qw.QLineEdit(self)
         self.burl = Qw.QToolButton(self)
         self.burl.setArrowType(Qc.Qt.DownArrow)
@@ -26,7 +26,9 @@ class Fwget(Qw.QDialog):
         vlayout.addLayout(url_layout)
         # Webkit
         self.web = Qwkit.QWebView(self)
-        self.web.setUrl(Qc.QUrl("http://users.otenet.gr/~o6gnvw"))
+        url = self.settings.value("save_url",
+                                  defaultValue="http://users.otenet.gr/~o6gnvw")
+        self.web.setUrl(Qc.QUrl(url))
         vlayout.addWidget(self.web)
         sp1 = Qw.QSpacerItem(20, 10, Qw.QSizePolicy.Minimum,
                              Qw.QSizePolicy.Minimum)
@@ -36,20 +38,19 @@ class Fwget(Qw.QDialog):
         vlayout.addLayout(path_layout)
         path_layout.addWidget(Qw.QLabel('Save Path :'))
         self.save_path = Qw.QLineEdit(self)
-        self.save_path.setText('/home/tedlaz/Downloads/dpython')
-
+        save_path = self.settings.value("save_path", defaultValue='')
+        self.save_path.setText(save_path)
         path_layout.addWidget(self.save_path)
         self.bpath = Qw.QToolButton(self)
         self.bpath.setText('...')
         path_layout.addWidget(self.bpath)
-
         ext_layout = Qw.QHBoxLayout()
         vlayout.addLayout(ext_layout)
         ext_layout.addWidget(Qw.QLabel('extensions :'))
         self.extensions = Qw.QLineEdit(self)
-        self.extensions.setText('mp4,mp3,pdf,jpg')
+        ext = self.settings.value("ext", defaultValue='mp4,mp3,pdf,jpg')
+        self.extensions.setText(ext)
         ext_layout.addWidget(self.extensions)
-
         button_layout = Qw.QHBoxLayout()
         vlayout.addLayout(button_layout)
         sp2 = Qw.QSpacerItem(40, 20, Qw.QSizePolicy.Expanding,
@@ -67,9 +68,8 @@ class Fwget(Qw.QDialog):
 
     def clip_changed(self):
         text = Qw.QApplication.clipboard().text()
-        if text.startswith('http://') or text.startswith('https://'):
-            self.url.setText(text)
-            self.update_web()
+        self.url.setText(text)
+        self.update_web()
 
     def update_path(self):
         old = self.save_path.text()
@@ -77,6 +77,7 @@ class Fwget(Qw.QDialog):
         path = Qw.QFileDialog.getExistingDirectory(self, 'path', old, opt)
         if path:
             self.save_path.setText(path)
+            self.settings.setValue("save_path", path)
 
     def open_run_window(self):
         runwindow = RunWindow(self.wget_param(), self)
@@ -90,7 +91,12 @@ class Fwget(Qw.QDialog):
         return ['-A', ext, '-m', '-p', '-E', '-k', '-K', '-np', url]
 
     def update_web(self):
-        self.web.setUrl(Qc.QUrl(self.url.text()))
+        text = self.url.text()
+        if text.startswith('http://') or text.startswith('https://'):
+            self.web.setUrl(Qc.QUrl(text))
+            self.settings.setValue("save_url", text)
+        else:
+            self.url.setText(self.web.url())
 
     def update_url(self):
         self.url.setText(self.web.url().toString())
@@ -150,6 +156,9 @@ class RunWindow(Qw.QDialog):
 if __name__ == '__main__':
     app = Qw.QApplication(sys.argv)
     app.setWindowIcon(Qg.QIcon('/home/tedlaz/pyted/pyqt_templates/qwget.png'))
+    app.setOrganizationName("tedlaz")
+    app.setOrganizationDomain("tedlaz")
+    app.setApplicationName("qwget")
     ui = Fwget()
     ui.show()
     appex = app.exec_()
