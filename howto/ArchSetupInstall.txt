@@ -1,0 +1,79 @@
+Κατέβασμα από https://www.archlinux.org/download/
+Το βάζουμε σε usb και το τρέχουμε.
+
+fdisk -l # για να δούμε τι δίσκους έχουμε
+cfdisk /dev/sda και από το μενού επιλέγουμε dos
+  Δημιουργούμε 3 partition με μεγέθη 
+    1. 1GB (primary, bootable)
+    2. 2GB (primary, type linux swap / Solaris)
+    3. όλος ο υπόλοιπος δίσκος (primary)
+  επιλέγουμε write για αποθήκευση των αλλαγών και Quit
+mkfs.ext4 /dev/sda1
+mkswap /dev/sda2
+swapon /dev/sda2
+mkfs.ext4 /dev/sda3
+
+mount /dev/sda3 /mnt
+mkdir /mnt/boot /mnt/var /mnt/home
+mount /dev/sda1 /mnt/boot
+
+ping -c 3 www.google.com # Για να βεβαιωθούμε ότι έχουμε σύνδεση internet
+
+pacstrap /mnt base base-devel
+pacstrap /mnt grub-bios
+genfstab -p /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt /bin/bash # Συνδεόμαστε με το νέο σύστημα
+
+nano /etc/locale.gen # Ενεργοποιούμε το locale που θέλουμε (en_US.UTF8 UTF-8)
+locale-gen
+echo LANG=en_US.UTF8 > /etc/locale.conf # Δημιουργούμε το αρχείο locale.conf
+export LANG=en_US.UTF-8
+hwclock --systohc --utc
+ls /usr/share/zoneinfo/ # Για να βρούμε Ζώνη/Χώρα
+rm -rf /etc/localtime # Διαγράφουμε το αρχείο localtime
+ln -s /usr/share/zoneinfo/Europe/Athens /etc/localtime # Δημιουργούμε σύνδεσμο για τη χώρα
+echo arch2017 > /etc/hostname # Ορίζουμε το όνομα του υπολογιστή
+
+systemctl enable dhcpcd.service
+
+pacman -Sy openssh
+systemctl enable sshd.service
+
+passwd root
+useradd -m -g users -G wheel -s /bin/bash ted
+passwd ted
+nano /etc/sudoers # Για να προσθέσω τον χρήστη ted ALL=(ALL) ALL
+
+grub-install /dev/sda # Εγκατάσταση του grub
+grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -p linux
+
+exit
+exit
+umount /mnt/boot
+umount /mnt
+reboot
+
+Και ξαναμπαίνουμε στο φρέσκο σύστημα σαν root
+ping -c 3 www.google.com # Για να βεβαιωθούμε ότι έχουμε σύνδεση internet
+
+pacman -Sy xorg xorg-xinit # Για εγκατάσταση του xserver
+pacman -Sy xfce4 xfce4-goodies # Εγκατάσταση Desktop Environment
+pacman -S ttf-freefont
+pacman -Sy lightdm lightdm-gtk-greeter
+systemctl enable lightdm.service
+
+pacman -Sy palseaudio pavucontrol # Audio drivers
+pacman -Sy chromium vlc archlinux-wallpaper
+
+pacman -Sy virtualbox-guest-utils # Εδώ για το Virtualbox Π Ρ Ο Σ Ο Χ Η επιλογή 2(για arch)
+systemctl enable vboxservice.service # Ενεργοποίηση
+
+pacman -Sy networkmanager network-manager-applet # Για network manager
+sudo systemctl enable NetworkManager.service
+
+Εγκατάσταση του yaourt
+yaourt shadow-icon-theme # Για ωραία εικονίδια ...
+yaourt mugshot # Για τα στοιχεία του χρήστη 
+reboot
