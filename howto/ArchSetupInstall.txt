@@ -64,8 +64,8 @@ pacman -S ttf-freefont
 pacman -Sy lightdm lightdm-gtk-greeter
 systemctl enable lightdm.service
 
-pacman -Sy palseaudio pavucontrol # Audio drivers
-pacman -Sy chromium vlc archlinux-wallpaper
+pacman -Sy pulseaudio pavucontrol # Audio drivers
+pacman -Sy chromium leafpad vlc archlinux-wallpaper
 
 pacman -Sy virtualbox-guest-utils # Εδώ για το Virtualbox Π Ρ Ο Σ Ο Χ Η επιλογή 2(για arch)
 systemctl enable vboxservice.service # Ενεργοποίηση
@@ -74,6 +74,17 @@ pacman -Sy networkmanager network-manager-applet # Για network manager
 sudo systemctl enable NetworkManager.service
 
 Εγκατάσταση του yaourt
+sudo leafpad /etc/pacman.conf
+    Ανοίγουμε τα color και TotalDownload
+    Προσθέτουμε κάτω από τη γραμμή #VerbosePkgLists ILoveCandy
+    Ανοίγουμε το αποθετήριο multilib
+    Στο τέλος προσθέτουμε : 
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
+    
 yaourt shadow-icon-theme # Για ωραία εικονίδια ...
-yaourt mugshot # Για τα στοιχεία του χρήστη 
+yaourt mugshot # Για τα στοιχεία του χρήστη
+pacman -Sy deepin-screenshot # Very goot screenshot
+
 reboot
