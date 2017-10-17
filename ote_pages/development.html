@@ -67,7 +67,7 @@
 <li><a href="https://www.linuxserver.io/" target="_blank">LinuxServer.io - Docker Containers</a></li>
 <li><a href="http://labs.play-with-docker.com/" target="_blank">Play with Docker</a></li>
 <li><a href="http://portainer.io/" target="_blank">portainer.io the easy way to manage docker</a></li>
-docker run --name portainer -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+docker run -d --restart always --name portainer -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data portainer/portainer
 </ul>
 
 <h3>Web development</h3>
@@ -104,7 +104,7 @@ docker run --name portainer -d -p 9000:9000 -v /var/run/docker.sock:/var/run/doc
 <li><a href="http://qt-project.org/" target="_blank">QT project</a></li>
 <li><a href="http://www.qt-apps.org/" target="_blank">Free qt applications</a></li>
 <li><a href="http://www.wxwidgets.org" target="_blank">wxWidgets</a></li>
-<li><a href="http://www.voidrealms.com/" target="_blank">VoidRealms - QT - Yii παραδείγματα</a></li>
+<li><a href="http://www.voidrealms.com/" target="_blank">VoidRealms - QT - Yii οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½οΏ½</a></li>
 </ul>
 
 <h3>Databases</h3>
