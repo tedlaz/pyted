@@ -22,7 +22,7 @@ if __name__ == '__main__':
               LMOIF,
               FIS,
               FFP,
-              6447.27)
+              6411.81)
     f2run.checkDictionaries(TMPLF, LMOIF)
     import webbrowser
-    webbrowser.get('chromium %s').open(HTMLF)
+    webbrowser.get('google-chrome-stable %s').open(HTMLF)

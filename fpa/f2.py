@@ -257,24 +257,14 @@ def render_to_html(dat, pdata, filename):
           480, 483, 505, 511, 523,
           507, 508,
           906, 907, 908]
+    svl = ['apo', 'eos', 'epon', 'onom', 'patr', 'afm']
     with open(os.path.join(cpath, 'f2.html')) as html_template:
         if python_v == 2:
             html_text = html_template.read().decode('utf-8')
         else:
             html_text = html_template.read()
-    fdict = {}
-    for el in cd:
-        fdict['i%s' % el] = ''
-    for key in dat:
-        fdict['i%s' % key] = d2s(dat[key])
-    fdict['apo'] = pdata.get('apo', 'No Date apo')
-    fdict['eos'] = pdata.get('eos', 'No Date eos')
-    fdict['epon'] = pdata.get('epon', u'Άγνωστος')
-    fdict['onom'] = pdata.get('onom', u'')
-    fdict['patr'] = pdata.get('patr', u'')
-    fdict['afm'] = pdata.get('afm', '')
-    # for el in sorted(fdict.keys()):
-    #     print('%s -> %s' % (el, fdict[el]))
+    fdict = {'i%s' % key: d2s(dat.get(key, '')) for key in cd}
+    fdict.update({key: pdata.get(key, '') for key in svl})
     final = html_text.format(**fdict)
     with open(filename, 'w') as fout:
         if python_v == 2:
