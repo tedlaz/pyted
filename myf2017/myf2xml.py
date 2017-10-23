@@ -210,6 +210,6 @@ def make_xml(database, xrisi, coafm, parartima='', xmltype='replace'):
 
 if __name__ == '__main__':
     sql = sqlt.format(etos=2016)
-    db = '/home/tedlaz/tedfiles/prj/samaras2016d/2016.sql3'
+    db = '/home/tedlaz/prj/tedfiles/prj/samaras2016d/2016.sql3'
     #  print(dbselect(sql, db))
     make_xml(db, 2016, '091767623')
