@@ -57,8 +57,7 @@ class Test(Qw.QDialog):
 
 if __name__ == '__main__':
     import sys
-    dbf0 = '/home/tedlaz/pyted/pyqt_templates/tst_qtwidgets.db'
-    dbf1 = "/home/tedlaz/aaa"
+    dbf0 = '/home/tedlaz/prj/pyted/pyqt_templates/tst_qtwidgets.db'
     app = Qw.QApplication(sys.argv)
     ui = Test(dbf0)
     ui.show()
