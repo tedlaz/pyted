@@ -17,7 +17,7 @@ for i, _ in enumerate(pei):
 pores_pei = distribute.distribute_per_cent(ores_pei, 5)
 pores_pei_a = distribute.multiply(one_minus_peifi, pores_pei, 5)
 to1 = distribute.asum(peifi, pores_pei_a, 5)
-#print(one_minus_peifi)
+# print(one_minus_peifi)
 # print(pores_pei, sum(pores_pei))
 print(pores_pei_a)
 print('')

@@ -3,11 +3,12 @@ import decimal
 
 
 def isNum(value):  # Einai to value arithmos, i den einai ?
-    """ use: Returns False if value is not a number , True otherwise
-        input parameters :
-            1.value : the value to check against.
-        output: True or False
-        """
+    """
+    use: Returns False if value is not a number , True otherwise
+    input parameters :
+        1.value : the value to check against.
+    output: True or False
+    """
     try:
         float(value)
     except ValueError:
@@ -55,7 +56,6 @@ def distribute(val, distArray, decimals=2):
     else:
         # Max value Element gets the difference
         tmpArr[tmpArr.index(max(tmpArr))] += dif
-
     return tmpArr
 
 
@@ -82,7 +82,7 @@ class ntable():
         self.column_headers = {1: u'Θέρμανση',
                                2: u'Ασανσέρ',
                                3: u'Καθαριότητα',
-                               4:  u'Αποχέτευση'}
+                               4: u'Αποχέτευση'}
         self.row_headers = {1: u'Φροντιστήριο',
                             2: u'Νικολόπουλος-Μάρδα',
                             3: u'Καλυβιώτης',
@@ -135,9 +135,6 @@ class ntable():
 
 
 if __name__ == '__main__':
-    import sys
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
     a = ntable()
     a.print_dist()
     print(a.get_dist(10, 23))

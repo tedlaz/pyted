@@ -39,18 +39,12 @@ def dec(poso=0, decimals=2):
     return tmp.quantize(PLACES)
 
 
-def multiply(number, array, decimals=2):
-    tarr = []
-    for el in array:
-        tarr.append(dec(dec(number, decimals) * dec(el, decimals), decimals))
-    return tarr
+def multiply(num, alist, decim=2):
+    return [dec(dec(num, decim) * dec(i, decim), decim) for i in alist]
 
 
 def asum(arr1, arr2, decimals=2):
-    farr = []
-    for i, _ in enumerate(arr1):
-        farr.append(dec(arr1[i] + arr2[i], decimals))
-    return farr
+    return [dec(x + y, decimals) for x, y in zip(arr1, arr2)]
 
 
 def distribute(val, distArray, decimals=2):
@@ -78,13 +72,17 @@ def distribute(val, distArray, decimals=2):
     return tmpArr
 
 
+def dic_to_lists(adic):
+    return adic.keys(), adic.values()
+
+
 def distribute_per_cent(array, decimals=2):
     return distribute(1, array, decimals)
 
 
-def dis_round(array, decimals=2):
-    tar = dec(sum(array), decimals)
-    return distribute(tar, array, decimals)
+def dis_round(alist, decimals=2):
+    tar = dec(sum(alist), decimals)
+    return distribute(tar, alist, decimals)
 
 
 def dist_to_dict(val, dist_dic, decimals=2):
@@ -95,15 +93,9 @@ def dist_to_dict(val, dist_dic, decimals=2):
     decimals  : Number of decimal digits
     """
     keys = dist_dic.keys()
-    arr = []
-    farr = []  # For distributed values temporary store
-    fdic = {}
-    for key in keys:
-        arr.append(dist_dic[key])
-    farr = distribute(val, arr, decimals)
-    for i, val in enumerate(farr):
-        fdic[keys[i]] = val
-    return fdic
+    vals = [dist_dic[key] for key in keys]
+    katanomi = distribute(val, vals, decimals)
+    return dict(zip(keys, katanomi))
 
 
 def distxy(valdic, xyarr, flds=['x', 'y', 'val'], decimals=2):
@@ -161,7 +153,7 @@ def str(dicarr):
 if __name__ == '__main__':
     print(distribute(100, [10, 20, 30, 0]))
     print('\n\n')
-    print(dist_to_dict(100, {'ted': 10, 'popi': 20, 'kon': 30}))
+    print(dist_to_dict(100, {'ted': 10, 'popi': 20, 'kon': 70}))
     print('\n\n')
     d = [{'x': 'd1', 'y': 'th', 'val': 204},
          {'x': 'd2', 'y': 'th', 'val': 159},

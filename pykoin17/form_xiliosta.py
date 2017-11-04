@@ -240,7 +240,7 @@ class Form_xiliosta(Qw.QDialog):
 if __name__ == '__main__':
     import sys
     app = Qw.QApplication([])
-    dialog = Form_xiliosta('/home/tedlaz/pyted/pykoin17/zzz.sql3',
+    dialog = Form_xiliosta('/home/tedlaz/prj/pyted/pykoin17/zzz.sql3',
                            'diam',
                            'dap',
                            'xiliosta')

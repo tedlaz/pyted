@@ -86,5 +86,4 @@ def run(epon, apo, eos, db, htmlfile, tmplfile, lmoifile,
     tmpl = loadtmpl(tmplfile)
     lmoi = loadacc(lmoifile)
     ap = f2.f2n(isoz, ypfpa, lmoi, tmpl, pisyp)
-
     f2.render_to_html(ap, pdata, htmlfile)
