@@ -48,6 +48,6 @@ def parsefile(elfile, encoding='WINDOWS-1253'):
     return lmoi, arthra
 
 
-def book_from_file(filename):
-    lmoi, data = parsefile(filename)
+def book_from_file(filename, encoding='WINDOWS-1253'):
+    lmoi, data = parsefile(filename, encoding=encoding)
     return book.Book(lmoi, data)
