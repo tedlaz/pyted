@@ -1,4 +1,4 @@
-'''Basic module'''
+'''Basic module for accounting'''
 import utils as ul
 
 FORMAT_LINE = '%-15s %12s %12s'
