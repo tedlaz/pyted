@@ -1,6 +1,5 @@
 Instructions
 ------------
-
 First of all we do : git pull
 git status
 git add --all
