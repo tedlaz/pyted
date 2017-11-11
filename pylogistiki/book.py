@@ -1,3 +1,4 @@
+'''Basic module'''
 import utils as ul
 
 FORMAT_LINE = '%-15s %12s %12s'
