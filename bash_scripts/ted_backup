@@ -1,0 +1,4 @@
+#!/bin/bash
+date_now=$(date +"%Y%m%d%H%M")
+#echo ~/Backup/$1.$date_now.7z
+7z a ~/Backup/$1.$date_now.7z -mhe -p<Set Password Here> $1
