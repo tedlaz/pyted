@@ -24,8 +24,7 @@ class Db():
         con.close()
         if with_column_names:
             return column_names, rws
-        else:
-            return rws
+        return rws
 
     def rowsd(self, sql):
         '''
@@ -59,6 +58,7 @@ class Db():
 
 
 def test():
+    """Test function"""
     dbf = Db()
     sql = "select 1 as a , 2 as b"
     print(dbf.rowst(sql, True))
