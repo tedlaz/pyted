@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
-dbsqlite module
-'''
+'''dbsqlite module'''
 import sqlite3
 
 
