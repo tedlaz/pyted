@@ -8,6 +8,7 @@ LM1 = ul.read_txt_to_dict('log_sxedio.txt')
 
 class Line():
     def __init__(self, lmo, xre, pis):
+        assert xre + pis != 0
         self.lmo = lmo
         self.xre = ul.dec(xre)
         self.pis = ul.dec(pis)
@@ -71,6 +72,13 @@ class Line():
 
     def is_typos(self, typos):
         return typos in self.typos
+
+    def has_tag(self, tag):
+        return tag in self.typos
+
+    @property
+    def is_xreostiko(self):
+        return self.y > 0
 
     @property
     def y(self):
@@ -261,6 +269,14 @@ class Book():
             print('%-10s %-26s %-75s %12s %12s %12s' % dat)
 
     def fpa(self, apo, eos):
+        '''
+        1.Επιλέγουμε τα άρθρα που έχουν φπα
+        2.Ελέγχουμε αν υπάρχουν παραπάνω από ένας γραμμές με φπα
+        Στην απλή περίπτωση που έχουμε ένα μια γραμμή ΦΠΑ και μια γραμμή
+        1267 τότε βρίσκουμε το ποσοστό κάνοντας διάρεση φπα 54.00 / 1267
+        το ποσοστό θα πρέπει να είναι ένα απο τα γνωστά ποσοστά 13, 24
+        προσθέτουμε το λογαρισμό στην κατηγορία που πρέπει
+        '''
         pass
 
     def arthra_print(self, typos=None):

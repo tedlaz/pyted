@@ -10,3 +10,5 @@ if __name__ == '__main__':
     book.isozygio_print('2017-01-01', '2017-09-30', 'ΦΠΑ')
     book.kartella_print('38.00.00.000', '2017-01-01', '2017-09-30')
     # book.arthra_print()
+    txt = 'ΦΠΑ#54.00'
+    print(txt.split('#'))
