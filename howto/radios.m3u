@@ -1,0 +1,25 @@
+#EXTM3U
+#EXTINF:-1,RealFM
+http://realfm.live24.gr:80/realfm
+#EXTINF:-1,ERT COSMOS
+http://radiostreaming.ert.gr/ert-kosmos
+#EXTINF:-1,Rocarolla Radio
+http://144.76.110.169:9996/;stream.mp3
+#EXTINF:-1,Radio Paradise 320 AAC
+http://www.radioparadise.com/m3u/aac-320.m3u
+#EXTINF:-1,Radio Paradise 128 AAC
+http://www.radioparadise.com/m3u/aac-128.m3u
+#EXTINF:-1,Radio Paradise 128 MP3
+http://www.radioparadise.com/m3u/mp3-128.m3u
+#EXTINF:-1,Artnoise Jazz Radio
+http://sc2.streamwithq.com:8028/;listen.pls
+#EXTINF:-1,Jazz24 Radio
+http://icy1.abacast.com:80/kplu-jazz24aac-64
+#EXTINF:-1,Pepper 96.6
+http://pepper966.live24.gr:80/pepperorigin
+#EXTINF:-1,The Jazz Groove
+https://thejazzgroove.s3.amazonaws.com/file/thejazzgroove-aac-64.pls
+#EXTINF:-1,Big Blue Swing
+http://www.bigblueswing.com/radio/bigblueswing-64.m3u
+#EXTINF:-1,Alpha 98.9
+http://194.219.46.2:8080/live

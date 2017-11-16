@@ -158,7 +158,13 @@ class DicDec(dict):
 def print_dic(adict):
     for key in adict:
         print('%-40s:%12s' % (key, adict[key]))
+    print('=====================================================')
 
+
+def print_dicl(data):
+    for key in data[0]:
+        print('%-40s:%12s' % (data[1][key], data[0][key]))
+    print('=====================================================')
 
 if __name__ == '__main__':
     print(read_txt_to_dict('log_sxedio.txt'))
