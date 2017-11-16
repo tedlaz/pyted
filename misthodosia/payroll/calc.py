@@ -422,6 +422,7 @@ def ek_ee(poso, paidia=0, oldposo=0, oldprokataboli=0, tep=False):
     log += u'\n4.Καθαρό        %12s (%s%%)\n' % (katharo, pkath)
     log += u'\n5.Σε Τσέπη      %12s (%s%%)\n' % (tsepi, pts)
     print(log)
+    return log
 
 
 def printfor(apo, eos, bima=100, mis=False):

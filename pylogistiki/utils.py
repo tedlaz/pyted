@@ -148,5 +148,17 @@ def read_txt_to_dict(txtfile):
     return tdic
 
 
+class DicDec(dict):
+
+    def __setitem__(self, key, item):
+        # self.__dict__[key] = ul.dec(item)
+        super(DicDec, self).__setitem__(key, dec(item, 2))
+
+
+def print_dic(adict):
+    for key in adict:
+        print('%-40s:%12s' % (key, adict[key]))
+
+
 if __name__ == '__main__':
     print(read_txt_to_dict('log_sxedio.txt'))
