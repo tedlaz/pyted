@@ -130,14 +130,21 @@ def astheneia(erg):
     alb['asm3'] = 'Αποδοχές ασθένειας > 3'
     cas['asti'] = cas['asl3'] + cas['asm3']
     alb['asti'] = 'Αποδοχές για ΙΚΑ'
+    cas['axe'] = cas['asti'] - cas['epi']
+    alb['axe'] = 'Αποδοχές ασθένειας μείον επίδομα ΙΚΑ'
     return cas, alb
 
 
 def ika(erg):
+    """
+
+    """
     cio = ul.DicDec()
     ilb = {}
     cio['poso'] = erg['poso']
     ilb['poso'] = 'Ποσό για ΙΚΑ'
+    # Άν τα ποσοστά είναι μεγαλύτερα του 1 θεωρούμε ότι είναι εκφρασμέντα
+    # επι τοις εκατό και τα μετατρέπουμε σε δεκαδικά < 1
     cio['pika'] = erg['pika'] if erg['pika'] < 1 else erg['pika'] / 100.0
     ilb['pika'] = 'Ποσοστό ΙΚΑ'
     cio['pikae'] = erg['pikae'] if erg['pikae'] < 1 else erg['pikae'] / 100.0
@@ -164,7 +171,8 @@ def doro_pasxa(erg):  # tmeres, apt, apv, tapv=0):
     ldp = {}
     cdp['t_mtyp'] = 'Δώρο Πάσχα'
     ldp['t_mtyp'] = 'Τύπος μισθοδοσίας'
-    cdp['merest'] = erg['merest'] if erg['merest'] <= 100 else 100
+    tmer = erg.get('merest', 0)
+    cdp['merest'] = tmer if tmer <= 100 else 100
     ldp['merest'] = 'Ημέρες εργασίας 1/1-30/4'
     cdp['apo'] = erg['apo']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
     ldp['apo'] = 'Αποδοχές'
@@ -194,11 +202,11 @@ def doro_pasxa(erg):  # tmeres, apt, apv, tapv=0):
         raise Mis_exception('function doro_pasxa Error !!')
     ldp['t_typ'] = 'Τύπος εργαζομένου'
     ldp['dpas'] = 'Δώρο Πάσχα'
-    print(exp)
+    # print(exp)
     return cdp, ldp
 
 
-def doro_xristoygena(erg):
+def doro_xrist(erg):
     '''
     tmeres : Total days of period
     apt    : Τύπος αποδοχών (1:Μισθός, 2:Ημερομίσθιο, 3:Ωρομίσθιο)
@@ -208,7 +216,8 @@ def doro_xristoygena(erg):
     ldx = {}
     cdx['t_mtyp'] = 'Δώρο Χριστουγέννων'
     ldx['t_mtyp'] = 'Τύπος μισθοδοσίας'
-    cdx['merest'] = erg['merest'] if erg['merest'] <= 200 else 200
+    tmer = erg.get('merest', 0)
+    cdx['merest'] = tmer if tmer <= 200 else 200
     ldx['merest'] = 'Ημέρες εργασίας 1/5-31/12'
     cdx['apo'] = erg['apo']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
     ldx['apo'] = 'Αποδοχές'
@@ -238,7 +247,7 @@ def doro_xristoygena(erg):
         raise Mis_exception('function doro_xristoygena Error!!')
     ldx['t_typ'] = 'Τύπος εργαζομένου'
     ldx['dxri'] = 'Δώρο Χριστουγέννων'
-    print(exp)
+    # print(exp)
     return cdx, ldx
 
 
@@ -277,7 +286,7 @@ def epidoma_adeias(erg):
     else:
         raise Mis_exception('Error here !!')
     lea['aea'] = 'Επίδομα Αδείας'
-    print(exp)
+    # print(exp)
     return cea, lea
 
 
@@ -312,55 +321,3 @@ def doro_pasxa_test(erg):  # tmeres, apt, apv, tapv=0):
     ldp['t_typ'] = 'Τύπος εργαζομένου'
     ldp['dpas'] = 'Δώρο Πάσχα'
     return cdp, ldp
-
-
-if __name__ == '__main__':
-    serg = {'typ': 'imeromisthio',
-            'pika': .45,
-            'pikaErgazomenoy': .15,
-            'apodoxes': 70,
-            'apodoxesn': 50,
-            'meres': 1,
-            'paroysies': [5, 0, 0, 0],
-            'oresNyxta': 4,
-            'argiesm': 1,
-            'yperorArgia': 2}
-    ser2 = {'typ': 'misthos',
-            'pika': .45,
-            'pikaErgazomenoy': .15,
-            'apodoxes': 3200,
-            'apodoxesn': 2400,
-            'meres': 1,
-            'oresNyxta': 8,
-            'argieso': 5,
-            'yperorArgia': 4}
-
-    ter1 = {'typ': 'imeromisthio',
-            'apodoxes': 21.19,
-            'apodoxesNomimes': 17,
-            'meres': 25,
-            # 'argiam': 1,
-            # 'nyxtao': 6,
-            # 'argiao': 1,
-            'poso': 100.36,
-            'pika': 45,
-            'pikae': 15,
-            }
-    c01 = normal(ter1)
-    ul.print_dicl(c01)
-    ul.print_dicl(ika(ter1))
-    ffb = {'ype': 2, 'oro': 10.5, 'oron': 7.5, 'ypen': 0, 'ypea': 2}
-    ffc = {'ype': 4, 'oro': 19.2, 'oron': 14.4, 'ypen': 1, 'ypea': 4}
-    ul.print_dicl(yperories(ffb))
-    ast = {'isthio': 80, 'ml3': 3, 'mm3': 6, 'epi': 350}
-    ul.print_dicl(astheneia(ast))
-    dps1 = {'typ': 'misthos', 'merest': 26, 'apo': 600}
-    dps2 = {'typ': 'imeromisthio', 'merest': 25, 'apo': 38}
-    dps3 = {'typ': 'oromisthio', 'merest': 360, 'apo': 600}
-    ul.print_dicl(doro_pasxa(dps1))
-    ul.print_dicl(doro_xristoygena(dps3))
-    # dp21 = {'typ': 'imeromisthio', 'apot': 750}
-    # ul.print_dicl(doro_pasxa_test(dp21))
-    dea01 = {'typ': 'misthos', 'merest': 25, 'apo': 600}
-    dea02 = {'typ': 'imeromisthio', 'merest': 200, 'apo': 30}
-    ul.print_dicl(epidoma_adeias(dea01))

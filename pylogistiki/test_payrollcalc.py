@@ -31,16 +31,42 @@ class TestPayroll(unittest.TestCase):
         self.assertEqual(res['aypt'], ul.dec(185.4))
 
     def test_astheneia(self):
-        pass
+        nas = {'isthio': 80, 'ml3': 3, 'mm3': 6, 'epi': 350}
+        res, _ = pc.astheneia(nas)
+        self.assertEqual(res['asl3'], ul.dec(120))
+        self.assertEqual(res['asm3'], ul.dec(480))
+        self.assertEqual(res['asti'], ul.dec(600))
+        self.assertEqual(res['axe'], ul.dec(250))
 
     def test_ika(self):
-        pass
+        nik = {'poso': 100, 'pika': .45, 'pikae': .15}
+        self.assertEqual(pc.ika(nik)[0]['ika'], ul.dec(45))
+        nik = {'poso': 100, 'pika': 45, 'pikae': 15}
+        self.assertEqual(pc.ika(nik)[0]['ika'], ul.dec(45))
 
     def test_doro_pasxa(self):
-        pass
+        ndp = {'typ': 'misthos', 'merest': 25, 'apo': 600}
+        self.assertEqual(pc.doro_pasxa(ndp)[0]['dpas'], ul.dec(78.13))
+        ndp = {'typ': 'misthos', 'merest': 500, 'apo': 600}
+        self.assertEqual(pc.doro_pasxa(ndp)[0]['dpas'], ul.dec(312.5))
+        ndp = {'typ': 'imeromisthio', 'merest': 25, 'apo': 30}
+        self.assertEqual(pc.doro_pasxa(ndp)[0]['dpas'], ul.dec(120.19))
+        ndp = {'typ': 'imeromisthio', 'merest': 500, 'apo': 30}
+        self.assertEqual(pc.doro_pasxa(ndp)[0]['dpas'], ul.dec(468.75))
+        ndp = {'typ': 'oromisthio', 'apo': 600}
+        self.assertEqual(pc.doro_pasxa(ndp)[0]['dpas'], ul.dec(78.13))
 
     def test_doro_xristoygennon(self):
-        pass
+        ndx = {'typ': 'misthos', 'merest': 25, 'apo': 600}
+        self.assertEqual(pc.doro_xrist(ndx)[0]['dxri'], ul.dec(78.13))
+        ndx = {'typ': 'misthos', 'merest': 500, 'apo': 600}
+        self.assertEqual(pc.doro_xrist(ndx)[0]['dxri'], ul.dec(625))
+        ndx = {'typ': 'imeromisthio', 'merest': 25, 'apo': 30}
+        self.assertEqual(pc.doro_xrist(ndx)[0]['dxri'], ul.dec(97.66))
+        ndx = {'typ': 'imeromisthio', 'merest': 500, 'apo': 30}
+        self.assertEqual(pc.doro_xrist(ndx)[0]['dxri'], ul.dec(781.25))
+        ndx = {'typ': 'oromisthio', 'apo': 600}
+        self.assertEqual(pc.doro_xrist(ndx)[0]['dxri'], ul.dec(78.13))
 
     def test_epidoma_adeias(self):
         dea01 = {'typ': 'misthos', 'merest': 25, 'apo': 600}
