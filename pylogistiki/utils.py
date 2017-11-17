@@ -20,7 +20,8 @@ def dec(poso=0, decimals=2):
     if poso is None:
         poso = 0
     tmp = decimal.Decimal(poso) if isNum(poso) else decimal.Decimal('0')
-    return tmp.quantize(decimal.Decimal(10) ** (-1 * decimals))
+    qval = decimal.Decimal(10) ** (-1 * decimals)
+    return tmp.quantize(qval, rounding=decimal.ROUND_HALF_UP)
 
 
 def iso_number_from_greek(num):
@@ -152,7 +153,10 @@ class DicDec(dict):
 
     def __setitem__(self, key, item):
         # self.__dict__[key] = ul.dec(item)
-        super(DicDec, self).__setitem__(key, dec(item, 2))
+        if key.startswith('t_'):
+            super(DicDec, self).__setitem__(key, item)
+        else:
+            super(DicDec, self).__setitem__(key, dec(item, 2))
 
 
 def print_dic(adict):
@@ -165,6 +169,7 @@ def print_dicl(data):
     for key in data[0]:
         print('%-40s:%12s' % (data[1][key], data[0][key]))
     print('=====================================================')
+
 
 if __name__ == '__main__':
     print(read_txt_to_dict('log_sxedio.txt'))

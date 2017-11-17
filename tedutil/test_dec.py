@@ -19,7 +19,7 @@ class TestDec(unittest.TestCase):
         self.assertEqual(float(dec.dec(None)), 0)
 
     def test_05(self):
-        self.assertEqual(float(dec.dec(15.236344)), 15.24)
+        self.assertEqual(float(dec.dec(12.125)), 12.13)
 
 
 class TestDdi(unittest.TestCase):

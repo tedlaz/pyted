@@ -1,6 +1,10 @@
 import utils as ul
 
 
+class Mis_exception(Exception):
+    pass
+
+
 dva = {}
 dva['meresMina'] = ul.dec(25, 0)
 dva['meresWeek'] = ul.dec(6, 0)
@@ -8,89 +12,22 @@ dva['oresWeek'] = ul.dec(40, 0)
 dva['pNyxta'] = ul.dec(0.25)
 dva['pArgia'] = ul.dec(0.75, 3)
 dva['pYperoria'] = ul.dec(0.50)
-print(dva)
+# print(dva)
 
 
-def calcmis(erg):
-    '''erg : {}
-    '''
-    ooo = ul.DicDec()
-    ooo['meres'] = erg['meres']
-    ooo['apodoxes'] = erg['apodoxes']
-    ooo['apodoxesn'] = erg['apodoxesn']
-    ooo['pika'] = erg['pika']
-    ooo['pikaErgazomenoy'] = erg['pikaErgazomenoy']
-    ooo['oresNyxta'] = erg.get('oresNyxta', 0)
-    ooo['argiesm'] = erg.get('argiesm', 0)
-    ooo['argieso'] = erg.get('argieso', 0)
-    ooo['yperor'] = erg.get('yperor', 1)
-    ooo['yperorNyxta'] = erg.get('yperorNyxta', 1)
-    ooo['yperorArgia'] = erg.get('yperorArgia', 1)
-    ooo['yperorArgiaNyxta'] = erg.get('yperorArgiaNyxta', 1)
-    if erg['typ'] == 'misthos':
-        ooo['apod'] = ooo['apodoxes'] * ooo['meres'] / dva['meresMina']
-        ooo['imeromisthio'] = ooo['apodoxes'] / dva['meresMina']
-        ooo['imeromisthion'] = ooo['apodoxesn'] / dva['meresMina']
-        ooo['oromisthio'] = ooo['imeromisthio'] * dva['meresWeek'] / dva['oresWeek']
-        ooo['oromisthion'] = ooo['imeromisthion'] * dva['meresWeek'] / dva['oresWeek']
-    elif erg['typ'] == 'imeromisthio':
-        ooo['apod'] = ooo['apodoxes'] * ooo['meres']
-        ooo['imeromisthio'] = ooo['apodoxes']
-        ooo['imeromisthion'] = ooo['apodoxesn']
-        ooo['oromisthio'] = ooo['imeromisthio'] * dva['meresWeek'] / dva['oresWeek']
-        ooo['oromisthion'] = ooo['imeromisthion'] * dva['meresWeek'] / dva['oresWeek']
-    elif erg['typ'] == 'oromisthio':
-        ooo['apod'] = ooo['apodoxes'] * ooo['ores']
-        ooo['oromisthio'] = ooo['apodoxes']
-        ooo['oromisthion'] = ooo['apodoxesn']
-    ooo['apodoxest'] = ooo['apod']
-    # Υπολογισμός προσαύξησης νυχτερινών
-    if 'oresNyxta' in erg:
-        ooo['apodNyxta'] = ooo['oresNyxta'] * ooo['oromisthion'] * dva['pNyxta']
-        ooo['apodoxest'] += ooo['apodNyxta']
-    # Υπολογισμός προσαύξησης αργιών σε μέρες
-    if 'argiesm' in erg:
-        ooo['apodArgiam'] = ooo['argiesm'] * ooo['imeromisthion'] * dva['pArgia']
-        ooo['apodoxest'] += ooo['apodArgiam']
-    # Υπολογισμός προσαύξησης αργιών σε ώρες
-    if 'argieso' in erg:
-        ooo['apodArgiao'] = ooo['argieso'] * ooo['oromisthion'] * dva['pArgia']
-        ooo['apodoxest'] += ooo['apodArgiao']
-    # Υπολογισμός υπερωριών
-    if 'yperor' in erg:
-        ooo['apodYperor'] = ooo['yperor'] * ooo['oromisthio']
-        ooo['apodoxest'] += ooo['apodYperor']
-        ooo['yperorPros'] = ooo['yperor'] * ooo['oromisthion'] * dva['pYperoria']
-        ooo['apodoxest'] += ooo['apodYperorPros']
-    if 'yperorArgia' in erg:
-        ooo['apodYperorArgia'] = ooo['yperorArgia'] * ooo['oromisthio']
-        ooo['apodoxest'] += ooo['apodYperorArgia']
-        ooo['apodYperorArgiaPros'] = ooo['yperorArgia'] * ooo['oromisthion'] * dva['pArgia']
-        ooo['apodoxest'] += ooo['apodYperorArgiaPros']
-        ooo['apodYperorArgPros'] = (ooo['apodYperorArgia'] +
-            ooo['apodYperorArgiaPros']) * dva['pYperoria']
-        ooo['apodoxest'] += ooo['apodYperorArgPros']
-    ooo['ika'] = ooo['apodoxest'] * ooo['pika']
-    ooo['ikaErgazomenoy'] = ooo['apodoxest'] * ooo['pikaErgazomenoy']
-    ooo['ikaErgodoti'] = ooo['ika'] - ooo['ikaErgazomenoy']
-    ooo['forologiteo'] = ooo['apodoxest'] - ooo['ikaErgazomenoy']
-    ooo['foros'] = 10
-    ooo['epidoma'] = 5
-    ooo['kratiseisErgazomenoy'] = ooo['ikaErgazomenoy'] + ooo['foros'] + ooo['epidoma']
-    ooo['kratiseisErgodoti'] = ooo['ikaErgodoti']
-    ooo['pliroteo'] = ooo['apodoxest'] - ooo['kratiseisErgazomenoy']
-    return ooo
-
-
-def calc_normal(erg):
+def normal(erg):
     ooo = ul.DicDec()
     des = {}
-    ooo['apo'] = erg['apodoxes']
+    ooo['t_mtyp'] = 'Αποδοχές περιόδου'
+    des['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    ooo['apo'] = erg['apo']
     des['apo'] = 'Τακτικές Αποδοχές'
-    ooo['apon'] = erg.get('apodoxesNomimes', erg['apodoxes'])
+    ooo['apon'] = erg.get('apon', erg['apo'])
     des['apon'] = 'Νόμιμες Αποδοχές'
-    ooo['meres'] = erg['meres']
+    ooo['meres'] = erg.get('meres', 0)
     des['meres'] = 'Ημέρες εργάσίας'
+    ooo['ores'] = erg.get('ores', 0)
+    des['ores'] = 'Ώρες εργάσίας (Για ωρομίσθιους)'
     ooo['argiam'] = erg.get('argiam', 0)
     des['argiam'] = 'Ημέρες Αργίας'
     ooo['nyxtao'] = erg.get('nyxtao', 0)
@@ -98,69 +35,114 @@ def calc_normal(erg):
     ooo['argiao'] = erg.get('argiao', 0)
     des['argiao'] = 'Ώρες Αργίας'
     if erg['typ'] == 'misthos':
-        ooo['typ'] = 1
-        des['typ'] = 'Μισθοτοί'
+        ooo['t_typ'] = 'Μισθωτός'
         ooo['isthio'] = ooo['apo'] / dva['meresMina']
         ooo['isthion'] = ooo['apon'] / dva['meresMina']
         ooo['oro'] = ooo['isthio'] * dva['meresWeek'] / dva['oresWeek']
         ooo['oron'] = ooo['isthion'] * dva['meresWeek'] / dva['oresWeek']
         ooo['apop'] = ooo['apo'] * ooo['meres'] / dva['meresMina']
     elif erg['typ'] == 'imeromisthio':
-        ooo['typ'] = 2
-        des['typ'] = 'Ημερομίσθιοι'
+        ooo['t_typ'] = 'Ημερομίσθιος'
         ooo['isthio'] = ooo['apo']
         ooo['isthion'] = ooo['apon']
         ooo['oro'] = ooo['isthio'] * dva['meresWeek'] / dva['oresWeek']
         ooo['oron'] = ooo['isthion'] * dva['meresWeek'] / dva['oresWeek']
         ooo['apop'] = ooo['apo'] * ooo['meres']
     elif erg['typ'] == 'oromisthio':
-        ooo['typ'] = 3
-        des['typ'] = 'Ωρομίσθιοι'
+        ooo['typ'] = 'Ωρομίσθιος'
         ooo['oro'] = ooo['apo']
         ooo['oron'] = ooo['apon']
-        ooo['apop'] = ooo['apodoxes'] * ooo['ores']
+        ooo['apop'] = ooo['apo'] * ooo['ores']
+    des['t_typ'] = 'Τύπος εργαζομένου'
     des['isthio'] = 'Ημερομίσθιο'
     des['isthion'] = 'Νόμιμο ημερομίσθιο'
     des['oro'] = 'Ωρομίσθιο'
     des['oron'] = 'Νόμιμο ωρομίσθιο'
     des['apop'] = 'Αποδοχές εργάσιμων ημερών'
-    ooo['apodoxes'] = ooo['apop']
-    des['apodoxes'] = 'Αποδοχές περιόδου'
+    ooo['apot'] = ooo['apop']
+    des['apot'] = 'Αποδοχές περιόδου'
     # Υπολογισμός προσαύξησης νυχτερινών
     if 'nyxtao' in erg:
         ooo['apodn'] = ooo['nyxtao'] * ooo['oron'] * dva['pNyxta']
         des['apodn'] = 'Προσαύξηση νυχτερινών ωρών'
-        ooo['apodoxes'] += ooo['apodn']
+        ooo['apot'] += ooo['apodn']
     # Υπολογισμός προσαύξησης αργιών σε μέρες
     if 'argiam' in erg:
         ooo['apoam'] = ooo['argiam'] * ooo['isthion'] * dva['pArgia']
         des['apoam'] = 'Προσαύξηση ημερών αργίας'
-        ooo['apodoxes'] += ooo['apoam']
+        ooo['apot'] += ooo['apoam']
     # Υπολογισμός προσαύξησης αργιών σε ώρες
     if 'argiao' in erg:
         ooo['apoao'] = ooo['argiao'] * ooo['oron'] * dva['pArgia']
         des['apoao'] = 'Προσαύξηση ωρών αργίας'
-        ooo['apodoxes'] += ooo['apoao']
+        ooo['apot'] += ooo['apoao']
     return ooo, des
 
 
-def calc_yperories(erg):
-    pass
+def yperories(erg):
+    cyp = ul.DicDec()
+    ylb = {}
+    cyp['t_mtyp'] = 'Υπερωρίες'
+    ylb['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    cyp['oro'] = erg['oro']
+    ylb['oro'] = 'Ωρομίσθιο'
+    cyp['oron'] = erg.get('oron', erg['oro'])
+    ylb['oron'] = 'Νόμιμο ωρομίσθιο'
+    cyp['ype'] = erg['ype']
+    ylb['ype'] = 'Υπερωρίες (ώρες)'
+    cyp['ypen'] = erg.get('ypen', 0)
+    ylb['ypen'] = 'Υπερωρίες για νυχτερινή προσαύξηση'
+    cyp['ypea'] = erg.get('ypea', 0)
+    ylb['ypea'] = 'Υπερωρίες για προσαύξηση αργιών'
+    # Υπολογισμός εδώ
+    cyp['ayp'] = cyp['ype'] * cyp['oro']
+    ylb['ayp'] = 'Αμοιβή υπερωριών'
+    cyp['aypn'] = cyp['ypen'] * cyp['oron'] * dva['pNyxta']
+    ylb['aypn'] = 'Προσαύξηση λόγω νυχτερινής απασχόλησης'
+    cyp['aypa'] = cyp['ypea'] * cyp['oron'] * dva['pArgia']
+    ylb['aypa'] = 'Προσαύξηση λόγω αργίας'
+    cyp['gaya'] = cyp['ayp'] + cyp['aypn'] + cyp['aypa']
+    ylb['gaya'] = 'Σύνολο για προσαύξηση υπερωρίας'
+    cyp['aypp'] = cyp['gaya'] * dva['pYperoria']
+    ylb['aypp'] = 'Προσαύξηση υπερωριακής απασχόλησης'
+    cyp['aypt'] = cyp['ayp'] + cyp['aypn'] + cyp['aypa'] + cyp['aypp']
+    ylb['aypt'] = 'Συνολικές αποδοχές υπερωριών'
+    return cyp, ylb
 
 
-def calc_astheneia(erg):
-    pass
+def astheneia(erg):
+    cas = ul.DicDec()
+    alb = {}
+    cas['t_mtyp'] = 'Αποδοχές ασθένειας'
+    alb['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    cas['isthio'] = erg['isthio']
+    alb['isthio'] = 'Ημερομίσθιο'
+    cas['ml3'] = erg.get('ml3', 0)
+    alb['ml3'] = 'Ημέρες ασθένειας <= 3'
+    cas['mm3'] = erg.get('mm3', 0)
+    alb['mm3'] = 'Ημέρες ασθένειας > 3'
+    cas['epi'] = erg.get('epi', 0)
+    alb['epi'] = 'Επίδομα ΙΚΑ'
+    # Υπολογισμός εδώ
+    cas['asl3'] = cas['isthio'] * cas['ml3'] / ul.dec(2)
+    alb['asl3'] = 'Αποδοχές ασθένειας <= 3'
+    cas['asm3'] = cas['isthio'] * cas['mm3']
+    alb['asm3'] = 'Αποδοχές ασθένειας > 3'
+    cas['asti'] = cas['asl3'] + cas['asm3']
+    alb['asti'] = 'Αποδοχές για ΙΚΑ'
+    return cas, alb
 
 
-def calc_ika(erg):
+def ika(erg):
     cio = ul.DicDec()
     ilb = {}
     cio['poso'] = erg['poso']
     ilb['poso'] = 'Ποσό για ΙΚΑ'
-    cio['pika'] = erg['pika']
+    cio['pika'] = erg['pika'] if erg['pika'] < 1 else erg['pika'] / 100.0
     ilb['pika'] = 'Ποσοστό ΙΚΑ'
-    cio['pikae'] = erg['pikae']
+    cio['pikae'] = erg['pikae'] if erg['pikae'] < 1 else erg['pikae'] / 100.0
     ilb['pikae'] = 'Ποσοστό ΙΚΑ εργαζομένου'
+    # Calculate here ...
     cio['pikar'] = cio['pika'] - cio['pikae']
     ilb['pikar'] = 'Ποσοστό ΙΚΑ εργoδότη'
     cio['ika'] = cio['poso'] * cio['pika']
@@ -172,12 +154,164 @@ def calc_ika(erg):
     return cio, ilb
 
 
-class misth():
-    def __init__(self):
-        pass
+def doro_pasxa(erg):  # tmeres, apt, apv, tapv=0):
+    '''
+    tmeres : Total days of period
+    apt    : Τύπος αποδοχών (1:Μισθός, 2:Ημερομίσθιο, 3:Ωρομίσθιο)
+    apv    : Αποδοχές (μισθός, ημερομίσθιο, ωρομίσθιο)
+    '''
+    cdp = ul.DicDec()
+    ldp = {}
+    cdp['t_mtyp'] = 'Δώρο Πάσχα'
+    ldp['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    cdp['merest'] = erg['merest'] if erg['merest'] <= 100 else 100
+    ldp['merest'] = 'Ημέρες εργασίας 1/1-30/4'
+    cdp['apo'] = erg['apo']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
+    ldp['apo'] = 'Αποδοχές'
+    pros = ul.dec(1.0 + 1.0 / 24.0, 6)  # Συντελεστής 1,04166
+    if erg['typ'] == 'misthos':
+        cdp['t_typ'] = 'Μισθωτός'
+        # Μισθός Χ ημερολογιακές ημέρες / 240 (4*30*2) Χ 1,04166
+        # Μισθός Χ Μέρες ΙΚΑ / 200 (4*25*2) Χ 1,04166
+        exp = (f"Μισθός({cdp['apo']}) Χ Μέρες ΙΚΑ({cdp['merest']})"
+               " / 200 Χ 1,04166")
+        cdp['dpas'] = cdp['apo'] * cdp['merest'] / ul.dec(200) * pros
+    elif erg['typ'] == 'imeromisthio':
+        cdp['t_typ'] = 'Ημερομίσθιος'
+        #  Ημερομίσθιο Χ εργάσιμες ημέρες / 6,5 Χ 1,04166
+        exp = (f"Ημερομίσθιο({cdp['apo']}) Χ εργάσιμες ημέρες"
+               f"({cdp['merest']}) / 6,5 Χ 1,04166")
+        meresDoroy = cdp['merest'] / ul.dec(6.5)
+        if meresDoroy > 15:
+            meresDoroy = ul.dec(15)
+        cdp['dpas'] = cdp['apo'] * meresDoroy * pros
+    elif erg['typ'] == 'oromisthio':
+        cdp['t_typ'] = 'Ωρομίσθιος'
+        # αποδοχές από 01-Ιανουαρίου έως 30-Απριλίου / 8 Χ 1,04166
+        exp = f"Aποδοχές από 1/1 έως 30/4 ({cdp['apo']}) / 8 Χ 1,04166"
+        cdp['dpas'] = cdp['apo'] / ul.dec(8) * pros
+    else:
+        raise Mis_exception('function doro_pasxa Error !!')
+    ldp['t_typ'] = 'Τύπος εργαζομένου'
+    ldp['dpas'] = 'Δώρο Πάσχα'
+    print(exp)
+    return cdp, ldp
 
-    def calc_normal(self):
-        pass
+
+def doro_xristoygena(erg):
+    '''
+    tmeres : Total days of period
+    apt    : Τύπος αποδοχών (1:Μισθός, 2:Ημερομίσθιο, 3:Ωρομίσθιο)
+    apv    : Αποδοχές (μισθός, ημερομίσθιο, ωρομίσθιο)
+    '''
+    cdx = ul.DicDec()
+    ldx = {}
+    cdx['t_mtyp'] = 'Δώρο Χριστουγέννων'
+    ldx['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    cdx['merest'] = erg['merest'] if erg['merest'] <= 200 else 200
+    ldx['merest'] = 'Ημέρες εργασίας 1/5-31/12'
+    cdx['apo'] = erg['apo']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
+    ldx['apo'] = 'Αποδοχές'
+    pros = ul.dec(1.0 + 1.0 / 24.0, 6)
+    if erg['typ'] == 'misthos':
+        cdx['t_typ'] = 'Μισθωτός'
+        # Μισθός Χ ημερολογιακές ημέρες / 237,5 (25*19/2) Χ 1,04166
+        # Μισθός Χ Μέρες ΙΚΑ / 200 (8*25) Χ 1,04166
+        exp = (f"Μισθός({cdx['apo']}) Χ Μέρες ΙΚΑ({cdx['merest']}) "
+               "/ 200 Χ 1,04166")
+        cdx['dxri'] = cdx['apo'] * cdx['merest'] / ul.dec(200) * pros
+    elif erg['typ'] == 'imeromisthio':
+        cdx['t_typ'] = 'Ημερομίσθιος'
+        # Ημερομίσθιο Χ εργάσιμες ημέρες / 8 Χ 1,04166
+        exp = (f"Ημερομίσθιο({cdx['apo']}) Χ εργάσιμες ημέρες"
+               f"({cdx['merest']}) / 8 Χ 1,04166")
+        meresDoroy = cdx['merest'] / ul.dec(8)
+        if meresDoroy > 25:
+            meresDoroy = ul.dec(25)
+        cdx['dxri'] = cdx['apo'] * cdx['merest'] / ul.dec(8) * pros
+    elif erg['typ'] == 'oromisthio':
+        cdx['t_typ'] = 'Ωρομίσθιος'
+        # αποδοχές από 01-Mαΐου έως 31-Δεκεμβρίου / 8 Χ 1,04166
+        exp = f"Aποδοχές από 1/5 έως 31/12 ({cdx['apo']}) / 8 Χ 1,04166"
+        cdx['dxri'] = cdx['apo'] / ul.dec(8) * pros
+    else:
+        raise Mis_exception('function doro_xristoygena Error!!')
+    ldx['t_typ'] = 'Τύπος εργαζομένου'
+    ldx['dxri'] = 'Δώρο Χριστουγέννων'
+    print(exp)
+    return cdx, ldx
+
+
+def epidoma_adeias(erg):
+    '''
+    tmeres : Total days of period
+    apt    : Τύπος αποδοχών (1:Μισθός, 2:Ημερομίσθιο, 3:Ωρομίσθιο)
+    apv    : Αποδοχές (μισθός, ημερομίσθιο, ωρομίσθιο)
+    '''
+    cea = ul.DicDec()
+    lea = {}
+    cea['t_mtyp'] = 'Επίδομα αδείας'
+    lea['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    cea['merest'] = erg['merest'] if erg['merest'] <= 200 else 200
+    lea['merest'] = 'Ημέρες εργασίας'
+    cea['apo'] = erg['apo']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
+    lea['apo'] = 'Αποδοχές'
+    if erg['typ'] == 'misthos':
+        # Μέρες ΙΚΑ / 25 * Μισθός / 25
+        meresea = ul.dec(cea['merest'] / ul.dec(12.5), 6)
+        if meresea > 12.5:
+            meresea = ul.dec(12.5)
+        exp = f"Μισθός({cea['apo']}) * Μέρες Επίδ({meresea}) / 25"
+        cea['aea'] = meresea * cea['apo'] / ul.dec(25)
+    elif erg['typ'] == 'imeromisthio':
+        # Μέρες εργάσιμες / 26 * 2
+        meresea = ul.dec(cea['merest'] / ul.dec(12.5), 6)
+        if meresea > 13:
+            meresea = ul.dec(13)
+        exp = f"Ημερομίσθιο({cea['apo']}) * Μέρες Επίδ({meresea})"
+        cea['aea'] = meresea * cea['apo']
+    elif erg['typ'] == 'oromisthio':
+        raise Mis_exception('Not implemented yet')
+        exp = f"To be fixed"
+        cea['aea'] = cea['apo'] / ul.dec(8)
+    else:
+        raise Mis_exception('Error here !!')
+    lea['aea'] = 'Επίδομα Αδείας'
+    print(exp)
+    return cea, lea
+
+
+def doro_pasxa_test(erg):  # tmeres, apt, apv, tapv=0):
+    '''
+    tmeres : Total days of period
+    apt    : Τύπος αποδοχών (1:Μισθός, 2:Ημερομίσθιο, 3:Ωρομίσθιο)
+    apv    : Αποδοχές (μισθός, ημερομίσθιο, ωρομίσθιο)
+    '''
+    cdp = ul.DicDec()
+    ldp = {}
+    cdp['t_mtyp'] = 'Δώρο Πάσχα'
+    ldp['t_mtyp'] = 'Τύπος μισθοδοσίας'
+    cdp['apot'] = erg['apot']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
+    ldp['apot'] = 'Σύνολο Αποδοχών από 1/1 - 30/4'
+    pros = ul.dec(1.0 + 1.0 / 24.0, 6)  # Συντελεστής 1,04166
+    if erg['typ'] == 'misthos':
+        # Μισθός Χ ημερολογιακές ημέρες / 240 (4*30*2) Χ 1,04166
+        # Μισθός Χ Μέρες ΙΚΑ / 200 (4*25*2) Χ 1,04166
+        cdp['t_typ'] = 'Μισθωτός'
+        cdp['dpas'] = cdp['apot'] / ul.dec(8) * pros
+    elif erg['typ'] == 'imeromisthio':
+        cdp['t_typ'] = 'Ημερομίσθιος'
+        #  Ημερομίσθιο Χ εργάσιμες ημέρες / 6,5 Χ 1,04166
+        cdp['dpas'] = cdp['apot'] * ul.dec(0.15384, 5) * pros
+    elif erg['typ'] == 'oromisthio':
+        cdp['t_typ'] = 'Ωρομίσθιος'
+        # αποδοχές από 01-Ιανουαρίου έως 30-Απριλίου / 8 Χ 1,04166
+        cdp['dpas'] = cdp['apo'] / ul.dec(8) * pros
+    else:
+        raise Mis_exception('function doro_pasxa Error !!')
+    ldp['t_typ'] = 'Τύπος εργαζομένου'
+    ldp['dpas'] = 'Δώρο Πάσχα'
+    return cdp, ldp
 
 
 if __name__ == '__main__':
@@ -200,20 +334,33 @@ if __name__ == '__main__':
             'oresNyxta': 8,
             'argieso': 5,
             'yperorArgia': 4}
-    aaa = calcmis(ser2)
-    ul.print_dic(aaa)
 
     ter1 = {'typ': 'imeromisthio',
             'apodoxes': 21.19,
-            # 'apodoxesNomimes': 50,
+            'apodoxesNomimes': 17,
             'meres': 25,
             # 'argiam': 1,
             # 'nyxtao': 6,
             # 'argiao': 1,
             'poso': 100.36,
-            'pika': .45,
-            'pikae': .15,
+            'pika': 45,
+            'pikae': 15,
             }
-    c01 = calc_normal(ter1)
+    c01 = normal(ter1)
     ul.print_dicl(c01)
-    ul.print_dicl(calc_ika(ter1))
+    ul.print_dicl(ika(ter1))
+    ffb = {'ype': 2, 'oro': 10.5, 'oron': 7.5, 'ypen': 0, 'ypea': 2}
+    ffc = {'ype': 4, 'oro': 19.2, 'oron': 14.4, 'ypen': 1, 'ypea': 4}
+    ul.print_dicl(yperories(ffb))
+    ast = {'isthio': 80, 'ml3': 3, 'mm3': 6, 'epi': 350}
+    ul.print_dicl(astheneia(ast))
+    dps1 = {'typ': 'misthos', 'merest': 26, 'apo': 600}
+    dps2 = {'typ': 'imeromisthio', 'merest': 25, 'apo': 38}
+    dps3 = {'typ': 'oromisthio', 'merest': 360, 'apo': 600}
+    ul.print_dicl(doro_pasxa(dps1))
+    ul.print_dicl(doro_xristoygena(dps3))
+    # dp21 = {'typ': 'imeromisthio', 'apot': 750}
+    # ul.print_dicl(doro_pasxa_test(dp21))
+    dea01 = {'typ': 'misthos', 'merest': 25, 'apo': 600}
+    dea02 = {'typ': 'imeromisthio', 'merest': 200, 'apo': 30}
+    ul.print_dicl(epidoma_adeias(dea01))
