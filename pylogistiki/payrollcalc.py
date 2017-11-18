@@ -290,34 +290,81 @@ def epidoma_adeias(erg):
     return cea, lea
 
 
-def doro_pasxa_test(erg):  # tmeres, apt, apv, tapv=0):
+def apozimiosi_mines(xronia):
     '''
-    tmeres : Total days of period
-    apt    : Τύπος αποδοχών (1:Μισθός, 2:Ημερομίσθιο, 3:Ωρομίσθιο)
-    apv    : Αποδοχές (μισθός, ημερομίσθιο, ωρομίσθιο)
+    Μήνες για αποζημίωση απόλυσης μισθωτών
+    xronia : Χρόνια εργασίας στον εργοδότη
     '''
-    cdp = ul.DicDec()
-    ldp = {}
-    cdp['t_mtyp'] = 'Δώρο Πάσχα'
-    ldp['t_mtyp'] = 'Τύπος μισθοδοσίας'
-    cdp['apot'] = erg['apot']  # Μισθός/ημερομίσθιο/συνολικές αποδοχές(ωρομισθ)
-    ldp['apot'] = 'Σύνολο Αποδοχών από 1/1 - 30/4'
-    pros = ul.dec(1.0 + 1.0 / 24.0, 6)  # Συντελεστής 1,04166
-    if erg['typ'] == 'misthos':
-        # Μισθός Χ ημερολογιακές ημέρες / 240 (4*30*2) Χ 1,04166
-        # Μισθός Χ Μέρες ΙΚΑ / 200 (4*25*2) Χ 1,04166
-        cdp['t_typ'] = 'Μισθωτός'
-        cdp['dpas'] = cdp['apot'] / ul.dec(8) * pros
-    elif erg['typ'] == 'imeromisthio':
-        cdp['t_typ'] = 'Ημερομίσθιος'
-        #  Ημερομίσθιο Χ εργάσιμες ημέρες / 6,5 Χ 1,04166
-        cdp['dpas'] = cdp['apot'] * ul.dec(0.15384, 5) * pros
-    elif erg['typ'] == 'oromisthio':
-        cdp['t_typ'] = 'Ωρομίσθιος'
-        # αποδοχές από 01-Ιανουαρίου έως 30-Απριλίου / 8 Χ 1,04166
-        cdp['dpas'] = cdp['apo'] / ul.dec(8) * pros
+    # xronia must be integer
+    xronia = int(xronia)
+    mines = 0
+    if xronia < 1:
+        mines = 0
+    elif xronia >= 1 and xronia < 4:
+        mines = 2
+    elif xronia >= 4 and xronia < 6:
+        mines = 3
+    elif xronia >= 6 and xronia < 8:
+        mines = 4
+    elif xronia >= 8 and xronia < 10:
+        mines = 5
+    elif xronia < 11:
+        mines = 6
+    elif xronia < 12:
+        mines = 7
+    elif xronia < 13:
+        mines = 8
+    elif xronia < 14:
+        mines = 9
+    elif xronia < 15:
+        mines = 10
+    elif xronia < 16:
+        mines = 11
+    elif xronia < 17:
+        mines = 12
+    elif xronia < 29:
+        mines = 12 + (xronia % 17 + 1)
     else:
-        raise Mis_exception('function doro_pasxa Error !!')
-    ldp['t_typ'] = 'Τύπος εργαζομένου'
-    ldp['dpas'] = 'Δώρο Πάσχα'
-    return cdp, ldp
+        mines = 24
+    return mines
+
+
+def apozimiosi_meres(xronia):
+    '''
+    Μέρες για αποζημίωση απόλυσης ημερομισθίων
+    xronia : Χρόνια εργασίας στον εργοδότη
+    '''
+    meres = 0
+    if xronia < 1:
+        meres = 0
+    elif xronia >= 1 and xronia < 2:
+        meres = 7
+    elif xronia >= 2 and xronia < 5:
+        meres = 15
+    elif xronia >= 5 and xronia < 10:
+        meres = 30
+    elif xronia >= 10 and xronia < 15:
+        meres = 60
+    elif xronia >= 15 and xronia < 20:
+        meres = 100
+    elif xronia >= 20 and xronia < 25:
+        meres = 120
+    elif xronia >= 25 and xronia < 30:
+        meres = 145
+    elif xronia >= 30:
+        meres = 165
+    return meres
+
+
+def apozimiosi_apol(xronia, apodoxes, misthotos=True, proeidopoiisi=False):
+    '''
+    Υπολογισμός αποζημίωσης απόλυσης
+    '''
+    if misthotos:
+        apoz = apodoxes * 14.0 / 12.0 * apozimiosi_mines(xronia)
+    else:
+        apoz = apodoxes * 14.0 / 12.0 * apozimiosi_meres(xronia)
+    if proeidopoiisi:
+        apoz = apoz / 2
+    return ul.dec(apoz)
+

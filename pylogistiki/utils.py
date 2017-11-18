@@ -45,6 +45,8 @@ def dec2gr(poso, zeroAsSpace=False):
 
 def iso_date_from_greek(dat):
     day, month, year = dat.split('/')
+    day = day if len(day) == 2 else '0%s' % day
+    month = month if len(month) == 2 else '0%s' % month
     return '%s-%s-%s' % (year, month, day)
 
 
@@ -165,10 +167,14 @@ def print_dic(adict):
     print('=====================================================')
 
 
-def print_dicl(data):
+def print_dicl(data, width1='40', width2='>12'):
+    fstr = '{:%s}:{:%s}' % (width1, width2)
+    le1 = int(width1.replace('<', '').replace('>', '').replace('^', ''))
+    le2 = int(width2.replace('<', '').replace('>', '').replace('^', ''))
+    print('')
     for key in data[0]:
-        print('%-40s:%12s' % (data[1][key], data[0][key]))
-    print('=====================================================')
+        print(fstr.format(data[1][key], data[0][key]))
+    print('=' * (le1 + le2 + 1))
 
 
 if __name__ == '__main__':

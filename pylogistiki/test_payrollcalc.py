@@ -1,4 +1,4 @@
-"""TESTING PAYROLL"""
+"""TESTING payrollcalc.py"""
 import unittest
 import payrollcalc as pc
 import utils as ul
@@ -71,3 +71,31 @@ class TestPayroll(unittest.TestCase):
     def test_epidoma_adeias(self):
         dea01 = {'typ': 'misthos', 'merest': 25, 'apo': 600}
         self.assertEqual(pc.epidoma_adeias(dea01)[0]['aea'], 48)
+
+    def test_apozimiosi_mines(self):
+        self.assertEqual(pc.apozimiosi_mines(0), 0)
+        self.assertEqual(pc.apozimiosi_mines(1), 2)
+        self.assertEqual(pc.apozimiosi_mines(2), 2)
+        self.assertEqual(pc.apozimiosi_mines(5), 3)
+        self.assertEqual(pc.apozimiosi_mines(13), 9)
+        self.assertEqual(pc.apozimiosi_mines(18), 14)
+        self.assertEqual(pc.apozimiosi_mines(19), 15)
+        self.assertEqual(pc.apozimiosi_mines(20), 16)
+        self.assertEqual(pc.apozimiosi_mines(27), 23)
+        self.assertEqual(pc.apozimiosi_mines(28), 24)
+        self.assertEqual(pc.apozimiosi_mines(35), 24)
+
+    def test_apozimiosi_meres(self):
+        self.assertEqual(pc.apozimiosi_meres(0), 0)
+        self.assertEqual(pc.apozimiosi_meres(1), 7)
+        self.assertEqual(pc.apozimiosi_meres(2), 15)
+        self.assertEqual(pc.apozimiosi_meres(16), 100)
+        self.assertEqual(pc.apozimiosi_meres(24), 120)
+        self.assertEqual(pc.apozimiosi_meres(29), 145)
+        self.assertEqual(pc.apozimiosi_meres(30), 165)
+        self.assertEqual(pc.apozimiosi_meres(35), 165)
+
+    def test_apozimiosi_apol(self):
+        self.assertEqual(pc.apozimiosi_apol(2, 630), ul.dec(1470))
+        self.assertEqual(pc.apozimiosi_apol(20, 630), ul.dec(11760))
+
