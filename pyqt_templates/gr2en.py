@@ -1,6 +1,6 @@
 import os
 TGR = "αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩςάέήίϊΐόύϋΰώΆΈΉΊΪΌΎΫΏ"
-TEN = "abgdezi8iklmn3oprstyfx4wABGDEZH8IKLMN3OPRSTYFX4WsaeiiiioyyywAEHIIOYYW"
+TEN = "abgdezh8iklmn3oprstyfx4wABGDEZH8IKLMN3OPRSTYFX4WsaeiiiioyyywAEHIIOYYW"
 counter = 0
 
 
