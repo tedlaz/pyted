@@ -1,7 +1,7 @@
 import utils as ul
 
 
-class Mis_exception(Exception):
+class MisException(Exception):
     pass
 
 
@@ -199,7 +199,7 @@ def doro_pasxa(erg):  # tmeres, apt, apv, tapv=0):
         exp = f"Aποδοχές από 1/1 έως 30/4 ({cdp['apo']}) / 8 Χ 1,04166"
         cdp['dpas'] = cdp['apo'] / ul.dec(8) * pros
     else:
-        raise Mis_exception('function doro_pasxa Error !!')
+        raise MisException('function doro_pasxa Error !!')
     ldp['t_typ'] = 'Τύπος εργαζομένου'
     ldp['dpas'] = 'Δώρο Πάσχα'
     # print(exp)
@@ -244,7 +244,7 @@ def doro_xrist(erg):
         exp = f"Aποδοχές από 1/5 έως 31/12 ({cdx['apo']}) / 8 Χ 1,04166"
         cdx['dxri'] = cdx['apo'] / ul.dec(8) * pros
     else:
-        raise Mis_exception('function doro_xristoygena Error!!')
+        raise MisException('function doro_xristoygena Error!!')
     ldx['t_typ'] = 'Τύπος εργαζομένου'
     ldx['dxri'] = 'Δώρο Χριστουγέννων'
     # print(exp)
@@ -280,11 +280,11 @@ def epidoma_adeias(erg):
         exp = f"Ημερομίσθιο({cea['apo']}) * Μέρες Επίδ({meresea})"
         cea['aea'] = meresea * cea['apo']
     elif erg['typ'] == 'oromisthio':
-        raise Mis_exception('Not implemented yet')
+        raise MisException('Not implemented yet')
         exp = f"To be fixed"
         cea['aea'] = cea['apo'] / ul.dec(8)
     else:
-        raise Mis_exception('Error here !!')
+        raise MisException('Error here !!')
     lea['aea'] = 'Επίδομα Αδείας'
     # print(exp)
     return cea, lea

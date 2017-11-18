@@ -2,7 +2,7 @@ from utils import dec
 from utils import dec2gr as d2g
 
 
-class Foros_exception(Exception):
+class ForosException(Exception):
     pass
 
 
@@ -12,7 +12,7 @@ def foros_eisodimatos(xrisi, poso, paidia=0, misthotos=True):
         result['xrisi'] = xrisi
         return result
     else:
-        raise Foros_exception('Δεν υπάρχει συνάρτηση φόρου για το %s' % xrisi)
+        raise ForosException('Δεν υπάρχει συνάρτηση φόρου για το %s' % xrisi)
 
 
 def foros_eis201617(poso, paidia, misthotos=True):
@@ -146,7 +146,7 @@ def ek_ee(xrisi, poso, paidia=0, oldposo=0, oldprokataboli=0, tep=False):
     katharo = poso - asfalisi
     foros = foros_eisodimatos(xrisi, float(katharo), paidia, False)
     prokataboli = foros
-    eisfora = foros_ea(float(katharo))
+    eisfora = foros['eea']
     tcost = dec(asfalisi + foros + eisfora + tel)
     ptc = dec(tcost / dec(poso) * dec(100))
     ektam = dec(tcost + prokataboli - dec(oldprokataboli))
@@ -200,5 +200,5 @@ def printfor(xrisi, poso_apo, poso_eos, bima=100, misthotos=True):
 
 if __name__ == '__main__':
     print(d2g(dstr(11213.64, [100, 200, 700, 0.01], [0, 10, 30, 45])))
-    printfor(2017, 6500, 50000, 500)
+    # printfor(2017, 6500, 50000, 500)
     print(foros_eisodimatos(2017, 40000, 3))
