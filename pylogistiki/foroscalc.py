@@ -201,4 +201,4 @@ def printfor(xrisi, poso_apo, poso_eos, bima=100, misthotos=True):
 if __name__ == '__main__':
     print(d2g(dstr(11213.64, [100, 200, 700, 0.01], [0, 10, 30, 45])))
     # printfor(2017, 6500, 50000, 500)
-    print(foros_eisodimatos(2017, 40000, 3))
+    print(foros_eisodimatos(2017, 32458, 3))
