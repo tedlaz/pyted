@@ -23,3 +23,5 @@ https://thejazzgroove.s3.amazonaws.com/file/thejazzgroove-aac-64.pls
 http://www.bigblueswing.com/radio/bigblueswing-64.m3u
 #EXTINF:-1,Alpha 98.9
 http://194.219.46.2:8080/live
+#EXTINF:jazzymood
+http://streaming.radionomy.com/jazzymood?lang=en-US%2cen%3bq%3d0.9
