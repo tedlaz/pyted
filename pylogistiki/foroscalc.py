@@ -19,29 +19,14 @@ def foros_eis201617(poso, paidia, misthotos=True):
     '''
     Φόρος Έισοδήματος
     '''
-    foros = 0
-    foros = dstr(poso, [20000, 10000, 10000, 0.01], [22, 29, 37, 45])
+    # foros = 0
+    foros = dstr(poso, [20000, 10000, 10000], [22, 29, 37, 45])
     ekptosi_paidia = [1900, 1950, 2000, 2100]
     meiosi = 2100 if paidia > 3 else ekptosi_paidia[paidia]
-    # if paidia == 0:
-    #     meiosi = 1900
-    # elif paidia == 1:
-    #     meiosi = 1950
-    # elif paidia == 2:
-    #     meiosi = 2000
-    # else:
-    #     meiosi = 2100
-    if poso > 20000:
-        meiosi -= (poso - 20000) / 1000.0 * 10.0
-    if meiosi < 0:
-        meiosi = 0
-    if not misthotos:  # Den dikaioytai meiosi ...
-        meiosi = 0
-    # Εάν η μείωση είναι μεγαλύτερη από το φόρο ο φόρος μηδενίζεται
-    if meiosi >= foros:
-        forosa = dec(0)
-    else:
-        forosa = foros - dec(meiosi)
+    meiosi -= ((poso - 20000) / 1000.0 * 10.0) if poso > 20000 else 0
+    meiosi = 0 if meiosi < 0 else meiosi
+    meiosi = meiosi if misthotos else 0
+    forosa = dec(0) if meiosi >= foros else foros - dec(meiosi)
     dic = {'forologiteo': dec(poso),
            'paidia': paidia,
            'typos': 'Μισθωτοί' if misthotos else 'Λοιποί',
@@ -55,7 +40,7 @@ def foros_eis201617(poso, paidia, misthotos=True):
         forosp = forosa - ekptosi
         dic['ekptosi'] = ekptosi
         dic['forosp'] = forosp
-    eeakli = [12000, 8000, 10000, 10000, 25000, 135000, 0.01]
+    eeakli = [12000, 8000, 10000, 10000, 25000, 135000]
     eeapos = [0, 2.2, 5, 6.5, 7.5, 9, 10]
     dic['eea'] = dstr(poso, eeakli, eeapos)
     dic['katharo'] = dic['forologiteo'] - dic['forosp'] - dic['eea']
@@ -78,13 +63,16 @@ def foros_ak(poso, xrisi=2016):
     return dec(foros)
 
 
-def dstr(poso, distribution=[100, 200, 700, 0.01], perc=[0, 10, 30, 45]):
-    '''Function to
-       distribute poso
-       and calculate percetages on
+def dstr(poso, distribution=[100, 200, 700], perc=[0, 10, 30, 45]):
     '''
+    distribution : [v1, v2, ...vn] -> [f1, f2, ..fn, fn+1]
+    perc         : [p1, p2, ...pn, p(n+1)]
+    Γίνεται μοίρασμα σε ποσά με βάση το distribution και το παραπάνω
+    ποσό απο το vn γίνεται fn+1 και πάνω εκεί υπολογίζονται τα ποσοστά
+    '''
+    assert len(distribution) + 1 == len(perc)
     kat = []
-    for i, el in enumerate(distribution):
+    for el in distribution:
         if poso > el:
             kat.append(el)
             poso = poso - el
@@ -92,9 +80,10 @@ def dstr(poso, distribution=[100, 200, 700, 0.01], perc=[0, 10, 30, 45]):
             kat.append(poso)
             poso = 0
             break
+    # Εδώ βάζουμε το ποσό που έχει μένει υπόλοιπο
     if poso > 0:
-        kat[i] += poso
-    final = [kat[i] * perc[i] / 100 for i in range(len(kat))]
+        kat.append(poso)
+    final = [kat[i] * perc[i] / 100.0 for i in range(len(kat))]
     # return kat, final, sum(kat), sum(final)
     return dec(sum(final))
 
@@ -199,6 +188,6 @@ def printfor(xrisi, poso_apo, poso_eos, bima=100, misthotos=True):
 
 
 if __name__ == '__main__':
-    print(d2g(dstr(11213.64, [100, 200, 700, 0.01], [0, 10, 30, 45])))
-    # printfor(2017, 6500, 50000, 500)
+    print(d2g(dstr(2000, [100, 200, 700], [0, 10, 30, 45])))
+    printfor(2017, 6500, 50000, 500)
     print(foros_eisodimatos(2017, 32458, 3))
