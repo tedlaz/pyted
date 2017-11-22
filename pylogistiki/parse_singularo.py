@@ -5,6 +5,11 @@ import book
 
 
 def lnv(line, positions, chars):
+    """
+    Έλεγχος αν σε συγκεκριμένες θέσεις ενός string υπόρχουν συγκεκριμένα chars
+    positions : λίστα ακεραίων με τις θέσεις που ψάχνουμε
+    chars: string με τους ατίστοιχουσ χαρακτήρες που ψάχνουμε
+    """
     assert len(positions) == len(chars)
     for i, position in enumerate(positions):
         if len(line) <= position:

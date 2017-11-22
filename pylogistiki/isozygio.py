@@ -128,4 +128,4 @@ if __name__ == "__main__":
     # print_ledger(ledger1, lmoi1)
     # check_integrity(ledger1)
     # print(make_totals(ledger1, period='m'))
-    print_is('el2017c.txt', period='m3', only_yp=True)
+    print_is('el2017.txt', period='m3', only_yp=True)

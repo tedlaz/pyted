@@ -58,3 +58,73 @@ def parseel(elfile, encoding='WINDOWS-1253'):
         print(u'Το αρχείο με το ημερολόγιο λογιστικής είναι κενό ή λανθασμένο')
         return None
     return d_lmo, d_tr
+
+
+es = [u'ΤΠΛ', u'ΑΠΛ', u'ΤΠΥ', u'ΑΠΥ', u'ΠΙΣ', u'ΤΠΕ', u'ΕΠΛ']
+ej = [u'ΛΟΙΠΑ', u'ΤΑΓ', u'ΠΑΓ', u'ΠΤΕ']
+
+
+def typosee(typ):
+    fval = 'ER'
+    if typ in es:
+        fval = 'ΕΣ'
+    elif typ in ej:
+        fval = 'ΕΞ'
+    if typ == 'ΠΑΓ':
+        fval = 'ΠΑ'
+    return fval
+
+
+def parseee(eefile, encoding='WINDOWS-1253'):
+    tid = 0
+    dat = ''
+    teg = ''
+    typ = 0
+    par = ''
+    afm = ''
+    lmo = ''
+    aji = 0
+    fpa = 0
+    eee = 1
+    a_eet = []
+    with open(eefile, encoding=encoding) as afile:
+        for line in afile:
+            # first check if linesize > 152
+            if 'Κινήσεις της' == line[2:14]:
+                dat = ul.iso_date_from_greek(line[32:42])
+            tid = ul.remove_simple_quotes(line[1:8])
+            if ul.isNum(tid):
+                teg = ul.remove_simple_quotes(line[9:34])
+                typ = typosee(teg)
+                par = ul.remove_simple_quotes(line[35:66])
+                afm = line[67:76]
+                if ul.isNum(afm):
+                    lmo = ul.remove_simple_quotes(line[77:91])
+                else:
+                    afm = ''
+                    lmo = ul.remove_simple_quotes(line[67:91])
+                aji = ul.dec(ul.iso_number_from_greek(line[92:112]))
+                fpa = ul.dec(ul.iso_number_from_greek(line[113:133]))
+                tot = aji + fpa
+                # if float(aji) < 0:
+                #     maji = float(aji) * -1
+                #     mfpa = float(fpa) * -1
+                #     note = 'credit'
+                # else:
+                #     maji = aji
+                #     mfpa = fpa
+                #     note = 'normal'
+                a_eet.append((tid, dat, typ, par, lmo, aji, fpa, tot))
+    return a_eet
+
+
+def printee(afile):
+    data = parseee(afile)
+    tst = '%-5s %10s %2s %-20s %-30s %12s %12s %12s'
+    for el in data:
+        print(tst % el)
+
+
+if __name__ == '__main__':
+    file = '/home/tedlaz/pelates/2017/c/ee2017c.txt'
+    printee(file)
