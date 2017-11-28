@@ -5,7 +5,7 @@ import os
 import zipfile
 ENC = 'CP1253'  # Εναλλακτικά 'ISO8859-7'
 SPL = '|'  # Splitter πεδίων
-LIN = '\r\n'
+LIN = '\r\n'  # Splitter γραμμών
 OSYKFILE = os.path.join(os.path.dirname(__file__), 'osyk.zip')
 
 
@@ -21,6 +21,16 @@ class Osyk():
                 self._kpk = kpkf.read().decode(ENC)
             with osyk.open('dn_kadeidkpk.txt') as kekf:
                 self._kek = kekf.read().decode(ENC)
+            self.index_kad()
+
+    def index_kad(self):
+        self._kadi = {}
+        for line in self._kad.split(LIN):
+            try:
+                kad, kadp = line.split(SPL)
+                self._kadi[kad] = kadp
+            except Exception:
+                pass
 
     def find_kad(self, per):
         """Find kad by description"""
@@ -54,3 +64,4 @@ if __name__ == '__main__':
     # print(osyk._kad)
     print(osyk.find_kad('5540'))
     print(osyk.find_eid('724070'))
+    print(osyk._kadi['5540'])
