@@ -1,0 +1,4 @@
+#!/bin/bash
+# Disable screen idle
+xset s off -dpms
+

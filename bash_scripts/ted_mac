@@ -1,0 +1,3 @@
+#!/bin/bash
+sleep 4s
+gksudo --description "Change mac address" -- macchanger -r enp37s0

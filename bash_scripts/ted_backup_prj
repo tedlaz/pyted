@@ -1,0 +1,2 @@
+#!/bin/bash
+rdiff-backup /home/tedlaz/prj alarm@192.168.1.15::/mnt/data/backup/prj 

@@ -1,0 +1,3 @@
+#!/bin/bash
+#Set second keyboard language to Greek and toggle with left_alt+shift
+setxkbmap -layout us,el -variant -option grp:alt_shift_toggle,terminate:ctrl_alt_bksp &

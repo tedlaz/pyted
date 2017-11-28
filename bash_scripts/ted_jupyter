@@ -1,0 +1,4 @@
+#!/bin/bash
+source ~/venv/vdeep/bin/activate
+jupyter notebook $1
+

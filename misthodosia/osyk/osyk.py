@@ -45,10 +45,9 @@ def eid_find(eid, fname='dn_eid.txt'):
     returns
       tuple (Κωδικός ειδικότητας, περιγραφή ειδικότητας)
     '''
-    eid = '%s' % eid
     for lin in get_file_data(fname).split('\n'):
         sps = split_strip(lin)
-        if eid == sps[0]:
+        if str(eid) == sps[0]:
             return (sps[0], sps[1])
     return None
 
@@ -66,7 +65,7 @@ def kad_find(kad, fname='dn_kad.txt'):
     '''
     for lin in get_file_data(fname).split("\n"):
         sps = split_strip(lin)
-        if kad == sps[0]:
+        if str(kad) == sps[0]:
             return (sps[0], sps[1])
     return None
 
@@ -79,7 +78,7 @@ def kad_list(kadno='', fname='dn_kad.txt'):
     returns
       List [[kad1, kadper1], [kad2, kadper2], ..]
     '''
-    kadno = '%s' % kadno
+    kadno = str(kadno)
     kads = []
     for line in get_file_data(fname).split("\n"):
         if len(line) < 6:
@@ -106,14 +105,13 @@ def eid_kad_list(kad, per, fname='dn_kadeidkpk.txt'):
     με αποτέλεσμα να υπάρχουν για ΚΑΔ, ΕΙΔ, περίοδο διπλές εγγραφές.
     Λύση προς το παρόν είναι η επιλογή μόνο της πρώτης εγγραφής.
     '''
-    kad = '%s' % kad  # Make sure kad is string
     per = int(per)  # Make sure per is integer for comparison
     arr = []
     chck = {}
     i = 0
     for lin in get_file_data(fname).split("\n"):
         sps = split_strip(lin)
-        if kad == sps[0]:
+        if str(kad) == sps[0]:
             # Here we compaire
             if per >= int(sps[3]) and per <= int(sps[4]):
                 ckv = '%s%s' % (sps[0], sps[1])
@@ -142,11 +140,10 @@ def kpk_find(kpk, per, fname='dn_kpk.txt'):
     returns
       tuple (ΚΠΚ, Περιγραφή, Εργ%, Εργοδότης%, Σύνολο%, περίοδος ισχύος)
     '''
-    kpk = '%s' % kpk  # Make sure kpk is text
     per = int(per)
     for lin in get_file_data(fname).split("\n"):
         sps = split_strip(lin)
-        if kpk == sps[0]:
+        if str(kpk) == sps[0]:
             if per >= int(sps[5]):
                 return (sps[0], sps[1], sps[2], sps[3], sps[4], sps[5])
     return None
@@ -199,3 +196,6 @@ if __name__ == "__main__":
     print(eid_find(311400))
     print(kadeidkpk_find(5540, 311400, PER))
     # print(kad_list())
+    # osyk = Osyk()
+    # osyk.find_kad('Ξενοδοχεία') returns list of kads
+    # osyk.find_eid('Μάγειρας') returns list of eids

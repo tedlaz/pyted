@@ -1,0 +1,2 @@
+#!/bin/bash
+rsync -avz /home/tedlaz/pyted/ote_pages/* tedlaz@96.9.244.152:/usr/share/nginx/html/
