@@ -3,6 +3,14 @@ import decimal
 import datetime
 
 
+def grup(txtval):
+    '''Trasforms a string to uppercase special for Greek comparison'''
+    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΐΊΪκλμνξοόΌπρσςτυύϋΰΎΫφχψωώΏ"
+    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΥΥΥΦΧΨΩΩΩ"
+    adi = dict(zip(ar1, ar2))
+    return ''.join([adi.get(letter, letter.upper()) for letter in txtval])
+
+
 def isNum(val):  # is val number or not
     """Check if val is number or not"""
     try:
