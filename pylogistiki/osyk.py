@@ -56,12 +56,37 @@ class Osyk():
 
     def find_kpk(self, kad, eid, period):
         """Get kpk by kad eid period"""
-        pass
+        kads = str(kad)
+        eids = str(eid)
+        pers = int(period)
+        for line in self._kek.split(LIN):
+            try:
+                kadl, eidl, kpkl, apo, eos = line.split(SPL)
+            except Exception:
+                return None
+            if kads == kadl and eids == eidl and int(apo) <= pers <= int(eos):
+                return kpkl
+        return None
 
+    def find_kpk_pososta(self, kpk, period):
+        kpks = str(kpk)
+        pers = int(period)
+        for line in self._kpk.split(LIN):
+            try:
+                kpkl, perl, pel, ptl, psl, per = line.split(SPL)
+            except Exception:
+                return None
+            if kpks == kpkl and int(per) <= pers:
+                return line
 
 if __name__ == '__main__':
     osyk = Osyk()
+    per1 = 201710
     # print(osyk._kad)
-    print(osyk.find_kad('5540'))
-    print(osyk.find_eid('724070'))
-    print(osyk._kadi['5540'])
+    # print(osyk.find_kad('5540'))
+    # print(osyk.find_eid('724070'))
+    # print(osyk._kadi['5540'])
+    # print(osyk._kpk)
+    kpk = osyk.find_kpk(1120, 411410, per1)
+    kpkl = osyk.find_kpk_pososta(kpk, per1)
+    print(kpk, kpkl)
