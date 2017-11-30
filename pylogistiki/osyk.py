@@ -34,7 +34,7 @@ class Osyk():
                 kad, eid, kpk, apo, eos = line.split(SPL)
                 fkek[kad] = fkek.get(kad, {})
                 fkek[kad][eid] = fkek.get(fkek[kad].get(eid), )
-            except:
+            except ValueError:
                 pass
 
     def index_eid(self):
@@ -43,37 +43,34 @@ class Osyk():
             try:
                 eid, eidp = line.split(SPL)
                 feid[eid] = eidp
-            except:
+            except ValueError:
                 pass
         return feid
 
     def index_kad(self):
         self._kadi = {}
         for line in self._kad.split(LIN):
-            if len(line) < 6:
-                continue
             try:
                 kad, kadp = line.split(SPL)
                 self._kadi[kad] = kadp
-            except:
+            except ValueError:
                 raise Exception_Osyk('Error in line %s' % line)
 
     def index_kpk(self, period):
         pers = int(period)
         kpkd = {}
         for line in self._kpk.split(LIN):
-            if len(line) < 6:
-                continue
             try:
                 kpk, kpkp, pen, pet, ptt, per = line.split(SPL)
                 if int(per) <= pers:
                     if kpk not in kpkd.keys():
-                        kpkd[kpk] = {'kpkp': kpkp,
+                        kpkd[kpk] = {'kpk': kpk,
+                                     'kpkp': kpkp,
                                      'penos': pen,
                                      'petis': pet,
                                      'ptotal': ptt,
                                      'perapo': per}
-            except:
+            except ValueError:
                 pass
         return kpkd
 
@@ -101,11 +98,11 @@ class Osyk():
 
     def find_kad_eids(self, kad, period):
         """Get a list of eid by kad"""
-        kads = str(kad)
+        kads = [str(i) for i in kad]
         pers = int(period)
         eids = self.index_eid()
         kpks = self.index_kpk(period)
-        tlist = []
+        kdic = {}
         for line in self._kek.split(LIN):
             if len(line) < 13:
                 continue
@@ -113,17 +110,22 @@ class Osyk():
                 kadl, eidl, kpkl, apo, eos = line.split(SPL)
             except:
                 raise Exception_Osyk('Error in line %s' % line)
-            if kads == kadl and int(apo) <= pers <= int(eos):
-                # eid = self.find_eid(eidl)[0]
-                tlist.append({'kad': kads,
-                              'eid': eidl,
-                              'eidp': eids[eidl],
-                              'period_anazitisis': pers,
-                              'kpk': kpkl,
-                              'kpkv': kpks[kpkl],
-                              'apo': apo,
-                              'eos': eos})
-        return tlist
+            if  kadl in kads and int(apo) <= pers <= int(eos):
+                kdic[kadl] = kdic.get(kadl, {})
+                kdic[kadl][eidl] = {'eidp': eids[eidl],
+                                    'period_anazitisis': pers,
+                                    'apo': apo,
+                                    'eos': eos,
+                                    'kpk': kpks[kpkl]}
+                # tlist.append({'kad': kads,
+                #               'eid': eidl,
+                #               'eidp': eids[eidl],
+                #               'period_anazitisis': pers,
+                #               'kpk': kpkl,
+                #               'kpkv': kpks[kpkl],
+                #               'apo': apo,
+                #               'eos': eos})
+        return kdic
 
     def find_kpk_periodou(self, kad, eid, period):
         """Get kpk by kad eid period"""
@@ -195,7 +197,7 @@ if __name__ == '__main__':
     kad1 = 1120
     eid1 = 411410
     # print(osyk._kad)
-    # print(osyk.find_kad('5540'))
+    # print(osyk.find_kad('5540'))print(kpkper['5540']['913230'])
     # print(osyk.find_eid('724070'))
     # print(osyk._kadi['5540'])
     # print(osyk._kpk)
@@ -203,5 +205,10 @@ if __name__ == '__main__':
     kpka = osyk.find_kpk_pososta(kpk1['kpk'], per1)
     # print(kpk1, kpka)
     # pprint(osyk.find_kad('5540'))
-    pprint(osyk.find_kad_eids('5540', 201605))
+    kpkper = osyk.find_kad_eids(['5540', '5530'], 201711)
+    print(kpkper['5540']['913230'])
+    print(kpkper['5530']['913230'])
+    # Με ένα διάβασμα του αρχείου δημιουργούμε ένα dictionary της μορφής
+    # {kad1: {eid1: {kpk, ...}}, kad2: {eid2:kpk}}
+    # di[kad1][eid1][kpk]
     # print(osyk._kek)
