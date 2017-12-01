@@ -1,166 +1,196 @@
-# -*- coding: utf-8 -*-
-'''
-Created on 18 Δεκ 2012
-1.Δημιουργία γραμμών κειμένου σταθερού μεγέθους για τη δημιουργία αρχείων για
-  ΙΚΑ , ΔΟΥ , κλπ
-2.Ανάγνωση από αρχεία σταθερού μεγέθους και επιστροφή array με τα δεδομένα
-@author: tedlaz
-'''
+"""
+Module data2text.py
+Create a fixed length text file with data
+Read back from file and store values to dicts
+"""
 import utils as ul
-TEXT, INT, DEC, DAT = range(4)
-ROWSTD, ROWSUM = range(2)
+LEFT, CENTER, RIGHT = range(3)
+
+
+class ColSizeException(Exception):
+    pass
+
+
+class RowException(Exception):
+    pass
+
+
+class DocException(Exception):
+    pass
 
 
 class Col():
-    '''
-    Σταθερού μεγέθους στήλη δεδομένων.
-    '''
-    def __init__(self, name, size, typ=TEXT, fixedValue=None, ln=None, col=None):
+    def __init__(self, name, size, filler=' ', align=LEFT):
+        """Template to create a fixed size text field
+           align
+        """
+        assert len(filler) == 1
+        assert type(size) is int
+        assert type(align) is int
         self.name = name
         self.size = size
-        self.typ = typ
-        self.fixedValue = fixedValue
-        self.ln = ln
-        self.col = col
+        self.filler = filler
+        self.align = align
 
-    def makeColVal(self, val):
-        if self.fixedValue:
-            tstr = str(self.fixedValue)
-        else:
-            tstr = str(val)
+    def txt(self, val):
+        tstr = str(val)
         ltstr = len(tstr)
-        if self.typ == INT:
-            difInt = self.size - ltstr
-            if difInt < 0:
-                return '0' * self.size
-            sval = ('0' * difInt) + tstr
-        elif self.typ == TEXT:
-            difText = self.size - ltstr
-            if difText < 0:
-                return tstr[:self.size]
-            sval = tstr + (' ' * difText)
-        elif self.typ == DAT:
-            difDat = self.size - ltstr
-            if difDat < 0:
-                return tstr[:self.size]
-            sval = tstr + (' ' * difDat)
-        elif self.typ == DEC:
-            if '.' in tstr:
-                akereo, dekadiko = tstr.split(".")
-            elif ',' in tstr:
-                akereo, dekadiko = tstr.split(",")
-            else:
-                akereo, dekadiko = tstr, '00'
-            ldek = len(dekadiko)
-            if ldek == 0:
-                dekadiko = '00'
-            elif ldek == 1:
-                dekadiko = dekadiko + '0'
-            else:
-                dekadiko = dekadiko[:2]
-            tv = akereo + dekadiko
-            # print akereo, dekadiko
-            dif2 = self.size - len(tv)
-            if dif2 < 0:
-                return tv[:self.size]
-            sval = ('0' * dif2) + tv
-        return sval
+        size_differene = self.size - ltstr
+        if size_differene < 0:
+            est = 'Col size (%s) is small for value %s (%s)'
+            raise ColSizeException(est % (self.size, tstr, ltstr))
+        if self.align == LEFT:
+            formatter = '{:%s<%s}' % (self.filler, self.size)
+        elif self.align == CENTER:
+            formatter = '{:%s^%s}' % (self.filler, self.size)
+        elif self.align == RIGHT:
+            formatter = '{:%s>%s}' % (self.filler, self.size)
+        else:
+            formatter = '{:%s>%s}' % (self.filler, self.size)
+        return formatter.format(tstr)
+
+    def txt2val(self, txtval):
+        if self.align == LEFT:
+            return txtval.rstrip(self.filler)
+        elif self.align == CENTER:
+            return txtval.strip(self.filler)
+        elif self.align == RIGHT:
+            return txtval.lstrip(self.filler)
+        else:
+            return txtval.lstrip(self.filler)
+
+
+class ColDec(Col):
+    def __init__(self, name, size, decs=2):
+        super().__init__(name, size, '0', RIGHT)
+        self.decs = decs
+
+    def txt(self, val):
+        return super().txt(ul.dec2text_flat(val, self.decs))
+
+    def txt2val(self, txtval):
+        tval = super().txt2val(txtval)
+        return ul.dec(tval[:-self.decs] + '.' + tval[-self.decs:], self.decs)
+
+
+class ColCalc(ColDec):
+    def __init__(self, name, size, row2point, col2point, decs=2):
+        super().__init__(name, size, decs)
+        self.row2point = row2point
+        self.col2point = col2point
 
 
 class Row():
-    '''
-    Σταθερού μήκους γραμμή δεδομένων που αποτελείται από στήλες δεδομένων
-    (βλέπε παραπάνω).
-    Οι στήλες είναι οργανωμένες με βάση τη σειρά εισαγωγής τους.
-    '''
-    def __init__(self, typ=ROWSTD):
-        self.name = 'No name'
-        self.typ = typ
-        self.egrCols = []
-        self.lineSize = 0  # Το μήκος της γραμμής
-        self.arrSize = 0  # Ο αριθμός των στηλών
+    def __init__(self, identifier):
+        self._id = str(identifier)
+        self._lenid = len(self._id)
+        self._colnames = []
+        self._cols = {}
 
-    def col(self, eggrcol):
-        self.egrCols.append(eggrcol)
-        self.lineSize += eggrcol.size
-        self.arrSize += 1
+    def acol(self, col):
+        """Add a Col object to self._cols"""
+        self._colnames.append(col.name)
+        self._cols[col.name] = col
 
-    def toStr(self, data=[]):
-        tval = ''
-        for i in range(self.arrSize):
-            tval += self.egrCols[i].makeColVal(data[i])
-        return tval
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def len(self):
+        val = len(self._id)
+        for elm in self._cols:
+            val += self._cols[elm].size
+        return val
+
+    def txt(self, data=''):
+        ttx = self._id
+        for elm in self._colnames:
+            ttx += self._cols[elm].txt(data[elm])
+        return ttx
+
+    def txt2dic(self, txtrow):
+        assert len(txtrow) == self.len
+        assert txtrow.startswith(self._id)
+        tdic = {}
+        eos = self._lenid
+        tdic['row_id'] = txtrow[:self._lenid]
+        apo = self._lenid
+        for elm in self._colnames:
+            eos += self._cols[elm].size
+            tdic[elm] = self._cols[elm].txt2val(txtrow[apo:eos])
+            apo = eos
+        return tdic
+
+    def iscompatible(self, dic):
+        assert isinstance(dic, dict)
+        for key in self._colnames:
+            if key not in dic:
+                return False
+        return True
+
+    def __repr__(self):
+        atx = '(OBJ Row id=%s:' % self._id
+        for elm in self._colnames:
+            atx += ' %s(%s)' % (elm, self._cols[elm].size)
+        return atx + ')'
 
 
 class Doc():
-    def __init__(self, ltypes):
-        self.lineTypes = ltypes  # Οι τύποι γραμμών
-        self.lines = ''         # Οι συνολικές γραμμές του σε μορφή text.
-        self.vals = []
+    def __init__(self, list_of_rows=None):
+        self.rowtypes = {}
+        if list_of_rows:
+            assert isinstance(list_of_rows, list)
+            for elm in list_of_rows:
+                self.add_rowtype(elm)
+        self.lines = []
 
-    def line(self, lno=None, val=[]):
-        self.lines += self.lineTypes[lno].toStr(val) + '\n'
-        self.vals.append([lno, val])
+    def add_rowtype(self, row):
+        assert isinstance(row, Row)
+        if row.id not in self.rowtypes.keys():
+            self.rowtypes[row.id] = row
+        else:
+            raise DocException('rowtype %s is already in Doc' % row)
 
-    def sums(self, lno):
-        a = {}
-        for lin in self.vals:
-            if lin[0] == lno:
-                for i in range(self.lineTypes[lno].arrSize):
-                    # print 'Typos: %s' % self.lineTypes[lno].egrCols[i].typ
-                    if self.lineTypes[lno].egrCols[i].typ == DEC:
-                        tf = ul.dec(lin[1][i])
-                        try:
-                            a[i] += tf
-                        except:
-                            a[i] = tf
-                    elif self.lineTypes[lno].egrCols[i].typ == INT:
-                        tf = int(lin[1][i]) if lin[1][i] else 0
-                        try:
-                            a[i] += tf
-                        except:
-                            a[i] = tf
-        return a
 
-    def __str__(self):
-        txt = ''
-        for l in self.vals:
-            if self.lineTypes[l[0]].typ == ROWSUM:
-                # print 'This is Rowsum , l[0] = %s' % l[0]
-                for i in range(self.lineTypes[l[0]].arrSize):
-                    egrc = self.lineTypes[l[0]].egrCols[i]
-                    if egrc.ln and egrc.col:
-                        l[1][i] = self.sums(egrc.ln)[egrc.col]
+    def add_row(self, row_id, rowdic):
+        row_id = str(row_id)
+        assert row_id in self.rowtypes
+        if self.rowtypes[row_id].iscompatible(rowdic):
+            self.lines.append({'id': row_id, 'data': rowdic})
+        else:
+            raise RowException('Dic %s is not combatible ' % rowdic)
 
-            txt += self.lineTypes[l[0]].toStr(l[1]) + '\n'
-        return txt[:-1]
+    def calc_sum(self, rowid, column):
+        val = 0
+        for lin in self.lines:
+            if lin['id'] == rowid:
+                val += ul.dec(lin['data'].get(column, 0))
+        return val
 
-if __name__ == '__main__':
-    r1 = Row(ROWSUM)
-    r1.col(Col(u'Type', 1, INT, '1'))
-    r1.col(Col(u'Ονομα', 15, TEXT))
-    r1.col(Col(u'Επώνυμο', 15, TEXT))
-    r1.col(Col(u'Ποσό', 14, DEC))
-    r1.col(Col(u'Σύνολο Ποσό', 15, DEC, '', 2, 2))
-    r1.col(Col(u'Σύνολο μέρες', 10, INT, '', 2, 4))
+    def calc_totals(self):
+        # search in lines
+        for lin in self.lines:
+            # search in columns
+            for key in lin['data'].keys():
+                if isinstance(self.rowtypes[lin['id']]._cols[key], ColCalc):
+                    vli = self.rowtypes[lin['id']]._cols[key].row2point
+                    vlc = self.rowtypes[lin['id']]._cols[key].col2point
+                    val = self.calc_sum(vli, vlc)
+                    lin['data'][key] = val
 
-    r2 = Row()
-    r2.col(Col(u'Type', 1, INT, '2'))
-    r2.col(Col(u'Σύνολο Ποσό', 15, DEC, '', 2, 2))
-    r2.col(Col(u'Σύνολο μέρες', 10, INT, '', 2, 4))
+    @property
+    def txt(self):
+        self.calc_totals()
+        ftx = []
+        for elm in self.lines:
+            ftx.append(self.rowtypes[elm['id']].txt(elm['data']))
+        return '\n'.join(ftx)
 
-    r3 = Row()
-    r3.col(Col(u'Type', 1, INT, '3'))
-    r3.col(Col(u'ΑΦΜ', 9, TEXT))
-    r3.col(Col(u'Ποσό', 15, DEC))
-    r3.col(Col(u'Κρατήσεις', 15, DEC))
-    r3.col(Col(u'Μέρες', 10, INT))
-
-    doc = Doc([r1, r2, r3])
-    doc.line(0, ['', 'ted', 'Lazaros', '12000.45', '', ''])
-    doc.line(1, ['', '', '', ''])
-    doc.line(2, ['', '046949584', '1230', '110', '2', '4'])
-    doc.line(2, ['', '046949585', '32', '50', '5'])
-    doc.line(2, ['', '046949586', '1', '1', '3'])
-    print(doc)
-    print(doc.sums(2))
+    def txt2dics(self, ftxt):
+        farr = []
+        for lin in ftxt.split('\n'):
+            for key in self.rowtypes.keys():
+                if lin.startswith(key):
+                    farr.append(self.rowtypes[key].txt2dic(lin))
+        return farr

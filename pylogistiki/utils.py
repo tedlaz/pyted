@@ -32,6 +32,10 @@ def dec(poso=0, decimals=2):
     return tmp.quantize(qval, rounding=decimal.ROUND_HALF_UP)
 
 
+def dec2text_flat(poso, decimals=2):
+    return str(dec(poso, decimals)).replace('.', '').replace(',', '')
+
+
 def iso_number_from_greek(num):
     num = num.strip()
     num = num.replace('.', '')
@@ -187,3 +191,4 @@ def print_dicl(data, width1='40', width2='>12'):
 
 if __name__ == '__main__':
     print(read_txt_to_dict('log_sxedio.txt'))
+    print(dec2text_flat(2350.46, 1))
