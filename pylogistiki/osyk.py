@@ -110,21 +110,13 @@ class Osyk():
                 kadl, eidl, kpkl, apo, eos = line.split(SPL)
             except:
                 raise Exception_Osyk('Error in line %s' % line)
-            if  kadl in kads and int(apo) <= pers <= int(eos):
+            if kadl in kads and int(apo) <= pers <= int(eos):
                 kdic[kadl] = kdic.get(kadl, {})
                 kdic[kadl][eidl] = {'eidp': eids[eidl],
                                     'period_anazitisis': pers,
                                     'apo': apo,
                                     'eos': eos,
                                     'kpk': kpks[kpkl]}
-                # tlist.append({'kad': kads,
-                #               'eid': eidl,
-                #               'eidp': eids[eidl],
-                #               'period_anazitisis': pers,
-                #               'kpk': kpkl,
-                #               'kpkv': kpks[kpkl],
-                #               'apo': apo,
-                #               'eos': eos})
         return kdic
 
     def find_kpk_periodou(self, kad, eid, period):

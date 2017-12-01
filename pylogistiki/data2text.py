@@ -60,6 +60,11 @@ class Col():
             return txtval.lstrip(self.filler)
 
 
+class ColCap(Col):
+    def txt(self, val):
+        return super().txt(ul.grup(val))
+
+
 class ColDec(Col):
     def __init__(self, name, size, decs=2):
         super().__init__(name, size, '0', RIGHT)
@@ -152,7 +157,6 @@ class Doc():
         else:
             raise DocException('rowtype %s is already in Doc' % row)
 
-
     def add_row(self, row_id, rowdic):
         row_id = str(row_id)
         assert row_id in self.rowtypes
@@ -194,3 +198,13 @@ class Doc():
                 if lin.startswith(key):
                     farr.append(self.rowtypes[key].txt2dic(lin))
         return farr
+
+    def save2file(self, filename, encoding):
+        with open(filename, 'w', encoding=encoding) as sfile:
+            sfile.write(self.txt)
+
+    def from_file(self, filename, encoding):
+        txtdata = ''
+        with open(filename, encoding=encoding) as sfile:
+            txtdata = sfile.read()
+        return self.txt2dics(txtdata)
