@@ -75,6 +75,8 @@ class ColDec(Col):
 
     def txt2val(self, txtval):
         tval = super().txt2val(txtval)
+        if self.decs == 0:
+            return round(float(tval))
         return ul.dec(tval[:-self.decs] + '.' + tval[-self.decs:], self.decs)
 
 
