@@ -1,6 +1,6 @@
 """
 Module data2text.py
-Create a fixed length text file with data
+Create a fixed line size length text file with data
 Read back from file and store values to dicts
 """
 import utils as ul

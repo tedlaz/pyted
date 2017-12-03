@@ -1,6 +1,6 @@
 """TESTING utils.py"""
 import unittest
-import osyk as osk
+import payroll_osyk as osk
 
 
 class TestOsyk(unittest.TestCase):

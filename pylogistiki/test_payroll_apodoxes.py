@@ -1,10 +1,10 @@
 """TESTING payrollcalc.py"""
 import unittest
-import payrollcalc as pc
+import payroll_apodoxes as pc
 import utils as ul
 
 
-class TestPayroll(unittest.TestCase):
+class TestPayrollEsoda(unittest.TestCase):
 
     def test_normal(self):
         n01 = {'typ': 'misthos', 'apo': 600, 'meres': 25}
@@ -37,12 +37,6 @@ class TestPayroll(unittest.TestCase):
         self.assertEqual(res['asm3'], ul.dec(480))
         self.assertEqual(res['asti'], ul.dec(600))
         self.assertEqual(res['axe'], ul.dec(250))
-
-    def test_ika(self):
-        nik = {'poso': 100, 'pika': .45, 'pikae': .15}
-        self.assertEqual(pc.ika(nik)[0]['ika'], ul.dec(45))
-        nik = {'poso': 100, 'pika': 45, 'pikae': 15}
-        self.assertEqual(pc.ika(nik)[0]['ika'], ul.dec(45))
 
     def test_doro_pasxa(self):
         ndp = {'typ': 'misthos', 'merest': 25, 'apo': 600}
@@ -98,4 +92,3 @@ class TestPayroll(unittest.TestCase):
     def test_apozimiosi_apol(self):
         self.assertEqual(pc.apozimiosi_apol(2, 630), ul.dec(1470))
         self.assertEqual(pc.apozimiosi_apol(20, 630), ul.dec(11760))
-

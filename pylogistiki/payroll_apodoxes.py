@@ -137,7 +137,7 @@ def astheneia(erg):
 
 def ika(erg):
     """
-
+    Social sequrity calculation
     """
     cio = ul.DicDec()
     ilb = {}
