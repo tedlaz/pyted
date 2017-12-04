@@ -1,0 +1,176 @@
+Κατέβασμα από https://www.archlinux.org/download/
+Το βάζουμε σε usb και το τρέχουμε.
+
+fdisk -l # για να δούμε τι δίσκους έχουμε
+cfdisk /dev/sda και από το μενού επιλέγουμε dos
+
+Δημιουργούμε 3 partition με μεγέθη 
+1. 1GB (primary, bootable)
+2. 2GB (primary, type linux swap / Solaris)
+3. όλος ο υπόλοιπος δίσκος (primary)
+επιλέγουμε write για αποθήκευση των αλλαγών και Quit
+
+mkfs.ext4 /dev/sda1
+mkswap /dev/sda2
+swapon /dev/sda2
+mkfs.ext4 /dev/sda3
+
+mount /dev/sda3 /mnt
+mkdir /mnt/boot /mnt/var /mnt/home
+mount /dev/sda1 /mnt/boot
+
+ping -c 3 www.google.com # Για να βεβαιωθούμε ότι έχουμε σύνδεση internet
+
+pacstrap /mnt base base-devel
+pacstrap /mnt grub-bios
+genfstab -p /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt /bin/bash # Συνδεόμαστε με το νέο σύστημα
+
+nano /etc/locale.gen # Ενεργοποιούμε το locale που θέλουμε (en_US.UTF8 UTF-8)
+locale-gen
+echo LANG=en_US.UTF8 > /etc/locale.conf # Δημιουργούμε το αρχείο locale.conf
+export LANG=en_US.UTF-8
+hwclock --systohc --utc
+ls /usr/share/zoneinfo/ # Για να βρούμε Ζώνη/Χώρα
+rm -rf /etc/localtime # Διαγράφουμε το αρχείο localtime
+ln -s /usr/share/zoneinfo/Europe/Athens /etc/localtime # Δημιουργούμε σύνδεσμο για τη χώρα
+echo arch2017 > /etc/hostname # Ορίζουμε το όνομα του υπολογιστή
+
+systemctl enable dhcpcd.service  # Ενεργοποίηση δικτύου
+
+pacman -Sy openssh
+systemctl enable sshd.service
+
+passwd root
+useradd -m -g users -G wheel -s /bin/bash ted
+passwd ted
+nano /etc/sudoers   Βλέπε εικόνα ArchInstall.png
+
+grub-install /dev/sda # Εγκατάσταση του grub
+grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -p linux
+
+exit
+exit
+umount /mnt/boot
+umount /mnt
+reboot
+
+
+Και ξαναμπαίνουμε στο φρέσκο σύστημα σαν root
+ping -c 3 www.google.com # Για να βεβαιωθούμε ότι έχουμε σύνδεση internet
+
+pacman -Sy xorg xorg-xinit # Για εγκατάσταση του xserver
+pacman -Sy xfce4 xfce4-goodies # Εγκατάσταση Desktop Environment
+pacman -S ttf-freefont ntfs-3g
+pacman -Sy lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+systemctl enable lightdm.service
+
+# Εγκατάσταση video drivers..
+1. virtualbox
+   pacman -Sy virtualbox-guest-utils # Εδώ για το Virtualbox Π Ρ Ο Σ Ο Χ Η επιλογή 2(για arch)
+   systemctl enable vboxservice.service # Ενεργοποίηση
+2. Intel
+   pacman -Sy xf86-video-intel
+3. AMD
+   pacman -Sy xf86-video-ati
+4. Nvidia
+   pacman -Sy nvidia
+
+reboot
+
+
+# 1. Install Microcode
+    For intel processors with grub boot loader: 
+         sudo pacman -S intel-ucode
+         sudo grub-mkconfig -o /boot/grub/grub.cfg
+    
+    For AMD processors install linux-firmware package.
+
+# 2. Install some key packages  
+   sudo pacman -S adobe-source-sans-pro-fonts aspell-en enchant gst-libav gst-plugins-good hunspell-en icedtea-web jre8-openjdk languagetool libmythes mythes-en pkgstats ttf-anonymous-pro ttf-bitstream-vera ttf-dejavu ttf-droid ttf-gentium ttf-liberation ttf-ubuntu-font-family
+
+# 3. Set up firewall  
+    Install ufw: 
+       sudo pacman -S ufw  
+    Enable it. 
+       sudo ufw enable   
+    Check its status: 
+       sudo ufw status verbose  
+    Enable the start-up with the system: 
+       sudo systemctl enable ufw.service  
+    Reboot and check the status again. It should be active. 
+    
+# 4. Encrypt your home directory 
+    Log out. 
+    Switch to a console with Ctrl+Alt+F2. 
+    Login as a root and check that your user own no processes: 
+        ps -U username   
+    Install the necessary applications:  
+        sudo pacman -S rsync lsof ecryptfs-utils  
+    Encrypt your home directory:  
+        modprobe ecryptfs 
+        ecryptfs-migrate-home -u username  
+    Mount your encrypted home. 
+        ecryptfs-mount-private  
+    Unwrap the passphrase and save it somewhere where only you can access it. 
+        ecryptfs-unwrap-passphrase  
+        ls .ecryptfs  
+    Edit /etc/pam.d/system-auth:  After the line "auth required pam_unix.so" add:  
+       auth required pam_ecryptfs.so unwrap   
+    Above the line "password required pam_unix.so" insert:  
+       password    optional    pam_ecryptfs.so  
+    After the line "session required pam_unix.so" add:  
+       session    optional    pam_ecryptfs.so unwrap  
+    Reboot and make sure that you can login to your desktop
+    
+# 5. Disable GRUB delay  
+   Add the following to /etc/default/grub: 
+     # achieve the fastest possible boot: GRUB_FORCE_HIDDEN_MENU="true"  
+     Then put file 31_hold_shift to /etc/grub.d/. Download 31_hold_shift https://goo.gl/nac6Kp  Make it executable, and regenerate     the grub configuration: sudo chmod a+x /etc/grub.d/31_hold_shift sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+
+      AUDIO INSTALLATION
+sudo pacman -S pulseaudio pavucontrol pulseaudio-alsa alsa-utils tumbler
+
+
+      ZIP ARCHIVES
+sudo pacman -S file-roller p7zip zip unzip unrar
+
+    PAPER ICONS
+yaourt paper-icon-theme
+
+    WIRELESS DRIVERS
+yaourt -S broadcom-wl
+
+    SCREEN RECORDER
+sudo pacman -S simplescreenrecorder
+
+    Απενεργοποίηση ipv6
+1. sudo nano /etc/default/grub και κάνουμε: GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 quiet"
+2. sudo grub-mkconfig -o /boot/grub/grub.cfg  για ενεργοποίηση των αλλαγών
+3.Άν θέλουμε να το επαναφέρουμε αφαιρούμε το ipv6.disable=1 απο το (1)
+
+    MACCHANGER
+sudo pacman -S macchanger
+
+Δημιουργία αρχείου /etc/systemd/system/macspoof@enp37s0.service με περιεχόμενο: 
+====================================================
+[Unit]
+Description=macchanger on enp37s0
+Wants=network-pre.target
+Before=network-pre.target
+BindsTo=sys-subsystem-net-devices-enp37s0.device
+After=sys-subsystem-net-devices-enp37s0.device
+
+[Service]
+ExecStart=/usr/bin/macchanger -r enp37s0
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
+====================================================
+και μετά τρέχουμε:
+sudo systemctl enable macspoof@enp37s0.service
+

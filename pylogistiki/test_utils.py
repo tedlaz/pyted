@@ -35,5 +35,3 @@ class TestUtils(unittest.TestCase):
         # ul.print_dicl([di1, dil], '20', '<12')
         # ul.print_dicl([di1, dil], '20', '>12')
         # ul.print_dicl([di1, dil], '20', '^12')
-
-
