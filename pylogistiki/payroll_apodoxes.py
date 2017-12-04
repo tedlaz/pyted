@@ -367,4 +367,3 @@ def apozimiosi_apol(xronia, apodoxes, misthotos=True, proeidopoiisi=False):
     if proeidopoiisi:
         apoz = apoz / 2
     return ul.dec(apoz)
-

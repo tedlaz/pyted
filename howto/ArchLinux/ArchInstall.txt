@@ -154,7 +154,6 @@ sudo pacman -S simplescreenrecorder
 
     MACCHANGER
 sudo pacman -S macchanger
-
 Δημιουργία αρχείου /etc/systemd/system/macspoof@enp37s0.service με περιεχόμενο: 
 ====================================================
 [Unit]
@@ -173,4 +172,9 @@ WantedBy=multi-user.target
 ====================================================
 και μετά τρέχουμε:
 sudo systemctl enable macspoof@enp37s0.service
+Σε περίπτωση που το interface είναι wireless τότε:
+ip link set <ονομα interface> down
+sudo macchanger -r <όνομα interface>
+ip link set <ονομα interface> up
+
 
