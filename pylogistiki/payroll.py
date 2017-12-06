@@ -59,6 +59,7 @@ calcmis_per(jan2017) :
                       |----|   διαδοχικά
                         |--|   ανεξάρτητα
 """
+from utils import grup, required
 
 
 class Per():
@@ -77,13 +78,11 @@ class Period():
     def __init__(self, period='201701'):
         self._year = period[:4]
         self._month = period[4:]
-
         self._apo = '%s-%s-01' % (self.year, self.month)
         self._eos = '%s-%s-31' % (self.year, self.month)
         assert 0 < int(self._month) <= 12
         assert len(self._month) == 2
         assert len(self._year) == 4
-
 
     @property
     def year(self):
@@ -113,6 +112,35 @@ def dikaioytai(erg, period):
         pass
 
 
+class apoysies():
+    def __init__(self, aps):
+        self._apo = aps['apo']
+        self._eos = aps['eos']
+        self._erg = aps['erg']
+        self._typ = aps['typ']  # astheneia, adeia, adikaiologiti apousia klp
+
+    def working_days(self):
+        return 1
+
+    def tst(self):
+        if self._typ == 'astheneia':
+            pass
+
+
 if __name__ == "__main__":
     jan = Period('201701')
     print(jan.month, jan.year, jan.apo, jan.eos)
+    # erg = Erg()
+    # erg.status()
+    # erg.type()
+    # erg.proslipsi
+    # erg.apoxorisi
+    # erg['apoxorisi']
+    # erg.epo
+    # erg.ono
+    # erg.afm
+    epo = 'πόπη Δαζέα kai loipa'
+    print(epo, grup(epo))
+    siv = ['epo', 'ono', 'pat']
+    ggg = {'epo': 'a', 'ono': 'b', 'pat': 'c'}
+    print(required(siv, ggg))

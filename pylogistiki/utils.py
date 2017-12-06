@@ -189,6 +189,21 @@ def print_dicl(data, width1='40', width2='>12'):
     print('=' * (le1 + le2 + 1))
 
 
+class RequiredKeyException(Exception):
+    pass
+
+
+def required(keys, adict):
+    errors = []
+    for key in keys:
+        if key not in adict:
+            errors.append(key)
+    if errors:
+        erstr = 'required keys %s are missing from %s' % (errors, adict)
+        raise RequiredKeyException(erstr)
+    return True
+
+
 if __name__ == '__main__':
     print(read_txt_to_dict('log_sxedio.txt'))
     print(dec2text_flat(2350.46, 1))
