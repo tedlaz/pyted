@@ -59,46 +59,34 @@ calcmis_per(jan2017) :
                       |----|   διαδοχικά
                         |--|   ανεξάρτητα
 """
+import datetime as dt
 from utils import grup, required
 
 
-class Per():
-    def __init__(self, dapo, deos):
-        self._apo = dapo
-        self._eos = deos
-        assert self._apo < self._eos
-        assert len(self._apo) == 10
-        assert len(self._eos) == 10
-
-    def days(self):
-        pass
-
-
 class Period():
-    def __init__(self, period='201701'):
-        self._year = period[:4]
-        self._month = period[4:]
-        self._apo = '%s-%s-01' % (self.year, self.month)
-        self._eos = '%s-%s-31' % (self.year, self.month)
-        assert 0 < int(self._month) <= 12
-        assert len(self._month) == 2
-        assert len(self._year) == 4
+    def __init__(self, dapo, deos):
+        """
+        dapo: iso date
+        deos: iso date
+        """
+        assert dapo <= deos
+        assert len(dapo) == 10
+        assert len(deos) == 10
+        self._apo = dt.datetime.strptime(dapo, '%Y-%m-%d')
+        self._eos = dt.datetime.strptime(deos, '%Y-%m-%d')
 
     @property
-    def year(self):
-        return self._year
+    def days(self):
+        return (self._eos - self._apo).days + 1
 
     @property
-    def month(self):
-        return self._month
+    def split2moths(self):
+        ye1 = self._apo.year
+        ye2 = self._eos.year
+        mo1 = self._apo.month
+        mo2 = self._eos.month
 
-    @property
-    def apo(self):
-        return self._apo
 
-    @property
-    def eos(self):
-        return self._eos
 
 def calcpayroll(ptype, period, ergdata):
     """
@@ -128,8 +116,6 @@ class apoysies():
 
 
 if __name__ == "__main__":
-    jan = Period('201701')
-    print(jan.month, jan.year, jan.apo, jan.eos)
     # erg = Erg()
     # erg.status()
     # erg.type()
@@ -143,4 +129,6 @@ if __name__ == "__main__":
     print(epo, grup(epo))
     siv = ['epo', 'ono', 'pat']
     ggg = {'epo': 'a', 'ono': 'b', 'pat': 'c'}
-    print(required(siv, ggg))
+    assert required(siv, ggg)
+    pe1 = Period('2016-02-28', '2016-03-01')
+    print(pe1.days)

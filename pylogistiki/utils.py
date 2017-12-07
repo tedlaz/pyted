@@ -199,7 +199,7 @@ def required(keys, adict):
         if key not in adict:
             errors.append(key)
     if errors:
-        erstr = 'required keys %s are missing from %s' % (errors, adict)
+        erstr = 'required: %s missing from: %s' % (errors, adict)
         raise RequiredKeyException(erstr)
     return True
 
