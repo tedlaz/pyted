@@ -6,7 +6,8 @@ import calendar
 import datetime as dt
 MO, TU, WE, TH, FR, SA, SU = range(7)
 DE, TR, TE, PE, PA, SA, KY = range(7)
-GDA = {0: 'DE', 1: 'TR', 2: 'TE', 3: 'PE', 4: 'PA', 5: 'SA', 6:'KY'}
+GDA = {0: 'DE', 1: 'TR', 2: 'TE', 3: 'PE', 4: 'PA', 5: 'SA', 6: 'KY'}
+
 
 class DatespayException(Exception):
     """Exceptions"""
@@ -103,6 +104,7 @@ def checkhour(tstart, duration, dur_limit=16):
 
 def nextday(weekday):
     return (weekday + 1) % 7
+
 
 def hours(weekday, start_time, duration_hours):
     assert duration_hours <= 16
@@ -219,13 +221,13 @@ class WeekDays:
 
     def week_hours(self):
         """:return: working week hours"""
-        return sum(self.dlist)
+        return self.ores_ana_bdomada['total']
 
     def working_month_days(self, year, month):
         """Βρες τις εργάσιμες ημέρες του έτους/μήνα"""
         weekdays = month_days(year, month)
         for i, _ in enumerate(weekdays):
-            if self.dlist[i] == 0:
+            if self.ddic.get(i, 0) == 0:
                 weekdays[i] = 0
         return tuple(weekdays)
 
@@ -235,7 +237,7 @@ class WeekDays:
         """
         weekdays = timespace_days(dateapo, dateeos)
         for i, _ in enumerate(weekdays):
-            if self.dlist[i] == 0:
+            if self.ddic.get(i, 0) == 0:
                 weekdays[i] = 0
         return tuple(weekdays)
 
@@ -275,16 +277,17 @@ class WeekDays:
 
     def __repr__(self):
         sep = '-' * 32 + '\n'
-        ast = 'Ημέρες εργασίας ανά βδομάδα :%3s\n'
+        tmpl = '%-10s %5s  %3s\n'
+        ast = 'Ημέρες εργασίας ανά βδομάδα :%3s\n\n'
+        ast += tmpl % ('Ημέρα', 'Από', 'Ώρες')
         ast += sep
-        tmpl = '%-10s : %3s ώρες\n'
         tdays = 0  # Ημέρες εργασίας ανά βδομάδα
-        for i, ores in enumerate(self.dlist):
-            if ores > 0:
-                tdays += 1
-                ast += tmpl % (self.grdays[i], ores)
+        for day in self.ddic:
+            tdays += 1
+            for apo in self.ddic[day]:
+                ast += tmpl % (self.grdays[day], apo, self.ddic[day][apo])
         ast += sep
-        ast += tmpl % ('Σύνολο', self.week_hours())
+        ast += tmpl % ('Σύνολο', '', self.week_hours())
         return ast % tdays
 
 
@@ -312,14 +315,85 @@ class Period():
         mo2 = self._eos.month
 
 
+def htt(ores):
+    hh = int(ores // 1)
+    mm = int((ores % 1) * 60)
+    return '{:02}:{:02}'.format(hh, mm)
+
+
+def nhu(day, apo, duration):
+    """
+    day : number of day (0:Δευτέρα, .. 5:Σάββατο 6:Κυριακή)
+    apo : 'hh:mm'
+    duration: ώρες εργασίας
+    """
+    nyxta = {'apo': '22:00', 'eos': '06:00'}
+    tapoh, tapom = apo.split(':')
+    apoh = int(tapoh)
+    apom = int(tapom)
+    apo1 = apoh + (apom / 60)
+    eos1 = apo1 + duration
+    or1 = eos1 - apo1
+    if eos1 > 24:
+        day2 = nextday(day)
+        apo2 = 0
+        eos2 = eos1 - 24
+        eos1 = 24
+        or1 = eos1 - apo1
+        or2 = eos2 - apo2
+        return {day: {'d': day, 'apo': apo1, 'eos': eos1, 'h': or1},
+                day2: {'d': day, 'apo': apo2, 'eos': eos2, 'h': or2}}
+    return {day: {'apo': apo1, 'eos': eos1, 'h': or1}}
+
+
+def idxless(val, alist):
+    for i, elm in enumerate(alist):
+        if val < elm:
+            return i
+    return i + 1
+
+
+def aspl(dia, kli, vals):
+    ca0 = set(dia + kli)
+    ca1 = list(ca0)
+    ca1.sort()
+    sta = ca1.index(dia[0])
+    end = ca1.index(dia[1]) + 1
+    ford = ca1[sta:end]
+    delta = []
+    theta = []
+    for i, elm in enumerate(ford):
+        if i == 0:
+            continue
+        vala = elm - ford[i - 1]
+        delta.append(vala)
+        theta.append(vals[idxless(ford[i - 1], kli)])
+    fdic = {}
+    for i, el2 in enumerate(theta):
+        fdic[el2] = fdic.get(el2, 0) + delta[i]
+    return fdic
+
+
+def tst(day, apo, duration):
+    res = nhu(day, apo, duration)
+    for key in res:
+        apo = res[key]['apo']
+        eos = res[key]['eos']
+        res[key]['qqq'] = aspl([apo, eos], [6, 22], ['nyxta', 'mera', 'nyxta'])
+    return res
+
 if __name__ == '__main__':
     pe1 = Period('2017-01-01', '2017-01-12')
-    print(pe1.days)
+    # print(pe1.days)
     wd1 = WeekDays({PA: {'20:30': 6},
                     SA: {'8:00': 4, '21:00': 2},
                     })
-    print(wd1.week_hours_analysis())
-    print(wd1.meres_ana_bdomada)
-    print(wd1.ores_ana_bdomada)
-    print(month_days(2017, 12))
-    print(hours(KY, '12:00', 8))
+    # print(wd1)
+    # print(wd1.week_hours_analysis())
+    # print(wd1.meres_ana_bdomada)
+    # print(wd1.ores_ana_bdomada)
+    # print(month_days(2017, 12))
+    # print(hours(KY, '12:00', 8))
+    print(tst(5, '22:45', 8))
+    # print(htt(1.5))
+    print(aspl([5.5, 23.5], [6, 22], ['nyxta', 'mera', 'nyxta']))
