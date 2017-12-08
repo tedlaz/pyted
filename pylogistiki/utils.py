@@ -164,6 +164,9 @@ def read_txt_to_dict(txtfile):
 
 
 class DicDec(dict):
+    """
+    Dictionary with decimal values except if key starts with 't_'
+    """
 
     def __setitem__(self, key, item):
         # self.__dict__[key] = ul.dec(item)
@@ -193,7 +196,13 @@ class RequiredKeyException(Exception):
     pass
 
 
-def required(keys, adict):
+def has_keys(keys, adict):
+    """
+    keys: [key1, key2, ...]
+    adict: {key1: val1, key2: val2, ...other1: vother1}
+    Returns True if dictionary adict contains all keys from list keys
+    If not raises exception with message containing missing keys
+    """
     errors = []
     for key in keys:
         if key not in adict:

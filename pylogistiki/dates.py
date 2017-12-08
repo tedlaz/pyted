@@ -4,7 +4,9 @@ Managing dates for payroll purposes
 """
 import calendar
 import datetime as dt
-
+MO, TU, WE, TH, FR, SA, SU = range(7)
+DE, TR, TE, PE, PA, SA, KY = range(7)
+GDA = {0: 'DE', 1: 'TR', 2: 'TE', 3: 'PE', 4: 'PA', 5: 'SA', 6:'KY'}
 
 class DatespayException(Exception):
     """Exceptions"""
@@ -60,9 +62,10 @@ def checkhour(tstart, duration, dur_limit=16):
     """Check hour
     :param hstart: Ώρα έναρξης σε μορφή 'hh:mm'
     :param duration: Διάρκεια σε ώρες
-    :return: list with two elements : [normal_time, night_time]
+    :return: list with two elements : [day_time, night_time]
     """
     night = (0, 1, 2, 3, 4, 5, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+    next_day = 0
     hstart, mstart = tstart.split(':')
     hstart = int(hstart)
     mstart = int(mstart) / 60.0
@@ -73,6 +76,8 @@ def checkhour(tstart, duration, dur_limit=16):
     if duration > dur_limit:
         raise DatespayException('Work time limit exceeded')
     hmend = hstart + mstart + duration
+    if hmend > 24:
+        next_day += 1
     hend = int(hmend // 1)
     mend = hmend % 1
     fval = [0, 0]
@@ -91,9 +96,38 @@ def checkhour(tstart, duration, dur_limit=16):
         fval[1] += mend
     else:
         fval[0] += mend
-    normal_hours = round(fval[0], 2)
-    night_hours = round(duration - normal_hours, 2)
-    return (normal_hours, night_hours)
+    day_hours = round(fval[0], 2)
+    night_hours = round(duration - day_hours, 2)
+    return (day_hours, night_hours, next_day)
+
+
+def nextday(weekday):
+    return (weekday + 1) % 7
+
+def hours(weekday, start_time, duration_hours):
+    assert duration_hours <= 16
+    tshour, tsmin = start_time.split(':')
+    shour = int(tshour)
+    smin = int(tsmin)
+    smin_to_dec = smin / 60
+    stim = shour + smin_to_dec
+    etim = stim + duration_hours
+    ap1 = start_time
+    if etim > 24:
+        next_day = nextday(weekday)
+        ntim = etim - 24
+        otim = 24 - stim
+        eo1 = '24:00'
+        ap2 = '00:00'
+        eo2 = otim
+    else:
+        otim = etim
+        next_day = weekday
+        ntim = 0
+        eo1 = otim
+        ap2 = ''
+        eo2 = ''
+    return GDA[weekday], ap1, eo1, otim, GDA[next_day], ap2, ntim, ntim
 
 
 class WeekDays:
@@ -101,47 +135,37 @@ class WeekDays:
     grdays = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη',
               'Παρασκευή', 'Σάββατο', 'Κυριακή']
 
-    def __init__(self, dlist=(8, 8, 8, 8, 8, 0, 0), start='08:00'):
+    def __init__(self, ddic={}):
         """
-        :param dlist: [1, 1, 1, 1, 1, 0, 0]
-                      Δε,Τρ,Τε,Πε,Πα,Σα,Κυ
-                      [8, 8, 8, 8, 8, 0, 0]
-        Το dlist έχει 7 στοιχεία, ένα για κάθε ημέρα
-        Το κάθε στοιχείο μπορεί να είναι είτε αριθμός που αντιπροσωπεύει τις
-        ώρες εργασίας της ημέρας είτε dictionary με keys την ώρα έναρξης της
-        εργασίας και values τις ώρες εργασίας. Σε μια ημέρα μπορεί ο
-        εργαζόμενος να προσέλθει για εργασία πάνω από μια φορά.
-        Άρα το dictionary μπορεί να έχει τουλάχιστον μία ή παραπάνω τιμές.
-        :param start: Default hour to start working
-        :return: new class
-        dlist = [{'10:00': 8}, {'10:00': 8}, {'10:00': 8}, {'10:00': 8},
-                 {'10:00': 8}, {'10:00': 8}, {'10:00': 8}]
+        :param ddic: {0: {'10:00': 8}, 1: {'10:00': 8}}
+                      MO, TU, WE, TH, FR, SA, SU
+                      Δε, Τρ, Τε, Πε, Πα, Σα, Κυ
+                      0   1   2   3   4   5   6
         """
-        if len(dlist) != 7:
-            raise DatespayException('Not a proper dlist')
-        self.dlist = []
-        self.ddict = []
-        for elm in dlist:
-            if isinstance(elm, (int, float)):
-                self.dlist.append(elm)
-                if elm == 0:
-                    self.ddict.append({})
-                else:
-                    self.ddict.append({start: elm})
-            elif isinstance(elm, dict):
-                thours = 0
-                for key in elm:
-                    thours += elm[key]
-                self.ddict.append(elm)
-                self.dlist.append(thours)
-            else:
-                raise DatespayException('Wrong parameter days')
+        self.ddic = ddic
+
+    @property
+    def meres_ana_bdomada(self):
+        return len(self.ddic)
+
+    @property
+    def ores_ana_bdomada(self):
+        tnormal = 0
+        tnight = 0
+        ttotal = 0
+        for day in self.ddic:
+            for key in self.ddic[day]:
+                htp = checkhour(key, self.ddic[day][key])
+                tnormal += htp[0]
+                tnight += htp[1]
+                ttotal += htp[0] + htp[1]
+        return {'total': ttotal, 'day': tnormal, 'night': tnight}
 
     def week_hours_di(self):
         """Κατανομή ωρών εργασίας ανα κανονικές/νυχτερινές"""
         tnormal = 0
         tnight = 0
-        for day in self.ddict:
+        for day in self.ddic:
             for key in day:
                 htuple = checkhour(key, day[key])
                 tnormal += htuple[0]
@@ -151,7 +175,7 @@ class WeekDays:
     def week_hours_tupl(self):
         """Return a tuple ((0, 0), (), ...)"""
         flist = []
-        for day in self.ddict:
+        for day in self.ddic:
             normal = 0
             night = 0
             for key in day:
@@ -163,7 +187,7 @@ class WeekDays:
 
     def week_hours_analysis(self):
         """Analysis"""
-        tmpl = '%-10s %-6s %6s %6s %6s\n'
+        tmpl = '%-10s %6s %6s %6s %6s\n'
         dlin = '-' * 39 + '\n'
         ast = '\nΕβδομαδιαίο πρόγραμμα εργασίας\n\n'
         ast += tmpl % ('', 'Έναρξη', 'Ημέρα', 'Νύχτα', 'Σύνολο')
@@ -171,14 +195,14 @@ class WeekDays:
         tnormal = 0.0
         tnight = 0.0
         meres_apasxolisis = 0
-        for i, day in enumerate(self.ddict):
-            nday = self.grdays[i]
+        for day in self.ddic:
+            nday = self.grdays[day]
             if day == {}:
                 ast += tmpl % (nday, '', '', '', '')
             else:
                 meres_apasxolisis += 1
-                for key in day:
-                    htu = checkhour(key, day[key])
+                for key in self.ddic[day]:
+                    htu = checkhour(key, self.ddic[day][key])
                     fno = '%.2f' % htu[0]
                     fni = '%.2f' % htu[1]
                     fto = '%.2f' % sum(htu)
@@ -291,6 +315,11 @@ class Period():
 if __name__ == '__main__':
     pe1 = Period('2017-01-01', '2017-01-12')
     print(pe1.days)
-    wd1 = WeekDays((0, 0, 0, 0, {'20:00': 6}, {'20:00': 6}, 0))
+    wd1 = WeekDays({PA: {'20:30': 6},
+                    SA: {'8:00': 4, '21:00': 2},
+                    })
     print(wd1.week_hours_analysis())
+    print(wd1.meres_ana_bdomada)
+    print(wd1.ores_ana_bdomada)
     print(month_days(2017, 12))
+    print(hours(KY, '12:00', 8))
