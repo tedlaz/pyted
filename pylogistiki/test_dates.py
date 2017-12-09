@@ -60,19 +60,3 @@ class Tests(unittest.TestCase):
         self.assertEqual(dpay.checkhour('00:00', 8), (2, 6))
         self.assertEqual(dpay.checkhour('00:30', 12), (6.5, 5.5))
         self.assertEqual(dpay.checkhour('12:00', 8), (8, 0))
-
-
-if __name__ == '__main__':
-    print(dpay.checkhour('14:15', 8))
-    ful = dpay.WeekDays(({'14:15': 8}, {'15:30': 8}, {'16:00': 8},
-                         {'15:15': 8}, {'22:00': 8}, {}, {}))
-    fu2 = dpay.WeekDays(({}, {'10:00': 4}, {'10:00': 2, '22:00': 2},
-                         {'10:00': 4}, {'21:00': 4}, {'21:00': 4}, {}))
-    print(ful.week_hours_di())
-    print(ful.week_hours_tupl())
-    print(fu2.week_hours_analysis())
-    print(fu2.working_month_days(2017, 5))
-    print(fu2.working_days('2017-04-07', '2017-04-30'))
-    print(fu2.working_days_analysis('2017-05-01', '2017-05-31'))
-    print(dpay.timespace_days('2017-01-01', '2017-12-31'))
-    unittest.main()

@@ -321,13 +321,13 @@ def htt(ores):
     return '{:02}:{:02}'.format(hh, mm)
 
 
-def nhu(day, apo, duration):
+def split2days(day, apo, duration):
     """
+    Split hours to two days if necessary
     day : number of day (0:Δευτέρα, .. 5:Σάββατο 6:Κυριακή)
     apo : 'hh:mm'
     duration: ώρες εργασίας
     """
-    nyxta = {'apo': '22:00', 'eos': '06:00'}
     tapoh, tapom = apo.split(':')
     apoh = int(tapoh)
     apom = int(tapom)
@@ -341,19 +341,38 @@ def nhu(day, apo, duration):
         eos1 = 24
         or1 = eos1 - apo1
         or2 = eos2 - apo2
-        return {day: {'d': day, 'apo': apo1, 'eos': eos1, 'h': or1},
-                day2: {'d': day, 'apo': apo2, 'eos': eos2, 'h': or2}}
-    return {day: {'apo': apo1, 'eos': eos1, 'h': or1}}
+        return {day: {'d': day,
+                      'napo': apo1,
+                      'apo': htt(apo1),
+                      'neos': eos1,
+                      'eos': htt(eos1),
+                      'h': or1},
+                day2: {'d': day,
+                       'napo': apo2,
+                       'apo': htt(apo2),
+                       'neos': eos2,
+                       'eos': htt(eos2),
+                       'h': or2}}
+    return {day: {'d': day,
+                  'napo': apo1,
+                  'apo': htt(apo1),
+                  'neos': eos1,
+                  'eos': htt(eos1),
+                  'h': or1}}
 
 
 def idxless(val, alist):
+    """
+    val: μια τιμή
+    alist: Λίστα με τιμές
+    """
     for i, elm in enumerate(alist):
         if val < elm:
             return i
     return i + 1
 
 
-def aspl(dia, kli, vals):
+def split2vals(dia, kli, vals):
     ca0 = set(dia + kli)
     ca1 = list(ca0)
     ca1.sort()
@@ -375,18 +394,21 @@ def aspl(dia, kli, vals):
 
 
 def tst(day, apo, duration):
-    res = nhu(day, apo, duration)
+    res = split2days(day, apo, duration)
     for key in res:
-        apo = res[key]['apo']
-        eos = res[key]['eos']
-        res[key]['qqq'] = aspl([apo, eos], [6, 22], ['nyxta', 'mera', 'nyxta'])
+        apo = res[key]['napo']
+        eos = res[key]['neos']
+        mern = split2vals([apo, eos], [6, 22], ['nyxta', 'mera', 'nyxta'])
+        res[key]['mera'] = mern.get('mera', 0)
+        res[key]['nyxta'] = mern.get('nyxta', 0)
     return res
+
 
 if __name__ == '__main__':
     pe1 = Period('2017-01-01', '2017-01-12')
     # print(pe1.days)
     wd1 = WeekDays({PA: {'20:30': 6},
-                    SA: {'8:00': 4, '21:00': 2},
+                    SA: {'08:00': 4, '21:00': 2},
                     })
     # print(wd1)
     # print(wd1.week_hours_analysis())
@@ -394,6 +416,4 @@ if __name__ == '__main__':
     # print(wd1.ores_ana_bdomada)
     # print(month_days(2017, 12))
     # print(hours(KY, '12:00', 8))
-    print(tst(5, '22:45', 8))
-    # print(htt(1.5))
-    print(aspl([5.5, 23.5], [6, 22], ['nyxta', 'mera', 'nyxta']))
+    print(tst(5, '20:00', 6))
