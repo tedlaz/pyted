@@ -4,9 +4,12 @@ Managing dates for payroll purposes
 """
 import calendar
 import datetime as dt
+from utils import dec
 MO, TU, WE, TH, FR, SA, SU = range(7)
 DE, TR, TE, PE, PA, SA, KY = range(7)
 GDA = {0: 'DE', 1: 'TR', 2: 'TE', 3: 'PE', 4: 'PA', 5: 'SA', 6: 'KY'}
+GRD = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη',
+       'Παρασκευή', 'Σάββατο', 'Κυριακή']
 
 
 class DatespayException(Exception):
@@ -373,6 +376,15 @@ def idxless(val, alist):
 
 
 def split2vals(dia, kli, vals):
+    """
+    dia : [arxi, telos] : arxi <= telos
+    kli : [k1, k2, .. kn] : k1 < k2 < ... < kn
+    vals: [v1, v2, .. vn, v(n+1)]
+    ----k1----k2----    ---kn------
+      v1 |  v2 |         vn | vn+1
+    """
+    assert len(kli) + 1 == len(vals)
+    assert dia[0] <= dia[1]
     ca0 = set(dia + kli)
     ca1 = list(ca0)
     ca1.sort()
@@ -393,7 +405,7 @@ def split2vals(dia, kli, vals):
     return fdic
 
 
-def tst(day, apo, duration):
+def orario_by_day_night(day, apo, duration):
     res = split2days(day, apo, duration)
     for key in res:
         apo = res[key]['napo']
@@ -402,6 +414,91 @@ def tst(day, apo, duration):
         res[key]['mera'] = mern.get('mera', 0)
         res[key]['nyxta'] = mern.get('nyxta', 0)
     return res
+
+
+def print_orario(day, apo, duration):
+    res = orario_by_day_night(day, apo, duration)
+    ast = "%-10s %-14s %5s %5s %6s %6s %6s"
+    tit = ('Ημέρα', 'Συνέχεια Από', 'Από', 'Έως', 'Μέρα', 'Νύχτα', 'Συν')
+    print(ast % tit)
+    for key in res:
+        adi = res[key]
+        syn = '' if key == adi['d'] else GRD[adi['d']]
+        print(ast % (GRD[key], syn, adi['apo'], adi['eos'],
+                     dec(adi['mera'], 1), dec(adi['nyxta'], 1),
+                     dec(adi['h'], 1)))
+
+def endtim(start, duration):
+    hhh, mmm = start.split(':')
+    nhh = int(hhh)
+    imm = int(mmm)
+    zstart = nhh + (imm / 60)
+    zend = zstart + duration
+    hh = int(zend // 1) % 24
+    mm = int((zend % 1) * 60)
+    return '{:02}:{:02}'.format(hh, mm)
+
+
+class Programma():
+    """
+    {0: {'10:00': 4, '20:00': 4}, 1: {'10:00': 8}}
+    """
+    def __init__(self, prg):
+        self._prg = prg
+
+    @property
+    def analytika(self):
+        tdi = {}
+        for key in self._prg:
+            tdi[key] = {}
+            for start in self._prg[key]:
+                ores = self._prg[key][start]
+                # print('->', orario_by_day_night(key, start, ores))
+                tdi[key][start] = orario_by_day_night(key, start, ores)
+        return tdi
+
+    @property
+    def synoptika(self):
+        ttt = []
+        tdays = len(self._prg)
+        thours = dec(0, 1)
+        for key in self._prg:
+            mer = GRD[key]
+            tvl = []
+            for ora in self._prg[key]:
+                dur = self._prg[key][ora]
+                stt = '%s-%s(%s ώρα)' if dur == 1 else '%s-%s(%s ώρες)'
+                tvl.append(stt % (ora, endtim(ora, dur), dur))
+                thours += dec(dur, 1)
+            ttt.append('%s ' % mer + ' και '.join(tvl))
+        ttt.append('Μέρες: %s, Ώρες: %s' % (tdays, thours))
+        return ',\n'.join(ttt)
+
+    def __repr__(self):
+        ast = "%-10s %-14s %6s %6s %6s %6s %6s\n"
+        tit = ('Ημέρα', 'Συνέχεια...', 'Από', 'Έως', 'Μέρα', 'Νύχτα', 'Συν')
+        ttt = ast % tit
+        syn = ''
+        vls = self.analytika
+        tme = tny = tto = dec(0, 1)
+        for key in vls:
+            for ora in vls[key]:
+                for dyy in vls[key][ora]:
+                    vvv = vls[key][ora][dyy]
+                    ime = GRD[dyy]
+                    syn = '' if key == dyy else GRD[key]
+                    apo = vvv['apo']
+                    eos = vvv['eos']
+                    mer = dec(vvv['mera'], 1)
+                    nyx = dec(vvv['nyxta'], 1)
+                    tot = dec(vvv['h'], 1)
+                    ttt += ast % (ime, syn, apo, eos, mer, nyx, tot)
+                    tme += mer
+                    tny += nyx
+                    tto += tot
+        ttt += ast % ('Σύνολα', '', '', '', tme, tny, tto)
+        ttt += 'Σύνολο ημερών εργασίας : %s' % len(vls)
+        return ttt
 
 
 if __name__ == '__main__':
@@ -416,4 +513,9 @@ if __name__ == '__main__':
     # print(wd1.ores_ana_bdomada)
     # print(month_days(2017, 12))
     # print(hours(KY, '12:00', 8))
-    print(tst(5, '20:00', 6))
+    # print_orario(PA, '20:00', 6.0)
+    # print(orario_by_day_night(PA, '20:00', 6.0))
+    pr1 = Programma({0: {'10:00': 8}, 1: {'10:30': 8}, 2: {'10:00': 8},
+                     3: {'08:00': 8}, 4: {'08:00': 4, '17:00': 4}})
+    print(pr1)
+    print(pr1.synoptika)
