@@ -25,7 +25,7 @@ def normal(erg):
     ooo['apon'] = erg.get('apon', erg['apo'])
     des['apon'] = 'Νόμιμες Αποδοχές'
     ooo['meres'] = erg.get('meres', 0)
-    des['meres'] = 'Ημέρες εργάσίας'
+    des['meres'] = 'Ημέρες εργασίας'
     ooo['ores'] = erg.get('ores', 0)
     des['ores'] = 'Ώρες εργάσίας (Για ωρομίσθιους)'
     ooo['argiam'] = erg.get('argiam', 0)

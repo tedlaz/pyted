@@ -173,7 +173,7 @@ def printfor(xrisi, poso_apo, poso_eos, bima=100, misthotos=True):
     eos: Έως εισόδημα
     bima: Βήμα ανάμεσα σε δύο γραμμές
     '''
-    ast = "%12s %9s %9s %9s %9s %9s %5s"
+    ast = "%12s %9s %9s %9s %9s %9s %9s"
     j = ('Εισόδημα', 'Φόρος 0', 'Φόρος 1', 'Φόρος 2', 'Φόρος 3', 'Ε.Ε.Αλ', 'f')
     print(ast % j)
     for i in range(poso_apo, poso_eos + bima, bima):
