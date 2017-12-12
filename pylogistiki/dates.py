@@ -372,7 +372,7 @@ def idxless(val, alist):
     for i, elm in enumerate(alist):
         if val < elm:
             return i
-    return i + 1
+    return len(alist)
 
 
 def split2vals(dia, kli, vals):
@@ -447,13 +447,32 @@ class Programma():
         self._prg = prg
 
     @property
+    def meres_ana_bdomada(self):
+        return len(self._prg)
+
+    @property
+    def ores_ana_bdomada(self):
+        ana = self.analytika
+        for day in ana:
+            for dayb in ana[day]:
+                for apo in ana[day][dayb]:
+                    pass
+
+    @property
     def analytika(self):
+        """
+        {0: {'22:00': {'eos': '24:00', 'd': 0, 'omer': 2, 'onyx': 0, 'ot': 2},
+             '10:00': {'eos': '12:00', 'd': 0, 'omer': 2, 'onyx': 0, 'ot': 2}},
+         1: {'10:00': {'eos': '14:00', 'd': 1, 'omer': 4, 'onyx': 0, 'ot': 4},
+             '21:00': {'eos': '24:00', 'd': 1, 'omer': 1, 'onyx': 2, 'ot': 3}},
+         2: {'00:00': {'eos': '03:00', 'd': 1, 'omer': 0, 'onyx': 3, 'ot': 3}}}
+        """
         tdi = {}
         for key in self._prg:
             tdi[key] = {}
             for start in self._prg[key]:
                 ores = self._prg[key][start]
-                # print('->', orario_by_day_night(key, start, ores))
+                print('->', orario_by_day_night(key, start, ores))
                 tdi[key][start] = orario_by_day_night(key, start, ores)
         return tdi
 
