@@ -1,4 +1,4 @@
 #!/bin/bash
-veracrypt
-date_now=$(date +"%Y%m%d%H%M")
+#veracrypt
+date_now=$(date +"%Y%m%d-%H%M")
 7z a ~/Backup/koyti.$date_now.7z -mhe -pSk4t4 /run/media/tedlaz/DATA/koyti
