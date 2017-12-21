@@ -60,32 +60,61 @@ calcmis_per(jan2017) :
                         |--|   ανεξάρτητα
 """
 import datetime as dt
-from utils import grup, required
+import calendar
+from utils import grup
 
 
 class Period():
-    def __init__(self, dapo, deos):
+    def __init__(self, tapo, teos):
         """
         dapo: iso date
         deos: iso date
         """
-        assert dapo <= deos
-        assert len(dapo) == 10
-        assert len(deos) == 10
-        self._apo = dt.datetime.strptime(dapo, '%Y-%m-%d')
-        self._eos = dt.datetime.strptime(deos, '%Y-%m-%d')
+        assert tapo <= teos
+        assert len(tapo) == 10
+        assert len(teos) == 10
+        self._apo = tapo
+        self._eos = teos
+
+    @property
+    def dapo(self):
+        '''Returns datetime object'''
+        return dt.datetime.strptime(self._apo, '%Y-%m-%d')
+
+    @property
+    def deos(self):
+        '''Returns datetime object'''
+        return dt.datetime.strptime(self._eos, '%Y-%m-%d')
 
     @property
     def days(self):
-        return (self._eos - self._apo).days + 1
+        '''Returns difference in days'''
+        return (self.deos - self.dapo).days + 1
 
     @property
     def split2moths(self):
-        ye1 = self._apo.year
-        ye2 = self._eos.year
-        mo1 = self._apo.month
-        mo2 = self._eos.month
+        '''Split a period to periods per month'''
+        ye1 = self.dapo.year
+        ye2 = self.deos.year
+        mo1 = self.dapo.month
+        mo2 = self.deos.month
+        yeardiff = ye2 - ye1
+        fmo2 = mo2 + (yeardiff * 12)
+        monthdiff = fmo2 - mo1 + 1
+        pers = []
+        yea = ye1
+        mon = mo1
+        for i in range(monthdiff):
 
+            pers.append((yea, mon, calendar.monthrange(yea, mon)))
+            mon += 1
+            if mon > 12:
+                mon = 1
+                yea += 1
+        return monthdiff, pers
+
+    def __str__(self):
+        return '%s:%s' % (self._apo, self._eos)
 
 
 def calcpayroll(ptype, period, ergdata):
@@ -129,6 +158,8 @@ if __name__ == "__main__":
     print(epo, grup(epo))
     siv = ['epo', 'ono', 'pat']
     ggg = {'epo': 'a', 'ono': 'b', 'pat': 'c'}
-    assert required(siv, ggg)
-    pe1 = Period('2016-02-28', '2016-03-01')
+    # assert required(siv, ggg)
+    pe1 = Period('2015-12-28', '2017-03-01')
     print(pe1.days)
+    print(pe1.split2moths)
+    print(pe1)
