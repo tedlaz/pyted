@@ -12,6 +12,7 @@
 7. Έσοδα
 8. Ανόργανα
 """
+from utils import dec
 ACCOUNT_TYPES = {'1': ['Πάγια', 'Ισολογισμός', 'Ενεργητικό'],
                  '2': ['Αποθέματα', 'Ισολογισμός', 'Ενεργητικό'],
                  '3': ['Απαιτήσεις', 'Ισολογισμός', 'Ενεργητικό'],
@@ -42,12 +43,12 @@ class Account():
         self._nam = name  # Ονομασία λογαριασμού
 
     @property
-    def name(self):
-        return self._nam if self._nam else '# Λείπει Όνομα λ/μού !!! #'
-
-    @property
     def code(self):
         return self._cod
+
+    @property
+    def name(self):
+        return self._nam if self._nam else '# Λείπει Όνομα λ/μού !!! #'
 
     @property
     def tags(self):
@@ -66,7 +67,7 @@ class Account():
         return rlist
 
     def __repr__(self):
-        return '%s %s (%s)' % (self._cod, self.name, self.tags)
+        return '%-15s %s (%s)' % (self._cod, self.name, self.tags)
 
 
 class TransLine():
@@ -78,28 +79,30 @@ class TransLine():
         self._acc = Account(acccode, accper)  # Λογαριασμός
         self._pel = perigrafi  # Περιγραφή
         self._typ = typ  # 1 για χρέωση 2 για πίστωση
-        self._val = poso  # Ποσό
+        self._val = dec(poso)  # Ποσό
 
     @property
     def xre(self):
-        return self._val if self._typ == CREDIT else 0
+        return self._val if self._typ == DEBIT else dec(0)
 
     @property
     def pis(self):
-        return self._val if self._typ == DEBIT else 0
+        return self._val if self._typ == CREDIT else dec(0)
 
     @property
     def ypo(self):
         return self.xre - self.pis
 
+    @property
+    def code(self):
+        return self._acc.code
+
     def __repr__(self):
-        ast = '%5s %-80s %-20s %12s %12s'
-        xre = self._val if self._typ == DEBIT else 0
-        pis = self._val if self._typ == CREDIT else 0
-        return ast % (self._no, self._acc, self._pel, xre, pis)
+        ast = '%4s %-90s %-20s %12s %12s'
+        return ast % (self._no, self._acc, self._pel, self.xre, self.pis)
 
 
-class Trans():
+class Tran():
     """Λογιστικό άρθρο"""
 
     def __init__(self, date, par, per):
@@ -109,27 +112,31 @@ class Trans():
         self._per = per  # Περιγραφή
         self._lns = []  # Λίστα με αναλυτικές γραμμές
         self._nol = 0  # Αριθμός γραμμών
-        self._total_debit = 0  # συνολική χρέωση
-        self._total_credit = 0  # συνολική πίστωση
-        self._bal = 0  # Υπόλοιπο (χρεώσεις - πιστώσεις)
+        self._total_debit = dec(0)  # συνολική χρέωση
+        self._total_credit = dec(0)  # συνολική πίστωση
+        self._bal = dec(0)  # Υπόλοιπο (χρεώσεις - πιστώσεις)
 
     def line(self, per, typ, poso, accode, acper=None):
         self._lns.append(TransLine(self._nol + 1, per, typ, poso,
                                    accode, acper))
         self._nol += 1
         if typ == DEBIT:
-            self._bal += poso
-            self._total_debit += poso
+            self._bal += dec(poso)
+            self._total_debit += dec(poso)
         elif typ == CREDIT:
-            self._bal -= poso
-            self._total_credit += poso
+            self._bal -= dec(poso)
+            self._total_credit += dec(poso)
 
     def line_final(self, per, typ, accode, acper=None):
         # Θα πρέπει να υπάρχει ήδη τουλάχιστον μια γραμμή
         assert self._nol >= 1
         delta = self._bal if typ == CREDIT else self._bal * -1
-        self.line(per, typ, delta, accode, acper=None)
+        self.line(per, typ, delta, accode, acper)
         assert self.is_balanced
+
+    @property
+    def date(self):
+        return self._dat
 
     @property
     def total_debit(self):
@@ -140,6 +147,10 @@ class Trans():
         return self._total_credit
 
     @property
+    def ypoloipo(self):
+        return self._bal
+
+    @property
     def is_balanced(self):
         if self._nol < 2:  # Πρέπει να υπάρχουν τουλάχιστον δύο γραμμές
             return False
@@ -147,6 +158,14 @@ class Trans():
             return True
         else:
             return False
+
+    def kartella(self, lmos):
+        lines_found = []
+        for line in self._lns:
+            if line.code == lmos:
+                line.date = self.date
+                lines_found.append(line)
+        return lines_found
 
     def __repr__(self):
         status = 'Ισοσκελισμένο' if self.is_balanced else 'Ατελές'
@@ -164,7 +183,7 @@ class Ledger():
         self._trans = []  # Λίστα με λογιστικά άρθρα
         self._counter = 0  # Αριθμός λογιστικών άρθρων
 
-    def add_trans(self, transaction):
+    def add(self, transaction):
         if not transaction.is_balanced:
             raise TransException('Not Valid transaction %s' % transaction)
         num = self._counter + 1
@@ -172,10 +191,40 @@ class Ledger():
         self._trans.append(transaction)
         self._counter = num
 
-    def isozygio(self):
+    def isozygio(self, apo, eos):
+        dacc = {}
+        counter = 0
         for tran in self._trans:
-            for account in tran._lns:
-                print(account)
+            if not apo <= tran.date <= eos:
+                continue
+            counter += 1
+            for lin in tran._lns:
+                dacc[lin.code] = dacc.get(lin.code,
+                                          {'xr': dec(0),
+                                           'pi': dec(0),
+                                           'yp': dec(0)})
+                dacc[lin.code]['xr'] += lin.xre
+                dacc[lin.code]['pi'] += lin.pis
+                dacc[lin.code]['yp'] += lin.ypo
+        return dacc, counter
+
+    def isozygio_print(self, apo, eos):
+        dat, counter = self.isozygio(apo, eos)
+        ast = '%15s %10s %10s %10s'
+        print('Ισοζύγιο απο %s έως %s' % (apo, eos))
+        for lmo in sorted(dat):
+            print(ast % (lmo, dat[lmo]['xr'], dat[lmo]['pi'], dat[lmo]['yp']))
+        print('Συνολικές εγγραφές περιόδου: %s' % counter)
+
+    def short(self):
+        pass
+
+    def kartella(self, lmos):
+        total_found = []
+        for tran in self._trans:
+            total_found += tran.kartella(lmos)
+        for elm in total_found:
+            print(elm.date, elm)
 
     def __repr__(self):
         ast = ''
@@ -184,17 +233,84 @@ class Ledger():
         return ast
 
 
-if __name__ == '__main__':
-    ac = Account('54.00.00', 'ΦΠΑ δοκιμαστικό')
-    tr1 = Trans('2017-01-01', 'ΤΠΥ2345', 'Δοκιμαστικό')
-    tr1.line('', 1, 10, '20.00', 'sdfsf')
-    tr1.line('', 1, 2, '54.00', 'ΦΠΑ')
-    tr1.line_final('', 2, '50.00', 'Προμηθευτές')
+def polee(date, par, ajia13, ajia24, pelafm, pelnam=None):
+    """Πωλήσεις εμπορευμάτων εσωτερικού"""
+    tra = Tran(date, par, 'Πωλήσεις χονδρικής εσωτερικού')
+    if ajia13 != 0:
+        tra.line('', CREDIT, ajia13, '70.00.7013', 'Πωλήσεις εμ/των ΦΠΑ 13%')
+        fpa13 = dec(ajia13 * .13)
+        tra.line('', CREDIT, fpa13, '54.00.7013', 'ΦΠΑ Πωλήσεων 13%')
+    if ajia24 != 0:
+        tra.line('', CREDIT, ajia24, '70.00.7024', 'Πωλήσεις εμ/των ΦΠΑ 24%')
+        fpa24 = dec(ajia24 * .24)
+        tra.line('', CREDIT, fpa24, '54.00.7024', 'ΦΠΑ Πωλήσεων 24%')
+    pellmo = '30.00.%s' % pelafm
+    tra.line_final('', DEBIT, pellmo, pelnam)
+    return tra
+
+
+def polli(date, par, ajia13, ajia24):
+    """Πωλήσεις λιανικής εσωτερικού"""
+    tra = Tran(date, par, 'Πωλήσεις λιανικής μηχανη 1')
+    if ajia13 != 0:
+        tra.line('', CREDIT, ajia13, '70.01.7013', 'Πωλήσεις Λιαν. ΦΠΑ 13%')
+        fpa13 = dec(ajia13 * .13)
+        tra.line('', CREDIT, fpa13, '54.00.7013', 'ΦΠΑ Πωλήσεων 13%')
+    if ajia24 != 0:
+        tra.line('', CREDIT, ajia24, '70.01.7024', 'Πωλήσεις Λιαν. ΦΠΑ 24%')
+        fpa24 = dec(ajia24 * .24)
+        tra.line('', CREDIT, fpa24, '54.00.7024', 'ΦΠΑ Πωλήσεων 24%')
+    tra.line_final('', DEBIT, '38.00.00', 'Ταμείο')
+    return tra
+
+
+def ageee(date, par, ajia13, ajia24, proafm, pronam=None):
+    """Αγορές εμπορευμάτων εσωτερικού"""
+    tra = Tran(date, par, 'Αγορές εμπορευμάτων εσωτερικού')
+    if ajia13 != 0:
+        tra.line('', DEBIT, ajia13, '20.00.2013', 'Αγορές εμ/των ΦΠΑ 13%')
+        fpa13 = dec(ajia13 * .13)
+        tra.line('', DEBIT, fpa13, '54.00.2013', 'ΦΠΑ Αγορών 13%')
+    if ajia24 != 0:
+        tra.line('', DEBIT, ajia24, '20.00.7024', 'Αγορές εμ/των ΦΠΑ 24%')
+        fpa24 = dec(ajia24 * .24)
+        tra.line('', DEBIT, fpa24, '54.00.2024', 'ΦΠΑ Αγορών 24%')
+    prolmo = '50.00.%s' % proafm
+    tra.line_final('', CREDIT, prolmo, pronam)
+    return tra
+
+
+def generate_transactions(number=100):
+    import random
+    from datetime import datetime
+
+    def rdate(year):
+        try:
+            dnum = random.randint(1, 365)
+            rda = datetime.strptime('{} {}'.format(dnum, year), '%j %Y')
+            return rda.date().isoformat()
+        except ValueError:
+            rdate(year)
+
     ledger = Ledger()
-    ledger.add_trans(tr1)
-    tr2 = Trans('2017-01-02', 'Αποδ23', 'Δοκιμαστικό')
-    tr2.line('', 1, 12, '50.00')
-    tr2.line('', 2, 12, '38.00', 'Ταμείο')
-    ledger.add_trans(tr2)
-    print(ledger)
-    print(ledger.isozygio())
+    for i in range(number):
+        typ = random.randint(1, 3)
+        date = rdate(2017)
+        par = 'ΤΔΑ%s' % (i + 1)
+        p13 = random.randint(0, 100)
+        p24 = random.randint(0, 100)
+        afm = str(random.randint(999999990, 999999999))
+        if typ == 1:
+            ledger.add(polee(date, par, p13, p24, afm))
+        elif typ == 2:
+            ledger.add(ageee(date, par, p13, p24, afm))
+        else:
+            par = 'Z%s' % (i + 1)
+            ledger.add(polli(date, par, p13, p24))
+    return ledger
+
+
+if __name__ == '__main__':
+    ledger = generate_transactions(1000)
+    ledger.isozygio_print('2017-01-01', '2017-12-31')
+    ledger.kartella('38.00.00')
