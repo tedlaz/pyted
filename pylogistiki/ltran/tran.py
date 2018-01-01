@@ -273,10 +273,11 @@ class Ledger():
     def ypoloipo(self, lmos):
         return self._lmoi.get(lmos, dec(0))
 
-    def prom(self):
+    def open_accounts(self, acc):
+        """Λίστα με ανοικτούς λογαριασμούς που μοιάζουν με τον acc"""
         promitheftes = []
         for lmo in self._lmoi:
-            if lmo.startswith('50.00'):
+            if lmo.startswith(acc):
                 if self.ypoloipo(lmo) != 0:
                     promitheftes.append(lmo)
         return promitheftes
@@ -376,7 +377,7 @@ def generate_transactions(number=100):
         p24 = random.randint(0, 100)
         if p13 + p24 == 0:
             p13 = 1
-        afm = str(random.randint(999999990, 999999999))
+        afm = str(random.randint(999999910, 999999999))
         if typ == 1:
             ledger.add(polee(date, par, p13, p24, afm))
         elif typ == 2:
@@ -384,12 +385,14 @@ def generate_transactions(number=100):
         elif typ == 3:
             par = 'Z%s' % (i + 1)
             ledger.add(polli(date, par, p13, p24))
-        elif typ == 4:
-            poso = random.randint(10, 100)
-            par = 'Αποδ.Μετρητών %s' % (i + 1)
-            ledger.add(plipro(date, par, afm, poso))
-        elif typ == 5:
-            proms = ledger.prom()
+        elif typ == 4:  # Πληρωμή πελατών
+            pels = ledger.open_accounts('30.00')
+            if pels:
+                ledger.kleisimo_lmoy(date, random.choice(pels), '38.00.00')
+            else:
+                ledger.add(polee(date, par, p13, p24, afm))
+        elif typ == 5:  # Πληρωμή προμηθευτών
+            proms = ledger.open_accounts('50.00')
             if proms:
                 ledger.kleisimo_lmoy(date, random.choice(proms), '38.00.00')
             else:
