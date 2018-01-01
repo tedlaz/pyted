@@ -404,7 +404,9 @@ def generate_transactions(number=100):
 
 if __name__ == '__main__':
     ledger = generate_transactions(1000)
+    ledger.kleisimo_lmoy('2017-12-31', '38.00.00', '38.03.00')
     ledger.isozygio_print('2017-01-01', '2017-12-31')
+
     # ledger.kartella('38.00.00')
     # print(ledger)
     print(ledger.ypoloipo('38.00.00'))
