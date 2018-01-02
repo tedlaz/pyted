@@ -13,19 +13,33 @@
 8. Ανόργανα
 """
 from utils import dec
-ACCOUNT_TYPES = {'1': ['Πάγια', 'Ισολογισμός', 'Ενεργητικό'],
-                 '2': ['Αποθέματα', 'Ισολογισμός', 'Ενεργητικό'],
-                 '3': ['Απαιτήσεις', 'Ισολογισμός', 'Ενεργητικό'],
-                 '38': ['Ταμιακά διαθέσιμα'],
-                 '4': ['Κεφάλαιο', 'Ισολογισμός', 'Παθητικό'],
-                 '5': ['Υποχρεώσεις', 'Ισολογισμός', 'Παθητικό'],
+import json
+ACCOUNT_TYPES = {'1': ['Πάγια', 'Ενεργητικό'],
+                 '2': ['Αποθέματα', 'Ενεργητικό'],
+                 '3': ['Απαιτήσεις', 'Ενεργητικό'],
+                 '38': ['Ταμιακά'],
+                 '4': ['Κεφάλαιο', 'Παθητικό'],
+                 '5': ['Υποχρεώσεις', 'Παθητικό'],
                  '54.00': ['ΦΠΑ'],
-                 '6': ['Εξοδα', 'Αποτελέσματα'],
-                 '7': ['Εσοδα', 'Αποτελέσματα'],
-                 '8': ['Ανόργανα']
+                 '6': ['Εξοδα'],
+                 '7': ['Εσοδα'],
+                 '8': ['Ανόργανα'],
+                 '80.00': ['Αποτελέσματα', 'Παθητικό']
                  }
 ACCOUNT_SPLITTER = '.'
 DEBIT, CREDIT = 1, 2
+ANOIGMA, GENIKO, KLEISIMO = 1, 2, 3  # Ημερολόγια εγγραφών
+APOTELESMATA = '80.00.00'  # Λογαριασμός αποτελεσμάτων
+FPA = '54.00'  # Βασικός λογαριασμός ΦΠΑ
+FPAF = '54.00.99'  # Λογαριασμός κλεισίματος ΦΠΑ
+
+
+def levels(account):
+    arlev = account.split(ACCOUNT_SPLITTER)  # ['38', '00', '00']
+    rlist = [account[0]]  # Βάζουμε την ομάδα
+    for i, _ in enumerate(arlev):
+        rlist.append('.'.join(arlev[:i + 1]))
+    return rlist[:-1]
 
 
 class TransException(Exception):
@@ -48,7 +62,7 @@ class Account():
 
     @property
     def name(self):
-        return self._nam if self._nam else '# Λείπει Όνομα λ/μού !!! #'
+        return self._nam if self._nam else '??? %s ???' % self._cod
 
     @property
     def tags(self):
@@ -60,14 +74,19 @@ class Account():
 
     @property
     def levels(self):
-        arlev = self._cod.split(ACCOUNT_SPLITTER)
+        arlev = self._cod.split(ACCOUNT_SPLITTER)  # ['38', '00', '00']
         rlist = [self._cod[0]]  # Βάζουμε την ομάδα
         for i, _ in enumerate(arlev):
             rlist.append('.'.join(arlev[:i + 1]))
         return rlist
 
+    @property
+    def levels_tags(self):
+        return self.levels + self.tags
+
     def __repr__(self):
-        return '%-15s %s (%s)' % (self._cod, self.name, self.tags)
+        # return '%-15s %s (%s)' % (self._cod, self.name, self.tags)
+        return '%-15s %s' % (self._cod, self.name)
 
 
 class TransLine():
@@ -83,6 +102,10 @@ class TransLine():
         self._parent = parent
 
     @property
+    def journal(self):
+        return self._parent.journal if self._parent else '??? journal ???'
+
+    @property
     def date(self):
         return self._parent.date if self._parent else '??? date ???'
 
@@ -93,6 +116,18 @@ class TransLine():
     @property
     def per(self):
         return self._parent.per if self._parent else '??? per ???'
+
+    @property
+    def typ(self):
+        return self._typ
+
+    @property
+    def val(self):
+        return self._val
+
+    @property
+    def pel(self):
+        return self._pel
 
     @property
     def no(self):
@@ -115,8 +150,16 @@ class TransLine():
         return self._acc.code
 
     @property
+    def codep(self):
+        return self._acc.name
+
+    @property
     def levels(self):
         return self._acc.levels
+
+    @property
+    def levels_tags(self):
+        return self._acc.levels_tags
 
     def __repr__(self):
         ast = '%4s %-90s %-20s %12s %12s'
@@ -126,16 +169,51 @@ class TransLine():
 class Tran():
     """Λογιστικό άρθρο"""
 
-    def __init__(self, date, par, per):
-        self._no = 0
-        self._dat = date  # Ημερομηνία εγγραφής
-        self._par = par  # Παραστατικό
-        self._per = per  # Περιγραφή
-        self._lns = []  # Λίστα με αναλυτικές γραμμές
-        self._nol = 0  # Αριθμός γραμμών
-        self._total_debit = dec(0)  # συνολική χρέωση
-        self._total_credit = dec(0)  # συνολική πίστωση
-        self._bal = dec(0)  # Υπόλοιπο (χρεώσεις - πιστώσεις)
+    def __init__(self, date, par, per, journal=2, dic=None):
+        """Εγγραφή λογιστικής"""
+        if dic:
+            self._journal = dic['journal']
+            self._dat = dic['dat']
+            self._par = dic['par']
+            self._per = dic['per']
+            self._lns = []
+            self._nol = 0
+            self._total_debit = dec(0)
+            self._total_credit = dec(0)
+            self._bal = dec(0)
+            for elm in dic['lns']:
+                self.line(elm['pel'],
+                          elm['typ'],
+                          elm['poso'],
+                          elm['cod'],
+                          elm['codp'])
+        else:
+            self._journal = journal
+            self._no = 0
+            self._dat = date  # Ημερομηνία εγγραφής
+            self._par = par  # Παραστατικό
+            self._per = per  # Περιγραφή
+            self._lns = []  # Λίστα με αναλυτικές γραμμές
+            self._nol = 0  # Αριθμός γραμμών
+            self._total_debit = dec(0)  # συνολική χρέωση
+            self._total_credit = dec(0)  # συνολική πίστωση
+            self._bal = dec(0)  # Υπόλοιπο (χρεώσεις - πιστώσεις)
+
+    @property
+    def to_dict(self):
+        """Αποθήκευση σε json"""
+        dic = {'journal': self._journal,
+               'dat': self._dat,
+               'par': self._par,
+               'per': self._per,
+               'lns': []}
+        for lin in self._lns:
+            dic['lns'].append({'pel': lin.pel,
+                               'typ': lin.typ,
+                               'poso': float(lin.val),
+                               'cod': lin.code,
+                               'codp': lin.codep})
+        return dic
 
     def line(self, per, typ, poso, accode, acper=None):
         self._lns.append(TransLine(self._nol + 1, per, typ, poso,
@@ -149,11 +227,30 @@ class Tran():
             self._total_credit += dec(poso)
 
     def line_final(self, per, typ, accode, acper=None):
+        """Κλείσιμο εγγραφής"""
         # Θα πρέπει να υπάρχει ήδη τουλάχιστον μια γραμμή
-        assert self._nol >= 1
+        if self._nol == 0 or self.is_balanced:
+            return
         delta = self._bal if typ == CREDIT else self._bal * -1
         self.line(per, typ, delta, accode, acper)
         assert self.is_balanced
+
+    def line_final_auto(self, per, account, accountper=None):
+        """Κλείσιμο εγγραφής με αυτόματη επιλογή χρέωσης/πίστωσης"""
+        if self._nol == 0 or self.is_balanced:
+            return
+        if self._bal > 0:
+            delta = self._bal
+            trtyp = CREDIT
+        else:
+            delta = self._bal * -1
+            trtyp = DEBIT
+        self.line(per, trtyp, delta, account, accountper)
+        assert self.is_balanced
+
+    @property
+    def journal(self):
+        return self._journal
 
     @property
     def no(self):
@@ -200,9 +297,11 @@ class Tran():
         return lines_found
 
     def __repr__(self):
-        status = 'Ισοσκελισμένο' if self.is_balanced else 'Ατελές'
-        ast = '%s %s %s %s (κατάσταση άρθρου: %s)\n'
-        atx = ast % (self._no, self._dat, self._par, self._per, status)
+        # status = 'Ισοσκελισμένο' if self.is_balanced else 'Ατελές'
+        # ast = '%s %s %s %s (κατάσταση άρθρου: %s)\n'
+        # atx = ast % (self._no, self._dat, self._par, self._per, status)
+        ast = '%1s %5s %10s %s %s\n'
+        atx = ast % (self._journal, self._no, self._dat, self._par, self._per)
         for lin in self._lns:
             atx += '  %s\n' % lin
         return atx
@@ -211,7 +310,7 @@ class Tran():
 class Ledger():
     """Λογιστικό βιβλίο"""
 
-    def __init__(self):
+    def __init__(self, data=None):
         self._trans = []  # Λίστα με λογιστικά άρθρα
         self._counter = 0  # Αριθμός λογιστικών άρθρων
         self._lmoi = {}
@@ -227,41 +326,80 @@ class Ledger():
             self._lmoi[line.code] = self._lmoi.get(line.code, dec(0))
             self._lmoi[line.code] += line.ypo
 
-    def isozygio(self, apo=None, eos=None):
+    def to_json(self, file):
+        dat = []
+        for elm in self._trans:
+            dat.append(elm.to_dict)
+        with open(file, 'w') as fil:
+            fil.write(json.dumps(dat))
+
+    def from_json(self, file):
+        dat = []
+        with open(file) as fil:
+            dat = json.loads(fil.read())
+        for elm in dat:
+            self.add(Tran('', '', '', dic=elm))
+
+    def isozygio(self, apo=None, eos=None, journal=None):
         # apo = apo if apo else '1000-01-01'
         # eos = eos if eos else '9999-12-31'
         dacc = {}
         counter = 0
         for tran in self._trans:
+            if journal:
+                if tran.journal != journal:
+                    continue
             if apo and eos:
                 if not apo <= tran.date <= eos:
                     continue
             counter += 1
             for lin in tran._lns:
-                for code in lin.levels:
-                    dacc[code] = dacc.get(code, {'xr': dec(0),
-                                                 'pi': dec(0),
-                                                 'yp': dec(0)})
-                    dacc[code]['xr'] += lin.xre
-                    dacc[code]['pi'] += lin.pis
-                    dacc[code]['yp'] += lin.ypo
-        return dacc, counter
+                # for code in lin.levels_tags:
+                code = lin.code
+                dacc[code] = dacc.get(code, {'xr': dec(0),
+                                             'pi': dec(0),
+                                             'yp': dec(0)})
+                dacc[code]['xr'] += lin.xre
+                dacc[code]['pi'] += lin.pis
+                dacc[code]['yp'] += lin.ypo
+        fin = {}
+        for key in dacc:
+            lvls = levels(key)
+            fin[key] = dacc[key]
+            for lvl in lvls:
+                fin[lvl] = fin.get(lvl, {'xr': dec(0),
+                                         'pi': dec(0),
+                                         'yp': dec(0)})
+                fin[lvl]['xr'] += dacc[key]['xr']
+                fin[lvl]['pi'] += dacc[key]['pi']
+                fin[lvl]['yp'] += dacc[key]['yp']
+        return fin, counter
 
-    def transfer(self, date, lapo, lse, poso):
+    def isozygio_print(self, apo=None, eos=None, journal=None):
+        dat, counter = self.isozygio(apo, eos, journal)
+        ast = '%-15s %10s %10s %10s'
+        print('Ισοζύγιο απο %s έως %s' % (apo, eos))
+        for lmo in sorted(dat):
+            print(ast % (lmo, dat[lmo]['xr'], dat[lmo]['pi'], dat[lmo]['yp']))
+        print('Συνολικές εγγραφές περιόδου: %s' % counter)
+
+    def transfer(self, date, lapo, lse, poso, journal=2):
         """Μετάφορά ποσού από ένα λογαριασμό σε άλλο"""
+        par = 'Λ.Εγγρ.'
         per = 'Μεταφορά από %s σε %s' % (lapo, lse)
-        tra = Tran(date, per, per)
+        tra = Tran(date, par, per, journal)
         tra.line('', CREDIT, poso, lapo)
         tra.line('', DEBIT, poso, lse)
         self.add(tra)
 
-    def kleisimo_lmoy(self, date, lmos, lmosm):
+    def kleisimo_lmoy(self, date, lmos, lmosm, journal=2):
         """Μεταφορά υπολοίπου λογαριασμού σε λ/μο lmosm"""
         ypol = self.ypoloipo(lmos)
         if ypol == 0:
             return
+        par = 'Λ.Εγγρ.'
         per = 'Μεταφορά από %s σε %s' % (lmos, lmosm)
-        tra = Tran(date, per, per)
+        tra = Tran(date, par, per, journal)
         if ypol < 0:
             tra.line('', DEBIT, ypol * dec(-1), lmos)
             tra.line('', CREDIT, ypol * dec(-1), lmosm)
@@ -270,13 +408,42 @@ class Ledger():
             tra.line('', DEBIT, ypol, lmosm)
         self.add(tra)
 
-    def isozygio_print(self, apo=None, eos=None):
-        dat, counter = self.isozygio(apo, eos)
-        ast = '%-15s %10s %10s %10s'
-        print('Ισοζύγιο απο %s έως %s' % (apo, eos))
-        for lmo in sorted(dat):
-            print(ast % (lmo, dat[lmo]['xr'], dat[lmo]['pi'], dat[lmo]['yp']))
-        print('Συνολικές εγγραφές περιόδου: %s' % counter)
+    def kleisimo_lmon(self, date, omada, lmos, antithetos=None, journal=2):
+        """Κλείσιμο υπολοίπων ομάδας λογαριασμών"""
+        found = []
+        tposo = dec(0)
+        for almo in self._lmoi:
+            if almo.startswith(omada):
+                if self.ypoloipo(almo) != 0:
+                    found.append(almo)
+                    tposo += self.ypoloipo(almo)
+        print(found)
+        if not found:
+            return
+        tra = Tran(date, 'Λογ.Εγγρ.', 'Κλείσιμο υπολοίπων', journal)
+        if antithetos:
+            if lmos == antithetos:
+                return
+            if tposo > 0:
+                trtyp = CREDIT
+            else:
+                tposo = tposo * -1
+                trtyp = DEBIT
+            tra.line('', trtyp, tposo, antithetos)
+        else:
+            for lmo in found:
+                if lmo == lmos:
+                    continue
+                poso = self.ypoloipo(lmo)
+                if poso > 0:
+                    trtyp = CREDIT
+                else:
+                    poso = poso * -1
+                    trtyp = DEBIT
+                tra.line('', trtyp, poso, lmo)
+        tra.line_final_auto('', lmos)
+        if tra.is_balanced:
+            self.add(tra)
 
     def ypoloipo(self, lmos):
         return self._lmoi.get(lmos, dec(0))
@@ -291,12 +458,19 @@ class Ledger():
         return promitheftes
 
     def kartella(self, lmos):
-        ast = '%-10s %-5s %-15s %12s %12s'
+        ast = '%1s %-10s %-5s %-15s %12s %12s'
         total_found = []
         for tran in self._trans:
             total_found += tran.kartella(lmos)
         for elm in sorted(total_found, key=lambda x: x.date):
-            print(ast % (elm.date, elm.no, elm.par, elm.xre, elm.pis))
+            print(ast % (elm.journal, elm.date, elm.no, elm.par,
+                         elm.xre, elm.pis))
+
+    def eggrafes_isologismoy(self):
+        self.kleisimo_lmon('2017-12-31', '2', APOTELESMATA, journal=3)
+        self.kleisimo_lmon('2017-12-31', '6', APOTELESMATA, journal=3)
+        self.kleisimo_lmon('2017-12-31', '7', APOTELESMATA, journal=3)
+        self.kleisimo_lmon('2017-12-31', FPA, FPAF, journal=3)
 
     def __repr__(self):
         ast = ''
@@ -360,6 +534,23 @@ def ageee(date, par, ajia13, ajia24, proafm, pronam=None):
     return tra
 
 
+def ejoda(date, par, ajia0, ajia13, ajia24, proafm, pronam=None):
+    tra = Tran(date, par, 'Έξοδα χρήσης')
+    if ajia0 != 0:
+        tra.line('', DEBIT, ajia13, '64.00.6000', 'Έξοδα χωρίς ΦΠΑ')
+    if ajia13 != 0:
+        tra.line('', DEBIT, ajia13, '64.00.6013', 'Έξοδα με ΦΠΑ 13%')
+        fpa13 = dec(ajia13 * .13)
+        tra.line('', DEBIT, fpa13, '54.00.2913', 'ΦΠΑ εξόδων 13%')
+    if ajia24 != 0:
+        tra.line('', DEBIT, ajia24, '64.00.6024', 'Έξοδα με ΦΠΑ 24%')
+        fpa24 = dec(ajia24 * .24)
+        tra.line('', DEBIT, fpa24, '54.00.2924', 'ΦΠΑ εξόδων 24%')
+    prolmo = '50.00.%s' % proafm
+    tra.line_final('', CREDIT, prolmo, pronam)
+    return tra
+
+
 def generate_transactions(number=100):
     import random
     from datetime import datetime
@@ -372,13 +563,14 @@ def generate_transactions(number=100):
         except ValueError:
             rdate(year)
 
+    # print('generate_transactions started')
     rdates = []
     for i in range(number):
         rdates.append(rdate(2017))
     rdates.sort()
     ledger = Ledger()
     for i in range(number):
-        typ = random.randint(1, 5)
+        typ = random.randint(1, 7)
         date = rdates[i]
         par = 'ΤΔΑ%s' % (i + 1)
         p13 = random.randint(0, 100)
@@ -386,8 +578,8 @@ def generate_transactions(number=100):
         if p13 + p24 == 0:
             p13 = 1
         afm = str(random.randint(999999910, 999999999))
-        if typ == 1:
-            ledger.add(polee(date, par, p13, p24, afm))
+        if typ in (1, 7):
+            ledger.add(polee(date, par, p13 * 1.4, p24 * 1.4, afm))
         elif typ == 2:
             ledger.add(ageee(date, par, p13, p24, afm))
         elif typ == 3:
@@ -405,15 +597,20 @@ def generate_transactions(number=100):
                 ledger.kleisimo_lmoy(date, random.choice(proms), '38.00.00')
             else:
                 ledger.add(ageee(date, par, p13, p24, afm))
+        elif typ == 6:
+            p00 = random.randint(0, 100)
+            ledger.add(ejoda(date, par, p00, p13, p24, afm))
         else:
             pass
+    # print('generate_transactions finished')
     return ledger
 
 
 if __name__ == '__main__':
-    ledger = generate_transactions(1000)
-    ledger.kleisimo_lmoy('2017-12-31', '38.00.00', '38.03.00')
-    ledger.isozygio_print('2017-01-01', '2017-12-31')
+    ledger = generate_transactions(10)
+    # ledger.kleisimo_lmoy('2017-12-31', '38.00.00', '38.03.00')
+    # ledger.isozygio_print('2017-01-01', '2017-12-31')
     # ledger.kartella('38.00.00')
     # print(ledger)
-    print(ledger.ypoloipo('38.00.00'))
+    # print(ledger.ypoloipo('38.00.00'))
+    print(ledger.to_json)
