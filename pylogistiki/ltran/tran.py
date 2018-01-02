@@ -247,6 +247,14 @@ class Ledger():
                     dacc[code]['yp'] += lin.ypo
         return dacc, counter
 
+    def transfer(self, date, lapo, lse, poso):
+        """Μετάφορά ποσού από ένα λογαριασμό σε άλλο"""
+        per = 'Μεταφορά από %s σε %s' % (lapo, lse)
+        tra = Tran(date, per, per)
+        tra.line('', CREDIT, poso, lapo)
+        tra.line('', DEBIT, poso, lse)
+        self.add(tra)
+
     def kleisimo_lmoy(self, date, lmos, lmosm):
         """Μεταφορά υπολοίπου λογαριασμού σε λ/μο lmosm"""
         ypol = self.ypoloipo(lmos)
@@ -406,7 +414,6 @@ if __name__ == '__main__':
     ledger = generate_transactions(1000)
     ledger.kleisimo_lmoy('2017-12-31', '38.00.00', '38.03.00')
     ledger.isozygio_print('2017-01-01', '2017-12-31')
-
     # ledger.kartella('38.00.00')
     # print(ledger)
     print(ledger.ypoloipo('38.00.00'))
