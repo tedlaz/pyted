@@ -202,7 +202,7 @@ class Tran():
 
     @property
     def to_dict(self):
-        """Αποθήκευση σε json"""
+        """Εξαγωγή δεδομένων σε dictionary"""
         dic = {'journal': self._journal,
                'dat': self._dat,
                'par': self._par,
