@@ -14,6 +14,7 @@
 """
 from utils import dec
 import json
+import gzip
 ACCOUNT_TYPES = {'1': ['Πάγια', 'Ενεργητικό'],
                  '2': ['Αποθέματα', 'Ενεργητικό'],
                  '3': ['Απαιτήσεις', 'Ενεργητικό'],
@@ -330,13 +331,13 @@ class Ledger():
         dat = []
         for elm in self._trans:
             dat.append(elm.to_dict)
-        with open(file, 'w') as fil:
-            fil.write(json.dumps(dat))
+        with gzip.open(file, 'wb') as fil:
+            fil.write(json.dumps(dat).encode('utf_8'))
 
     def from_json(self, file):
         dat = []
-        with open(file) as fil:
-            dat = json.loads(fil.read())
+        with gzip.open(file, 'rb') as fil:
+            dat = json.loads(fil.read().decode('utf_8'))
         for elm in dat:
             self.add(Tran('', '', '', dic=elm))
 
@@ -363,9 +364,13 @@ class Ledger():
                 dacc[code]['pi'] += lin.pis
                 dacc[code]['yp'] += lin.ypo
         fin = {}
+        txr = tpi = typ = dec(0)
         for key in dacc:
             lvls = levels(key)
             fin[key] = dacc[key]
+            txr += dacc[key]['xr']
+            tpi += dacc[key]['pi']
+            typ += dacc[key]['yp']
             for lvl in lvls:
                 fin[lvl] = fin.get(lvl, {'xr': dec(0),
                                          'pi': dec(0),
@@ -373,11 +378,12 @@ class Ledger():
                 fin[lvl]['xr'] += dacc[key]['xr']
                 fin[lvl]['pi'] += dacc[key]['pi']
                 fin[lvl]['yp'] += dacc[key]['yp']
+        fin['t'] = {'xr': txr, 'pi': tpi, 'yp': typ}
         return fin, counter
 
     def isozygio_print(self, apo=None, eos=None, journal=None):
         dat, counter = self.isozygio(apo, eos, journal)
-        ast = '%-15s %10s %10s %10s'
+        ast = '%-15s %13s %13s %13s'
         print('Ισοζύγιο απο %s έως %s' % (apo, eos))
         for lmo in sorted(dat):
             print(ast % (lmo, dat[lmo]['xr'], dat[lmo]['pi'], dat[lmo]['yp']))
@@ -466,11 +472,12 @@ class Ledger():
             print(ast % (elm.journal, elm.date, elm.no, elm.par,
                          elm.xre, elm.pis))
 
-    def eggrafes_isologismoy(self):
-        self.kleisimo_lmon('2017-12-31', '2', APOTELESMATA, journal=3)
-        self.kleisimo_lmon('2017-12-31', '6', APOTELESMATA, journal=3)
-        self.kleisimo_lmon('2017-12-31', '7', APOTELESMATA, journal=3)
-        self.kleisimo_lmon('2017-12-31', FPA, FPAF, journal=3)
+    def eggrafes_isologismoy(self, etos):
+        DATE = '%s-12-31' % etos
+        self.kleisimo_lmon(DATE, '2', APOTELESMATA, journal=3)
+        self.kleisimo_lmon(DATE, '6', APOTELESMATA, journal=3)
+        self.kleisimo_lmon(DATE, '7', APOTELESMATA, journal=3)
+        self.kleisimo_lmon(DATE, FPA, FPAF, journal=3)
 
     def __repr__(self):
         ast = ''
@@ -551,22 +558,22 @@ def ejoda(date, par, ajia0, ajia13, ajia24, proafm, pronam=None):
     return tra
 
 
-def generate_transactions(number=100):
+def generate_transactions(number=100, year=2017):
     import random
     from datetime import datetime
 
-    def rdate(year):
+    def rdate(etos):
         try:
             dnum = random.randint(1, 365)
-            rda = datetime.strptime('{} {}'.format(dnum, year), '%j %Y')
+            rda = datetime.strptime('{} {}'.format(dnum, etos), '%j %Y')
             return rda.date().isoformat()
         except ValueError:
-            rdate(year)
+            rdate(etos)
 
     # print('generate_transactions started')
     rdates = []
     for i in range(number):
-        rdates.append(rdate(2017))
+        rdates.append(rdate(year))
     rdates.sort()
     ledger = Ledger()
     for i in range(number):
