@@ -140,7 +140,7 @@ def find_similarities(lines, omosimoi=False, threshold=0):
 
 
 if __name__ == '__main__':
-    dbpath = '/home/tedlaz/pelates/2017/c/2017c.sql3'
+    dbpath = '/home/tedlaz/pelates/2017/d/2017d.sql3'
     sql = ("SELECT tr.id, lmo.lmo, trd.xr - trd.pi as val, tr.dat "
            "FROM tr "
            "INNER JOIN trd ON tr.id=trd.id_tr "

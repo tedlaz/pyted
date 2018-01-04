@@ -33,6 +33,9 @@ ANOIGMA, GENIKO, KLEISIMO = 1, 2, 3  # Ημερολόγια εγγραφών
 APOTELESMATA = '80.00.00'  # Λογαριασμός αποτελεσμάτων
 FPA = '54.00'  # Βασικός λογαριασμός ΦΠΑ
 FPAF = '54.00.99'  # Λογαριασμός κλεισίματος ΦΠΑ
+APOTH = '2'  # Αποθέματα
+ESODA = '7'  # Έσοδα
+EJODA = '6'  # έξοδα
 
 
 def levels(account):
@@ -472,11 +475,11 @@ class Ledger():
             print(ast % (elm.journal, elm.date, elm.no, elm.par,
                          elm.xre, elm.pis))
 
-    def eggrafes_isologismoy(self, etos):
+    def se_apotelesmata(self, etos):
         DATE = '%s-12-31' % etos
-        self.kleisimo_lmon(DATE, '2', APOTELESMATA, journal=3)
-        self.kleisimo_lmon(DATE, '6', APOTELESMATA, journal=3)
-        self.kleisimo_lmon(DATE, '7', APOTELESMATA, journal=3)
+        self.kleisimo_lmon(DATE, APOTH, APOTELESMATA, journal=3)
+        self.kleisimo_lmon(DATE, EJODA, APOTELESMATA, journal=3)
+        self.kleisimo_lmon(DATE, ESODA, APOTELESMATA, journal=3)
         self.kleisimo_lmon(DATE, FPA, FPAF, journal=3)
 
     def __repr__(self):
