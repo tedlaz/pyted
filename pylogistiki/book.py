@@ -315,28 +315,49 @@ class Book():
                     poso += ul.dec(line.y * art.ee_synt)
                 else:
                     pass
-            lins.append((i, art.dat, art.ee_typos, art.par, art.per,
-                         poso, fpa, art.val, art.val - poso - fpa))
+            lins.append({'aa': i, 'date': art.dat, 'typ': art.ee_typos,
+                         'par': art.par, 'per': art.per, 'poso': poso,
+                         'fpa': fpa, 'tot': art.val})
         return lins
 
     def eebook_print(self):
         eedata = self.eebook()
-        sta = '%-5s %-10s %2s %-22s %-75s %12s %12s %12s %10s'
+        stc = ('{aa:<5}{date} {typ:2} {par:22} {per:30} {es:12} {te:12} '
+               '{esf:12} {ej:12} {tj:12} {ejf:12} {tot:12}')
+        te = ul.dec(0)
+        tj = ul.dec(0)
         for line in eedata:
-            print(sta % line)
+            line['per'] = line['per'][:30] if len(line['per']) > 29 else line['per']
+            if line['typ'] == 'ΕΣ':
+                line['es'] = line['poso']
+                line['ej'] = ul.dec(0)
+                line['esf'] = line['fpa']
+                line['ejf'] = ul.dec(0)
+                te += line['poso']
+                line['te'] = te
+                line['tj'] = tj
+            else:
+                line['es'] = ul.dec(0)
+                line['ej'] = line['poso']
+                line['esf'] = ul.dec(0)
+                line['ejf'] = line['fpa']
+                tj += line['poso']
+                line['te'] = te
+                line['tj'] = tj
+            print(stc.format(**line))
 
     def eebook_totals(self, apo, eos):
         eedata = self.eebook()
         eposo = efpa = xposo = xfpa = ul.dec(0)
         for line in eedata:
-            if not (apo <= line[1] <= eos):
+            if not (apo <= line['date'] <= eos):
                 continue
-            if line[2] == 'ΕΣ':
-                eposo += line[5]
-                efpa += line[6]
-            elif line[2] in ('ΕΞ', 'ΠΑ'):
-                xposo += line[5]
-                xfpa += line[6]
+            if line['typ'] == 'ΕΣ':
+                eposo += line['poso']
+                efpa += line['fpa']
+            elif line['typ'] in ('ΕΞ', 'ΠΑ'):
+                xposo += line['poso']
+                xfpa += line['fpa']
             else:
                 print('Error')
         print('Σύνολα για περίοδο από %s έως %s' % (apo, eos))

@@ -3,14 +3,13 @@ qted module
 ===========
 pyqt controls τροποποιημένα να έχουν ομοιόμορφο τρόπο κλήσης
 '''
-import decimal
 import datetime
-import textwrap
-import sqlite3
 import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
-from labels import LBL
+from . import gr
+from . import sqlite as sq
+
 
 GRLOCALE = Qc.QLocale(Qc.QLocale.Greek, Qc.QLocale.Greece)
 MSG_RESET_DATE = u'Με δεξί κλίκ του ποντικιού μηδενίζει'
@@ -22,291 +21,6 @@ GREEK_DATE_FORMAT = 'd/M/yyyy'
 WEEKDAYS = ['Δε', 'Τρ', 'Τε', 'Πέ', 'Πα', 'Σά', 'Κυ']
 MSG_SELECT_DAYS = 'Επιλέξτε τις Εργάσιμες ημέρες\nΜε δεξί κλικ μηδενίστε'
 BLANK, GREEN = range(2)
-DELETE, INSERT, UPDATE = range(3)
-
-
-def grup(txtval):
-    '''Trasforms a string to uppercase special for Greek comparison'''
-    ar1 = u"αάΆΑβγδεέΈζηήΉθιίϊΐΊΪκλμνξοόΌπρσςτυύϋΰΎΫφχψωώΏ"
-    ar2 = u"ΑΑΑΑΒΓΔΕΕΕΖΗΗΗΘΙΙΙΙΙΙΚΛΜΝΞΟΟΟΠΡΣΣΤΥΥΥΥΥΥΦΧΨΩΩΩ"
-    adi = dict(zip(ar1, ar2))
-    return ''.join([adi.get(letter, letter.upper()) for letter in txtval])
-
-
-def isNum(val):  # is val number or not
-    """Check if val is number or not"""
-    try:
-        float(val)
-    except ValueError:
-        return False
-    except TypeError:
-        return False
-    else:
-        return True
-
-
-def dec(poso=0, decimals=2):
-    """Returns a decimal. If poso is not a number or None returns dec(0)"""
-    poso = 0 if (poso is None) else poso
-    tmp = decimal.Decimal(poso) if isNum(poso) else decimal.Decimal('0')
-    tmp = decimal.Decimal(0) if decimal.Decimal(0) else tmp
-    return tmp.quantize(decimal.Decimal(10) ** (-1 * decimals))
-
-
-def triades(txt, separator='.'):
-    '''Help function to split digits to thousants (123456 becomes 123.456)'''
-    return separator.join(textwrap.wrap(txt[::-1], 3))[::-1]
-
-
-def dec2gr(poso, decimals=2, zero_as_space=False):
-    '''Returns string formatted as Greek decimal (1234,56 becomes 1.234,56)'''
-    dposo = dec(poso, decimals)
-    if dposo == dec(0):
-        if zero_as_space:
-            return ' '
-    sdposo = str(dposo)
-    meion = '-'
-    decimal_ceparator = ','
-    prosimo = ''
-    if sdposo.startswith(meion):
-        prosimo = meion
-        sdposo = sdposo.replace(meion, '')
-    if '.' in sdposo:
-        sint, sdec = sdposo.split('.')
-    else:
-        sint = sdposo
-        decimal_ceparator = ''
-        sdec = ''
-    return prosimo + triades(sint) + decimal_ceparator + sdec
-
-
-def is_positive_integer(val):
-    '''True if positive integer False otherwise'''
-    intv = 0
-    try:
-        intv = int(val)
-    except ValueError:
-        return False
-    if intv <= 0:
-        return False
-    return True
-
-
-def is_iso_date(strdate):
-    """Check if strdate is isodate (yyyy-mm-dd)"""
-    if strdate is None:
-        return False
-    ldate = len(strdate)
-    if ldate != 10:
-        return False
-    if strdate[4] != '-':
-        return False
-    if strdate[7] != '-':
-        return False
-    for number in strdate.split('-'):
-        if not is_positive_integer(number):
-            return False
-    return True
-
-
-def date2gr(date, removezero=False):
-    """If removezero = True returns d/m/yyyy else dd/mm/yyyy"""
-    assert is_iso_date(date)
-
-    def remove_zero(stra):
-        """Remove trailing zeros"""
-        return stra[1:] if int(stra) < 10 else stra
-    year, month, day = date.split('-')
-    if removezero:
-        month, day = remove_zero(month), remove_zero(day)
-    return '{day}/{month}/{year}'.format(year=year, month=month, day=day)
-
-
-class NamesTuples():
-    def __init__(self, names, rows):
-        self.names = names
-        self.rows = rows
-        self.lines = len(self.rows)
-        self.number_of_columns = len(names)
-        if rows:
-            assert len(names) == len(rows[0])
-
-    def list_of_dic(self):
-        tmpl = []
-        for row in self.rows:
-            dic = {}
-            for i, name in enumerate(self.names):
-                dic[name] = row[i]
-            tmpl.append(dic)
-        return tmpl
-
-    def idv(self):
-        return self.list_of_dic()[0].get('id', '') if self.lines > 0 else ''
-
-    def list_of_labels(self):
-        return [LBL.get(name, name) for name in self.names]
-
-    def lbl(self, name):
-        return LBL.get(name, name)
-
-    def names_tuples(self):
-        return self.names, self.rows
-
-    def labels_tuples(self):
-        return self.list_of_labels(), self.rows
-
-    def one(self, with_names=True):
-        if self.lines > 0:
-            dic = {}
-            for i, name in enumerate(self.names):
-                dic[name] = self.rows[0][i]
-            return (self.names, dic) if with_names else dic
-
-        return (self.names, {}) if with_names else {}
-
-    def value(self, line, field):
-        if field not in self.names:
-            return None
-        if line < self.lines:
-            return self.list_of_dic()[line-1][field]
-        return None
-
-    def values(self, *fields):
-        # Experimental Function
-        if sum([1  for fld in fields if fld not in self.names]):
-            return None
-        return 'ok'
-
-    def __str__(self):
-        return '%s\n%s\n%s' % (self.names, self.list_of_labels(), self.rows)
-
-
-# SQLITE FUNCTIONS
-def fields_of(dbf, table_or_view):
-    """A Tuple with table or view fields"""
-    sql = 'SELECT * FROM %s LIMIT 0' % table_or_view
-    with sqlite3.connect(dbf) as con:
-        cur = con.cursor()
-        cur.execute(sql)
-        column_names = [t[0] for t in cur.description]
-        cur.close()
-    return tuple(column_names)
-
-
-def select(dbf, sql):
-    with sqlite3.connect(dbf) as con:
-        cur = con.cursor()
-        con.create_function("grup", 1, grup)
-        try:
-            cur.execute(sql)
-        except sqlite3.OperationalError:
-            return None
-        names = tuple([t[0] for t in cur.description])
-        rows = cur.fetchall()
-    return NamesTuples(names, rows)
-
-
-def select_simple_safe(pardic):
-    with sqlite3.connect(pardic['db']) as con:
-        cur = con.cursor()
-        try:
-            cur.execute(pardic['sql'])
-            # cur.execute("SELECT * FROM ?", ('cdb',))
-        except sqlite3.OperationalError as err:
-            print(err)
-        rows = cur.fetchall()
-    return rows
-
-
-def search_complex_sql(dbf, table_name, search_string):
-    """Find records with many key words in search_string"""
-    search_list = search_string.split()
-    search_sql = []
-    flds = fields_of(dbf, table_name)
-    search_field = " || ' ' || ".join(flds)
-    sql = "SELECT * FROM %s \n" % table_name
-    where = ''
-    for search_str in search_list:
-        grup_str = grup(search_str)
-        tstr = " grup(%s) LIKE '%%%s%%'\n" % (search_field, grup_str)
-        search_sql.append(tstr)
-        where = 'WHERE'
-    # if not search_string sql is simple select
-    return sql + where + ' AND '.join(search_sql)
-
-
-def sqlscript(dbf, sql):
-    '''sql   : A set of sql commands (create, insert or update)'''
-    try:
-        con = sqlite3.connect(dbf)
-        cur = con.cursor()
-        cur.executescript(sql)
-        con.commit()
-    except sqlite3.Error:
-        con.rollback()
-        cur.close()
-        con.close()
-        return False
-    last_inserted_id = cur.lastrowid
-    cur.close()
-    con.close()
-    return last_inserted_id
-
-
-def insert(dbf, sql):
-    try:
-        con = sqlite3.connect(dbf)
-        cur = con.cursor()
-        cur.execute(sql)
-        con.commit()
-    except sqlite3.Error as err:
-        con.rollback()
-        cur.close()
-        con.close()
-        return False, str(err)
-    last_inserted_id = cur.lastrowid
-    cur.close()
-    con.close()
-    return True, last_inserted_id
-
-
-def save_to_db(dbf, sql_par):
-    """Safely save data to database"""
-    try:
-        con = sqlite3.connect(dbf)
-        cur = con.cursor()
-        # 'INSERT INTO erg VALUES(?,?,?)', ('id', 'epo', 'ono')
-        cur.execute(sql_par['sql'], sql_par['par'])
-        con.commit()
-    except sqlite3.Error as err:
-        con.rollback()
-        cur.close()
-        con.close()
-        return False, str(err)
-    last_inserted_id = cur.lastrowid
-    cur.close()
-    con.close()
-    return True, last_inserted_id
-
-
-def create_sql(table, flds, vals, typ=INSERT):
-    """flds, vals are tuples"""
-    assert len(flds) == len(vals)
-    assert flds[0] == 'id'
-    sqlinsert = "INSERT INTO %s (%s) VALUES (%s)"
-    sqlupdate = "UPDATE %s SET %s WHERE id=?"
-    if typ == INSERT:
-        qms = ['?' for fld in flds]
-        sql = sqlinsert % (table, ', '.join(flds), ', '.join(qms))
-        return {'sql': sql, 'par': vals}
-    elif typ == UPDATE:
-        qms = ['%s=?' % fld for fld in flds if fld != 'id']
-        sql = sqlupdate % (table, ', '.join(qms))
-        return {'sql': sql, 'par': vals[1:] + (vals[0],)}
-    elif typ == DELETE:
-        sql = "DELETE FROM %s WHERE id=?" % table
-        return {'sql': sql, 'par': (vals[0],)}
-    return None
 
 
 # My Qt Widgets
@@ -432,7 +146,7 @@ class TNumeric(Qw.QLineEdit):
         Qw.QLineEdit.focusOutEvent(self, ev)
 
     def set(self, txt):
-        self.setText(dec2gr(txt)) if txt else self.setText(dec2gr(0))
+        self.setText(gr.dec2gr(txt)) if txt else self.setText(gr.dec2gr(0))
 
     def get(self):
         greek_div = ','
@@ -440,7 +154,7 @@ class TNumeric(Qw.QLineEdit):
         tmp = '%s' % self.text()
         tmp = tmp.replace(normal_div, '')
         tmp = tmp.replace(greek_div, normal_div)
-        return dec(tmp.strip())
+        return gr.dec(tmp.strip())
 
 
 class TNumericSpin(Qw.QDoubleSpinBox):
@@ -872,7 +586,7 @@ class TTextButton(Qw.QWidget):
 
     def _button_clicked(self):
         self.button.setFocus()
-        vals = select(self.dbf, 'SELECT * FROM %s' % self.table)
+        vals = sq.select(self.dbf, 'SELECT * FROM %s' % self.table)
         ffind = Form_find(vals, u'Αναζήτηση', self.dbf, self.table, self)
         if ffind.exec_() == Qw.QDialog.Accepted:
             self.set(ffind.final_value)
@@ -904,7 +618,7 @@ class TTextButton(Qw.QWidget):
 
     def set(self, idv):
         sql1 = "SELECT * FROM %s WHERE id='%s'" % (self.table, idv)
-        self.dval = select(self.dbf, sql1)
+        self.dval = sq.select(self.dbf, sql1)
         val = self.dval.one(with_names=False)
         self._set_state(1 if val else 0)
         vtxt = []
@@ -978,9 +692,9 @@ class FTable(Qw.QDialog):
             sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
         else:
             sql = "SELECT * FROM %s limit 0" % self._table
-        self.fields, self.data = select(self._db, sql).one()
+        self.fields, self.data = sq.select(self._db, sql).one()
         for fld in self.fields:
-            self.labels.append(LBL.get(fld, fld))
+            self.labels.append(fld)
         flayout = Qw.QFormLayout()
         self.mainlayout.addLayout(flayout)
         self.widgets = {}
@@ -1037,14 +751,14 @@ class FTable(Qw.QDialog):
         if len(datadic) <= 1:
             return
         sql, typ = self.create_sql(datadic)
-        status, response = insert(self._db, sql)
+        status, response = sq.insert(self._db, sql)
         msg = response
         if status:
-            if typ == INSERT:
+            if typ == sq.INSERT:
                 self._id = response
                 msg = "Η εγγραφή καταχωρήθηκε με αριθμό : %s" % response
                 Qw.QMessageBox.information(self, "Αποθήκευση", msg)
-            elif typ == UPDATE:
+            elif typ == sq.UPDATE:
                 msg = "Η εγγραφή No : %s  ενημερώθηκε" % self._id
                 Qw.QMessageBox.information(self, "Αποθήκευση", msg)
             self.accept()
@@ -1071,14 +785,14 @@ class FTable(Qw.QDialog):
                 flds.append(str(fld))
                 vals.append("'%s'" % datadic[fld] if fld != 'id' else 'null')
             sql = sqlinsert % (self._table, ', '.join(flds), ', '.join(vals))
-            typ = INSERT
+            typ = sq.INSERT
         else:
             for fld in datadic:
                 if fld == 'id':
                     continue
                 vals.append("%s='%s'" % (fld, datadic[fld]))
             sql = sqlupdate % (self._table, ', '.join(vals), datadic['id'])
-            typ = UPDATE
+            typ = sq.UPDATE
         return sql, typ
 
     def get_data_from_form(self, only_changed=False):
