@@ -4,11 +4,13 @@ qted module
 pyqt controls τροποποιημένα να έχουν ομοιόμορφο τρόπο κλήσης
 '''
 import datetime
+import decimal
 import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 from . import gr
 from . import sqlite as sq
+from . import model as md
 
 
 GRLOCALE = Qc.QLocale(Qc.QLocale.Greek, Qc.QLocale.Greece)
@@ -176,7 +178,7 @@ class TNumericSpin(Qw.QDoubleSpinBox):
         self.setLocale(GRLOCALE)
 
     def get(self):
-        return dec(self.value())
+        return gr.dec(self.value())
 
     def set(self, val):
         self.setValue(val) if val else self.setValue(0)
@@ -212,7 +214,7 @@ class TTextLine(Qw.QLineEdit):
         self.setMinimumHeight(MIN_HEIGHT)
 
     def set(self, txt):
-        if txt:
+        if txt is not None:
             ttxt = '%s' % txt
             self.setText(ttxt.strip())
         else:
@@ -418,7 +420,7 @@ class TComboDB(Qw.QComboBox):
         2.fill Combo
         3.set current index to initial value
         """
-        vlist = select_simple_safe(self.pdic)
+        vlist = sq.select_simple_safe(self.pdic)
         self.index2id = {}
         self.id2index = {}
         for i, elm in enumerate(vlist):
@@ -426,6 +428,202 @@ class TComboDB(Qw.QComboBox):
             self.index2id[i] = elm[0]
             self.id2index[elm[0]] = i
 
+
+class AutoForm(Qw.QDialog):
+    def __init__(self, dbf, table, idv=None, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qc.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Table {}:{}'.format(table, idv if idv else 'New'))
+        self._parent = parent
+        self._dbf = dbf
+        self._table = table
+        self._id = idv
+        self.model = md.Model(dbf, table)
+        self.widgets = {}
+        main_layout = Qw.QVBoxLayout()
+        self.setLayout(main_layout)
+        self.fld_layout = Qw.QFormLayout()
+        main_layout.addLayout(self.fld_layout)
+        # Create buttons
+        buttonlayout = Qw.QHBoxLayout()
+        main_layout.addLayout(buttonlayout)
+        # Create buttons here
+        self.bcancel = Qw.QPushButton(u'Ακύρωση', self)
+        self.bsave = Qw.QPushButton(u'Αποθήκευση', self)
+        # Make them loose focus
+        self.bcancel.setFocusPolicy(Qc.Qt.NoFocus)
+        self.bsave.setFocusPolicy(Qc.Qt.NoFocus)
+        # Add them to buttonlayout
+        buttonlayout.addWidget(self.bcancel)
+        buttonlayout.addWidget(self.bsave)
+        # Make connections here
+        self.bcancel.clicked.connect(self.close)
+        self.bsave.clicked.connect(self._save)
+        self._create_fields()  # Δημιουργία widgets
+        if self._id:  # Γέμισμα με τιμές
+            self._fill()
+
+    def _create_fields(self):
+        for i, fld in enumerate(self.model.fields):
+            self.widgets[fld] = TTextLine(parent=self)
+            self.fld_layout.insertRow(i, Qw.QLabel(fld), self.widgets[fld])
+        self.widgets['id'].setEnabled(False)
+
+    def _fill(self):
+        self.vals = self.model.search_by_id(self._id)
+        for key in self.vals:
+            self.widgets[key].set(self.vals[key])
+
+    def _save(self):
+        data = {}
+        for fld in self.widgets:
+            data[fld] = self.widgets[fld].get()
+        status, lid = self.model.save(data)
+        if status:
+            if lid:
+                msg = 'Νέα εγγραφή καταχωρήθηκε με Νο: %s' % lid
+            else:
+                msg = 'Ενημερώθηκε η εγγραφή Νο: %s' % data['id']
+            Qw.QMessageBox.information(self, "Αποθήκευση", msg)
+            self.accept()
+        else:
+            Qw.QMessageBox.information(self, "Αποθήκευση", lid)
+
+
+class FindForm(AutoForm):
+    def __init__(self, dbf, table, parent=None):
+        super().__init__(dbf, table, parent=parent)
+        self.bsave.setText('Αναζήτηση')
+        self.bsave.setFocusPolicy(Qc.Qt.StrongFocus)
+
+    def _save(self):
+        ast = []
+        for fld in self.widgets:
+            wval = self.widgets[fld].get()
+            if wval:
+                ast.append(wval)
+        ast = ' '.join(ast)
+        formgrid = AutoFormTableFound(self._dbf, self._table, ast, self)
+        if formgrid.exec_() == Qw.QDialog.Accepted:
+            print(formgrid.id)
+
+
+class AutoFormTable(Qw.QDialog):
+    def __init__(self, dbf, table, parent=None):
+        super().__init__(parent)
+        # self.setAttribute(Qc.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Table {}'.format(table))
+        self.resize(550, 400)
+        self._parent = parent
+        self._dbf = dbf
+        self._table = table
+        self.model = md.Model(dbf, table)
+        layout = Qw.QVBoxLayout()
+        self.setLayout(layout)
+        self.tbl = self._init_table()
+        layout.addWidget(self.tbl)
+        blay = Qw.QHBoxLayout()
+        layout.addLayout(blay)
+        self.bedt = Qw.QPushButton('Επεξεργασία')
+        self.bedt.setFocusPolicy(Qc.Qt.NoFocus)
+        blay.addWidget(self.bedt)
+        self.bnew = Qw.QPushButton('Νέα εγγραφή')
+        self.bnew.setFocusPolicy(Qc.Qt.NoFocus)
+        blay.addWidget(self.bnew)
+        self.bedt.clicked.connect(self._edit_record)
+        self.bnew.clicked.connect(self._new_record)
+        self._populate()
+
+    def _new_record(self):
+        dialog = AutoForm(self._dbf, self._table, parent=self)
+        if dialog.exec_() == Qw.QDialog.Accepted:
+            self._populate()
+        else:
+            return False
+
+    @property
+    def id(self):
+        return self.tbl.item(self.tbl.currentRow(), 0).text()
+
+    def _edit_record(self):
+        dialog = AutoForm(self._dbf, self._table, self.id, parent=self)
+        if dialog.exec_() == Qw.QDialog.Accepted:
+            self._populate()
+        else:
+            return False
+
+    def _get_data(self):
+        return self.model.select_all_cols_rows
+
+    def _populate(self):
+        data = self._get_data()
+        self.tbl.setRowCount(data['rownum'])
+        self.tbl.setColumnCount(data['colnum'])
+        self.tbl.setHorizontalHeaderLabels(data['cols'])
+        for i, row in enumerate(data['rows']):
+            for j, col in enumerate(data['cols']):
+                val = row[j]
+                if gr.isNum(val):
+                    if data['cols'][j].endswith('id'):
+                        self.tbl.setItem(i, j, self._intItem(val))
+                    elif type(val) is decimal.Decimal:
+                        self.tbl.setItem(i, j, self._numItem(val))
+                    else:
+                        self.tbl.setItem(i, j, self._numItem(val))
+                elif gr.is_iso_date(val):
+                    self.tbl.setItem(i, j, SortWidgetItem(gr.date2gr(val), val))
+                else:
+                    self.tbl.setItem(i, j, self._strItem(val))
+        self.tbl.resizeColumnsToContents()
+
+    def _init_table(self):
+        tbl = Qw.QTableWidget(self)
+        tbl.verticalHeader().setStretchLastSection(False)
+        tbl.verticalHeader().setVisible(False)
+        tbl.setSelectionMode(Qw.QAbstractItemView.SingleSelection)
+        tbl.setSelectionBehavior(Qw.QAbstractItemView.SelectRows)
+        tbl.setEditTriggers(Qw.QAbstractItemView.NoEditTriggers)
+        tbl.setAlternatingRowColors(True)
+        tbl.setSortingEnabled(True)
+        tbl.setContextMenuPolicy(Qc.Qt.ActionsContextMenu)
+        editAction = Qw.QAction("Επεξεργασία", self)
+        editAction.triggered.connect(self._edit_record)
+        tbl.addAction(editAction)
+        return tbl
+
+    def _intItem(self, num):
+        item = Qw.QTableWidgetItem()
+        item.setData(Qc.Qt.DisplayRole, num)
+        item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
+        return item
+
+    def _numItem(self, num):
+        item = SortWidgetItem(gr.dec2gr(num), num)
+        item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
+        return item
+
+    def _strItem(self, strv):
+        st = str(strv)
+        if st == 'None':
+            st = ''
+        item = Qw.QTableWidgetItem(st)
+        return item
+
+
+class AutoFormTableFound(AutoFormTable):
+    def __init__(self, dbf, table, search_string, parent=None):
+        self.search_string = search_string
+        super().__init__(dbf, table, parent)
+        self.tbl.cellDoubleClicked.connect(self.accept)
+
+    def _get_data(self):
+        return self.model.search(self.search_string)
+
+    def keyPressEvent(self, ev):
+        '''use enter or return for fast selection'''
+        if ev.key() in (Qc.Qt.Key_Enter, Qc.Qt.Key_Return):
+            self.accept()
+        Qw.QDialog.keyPressEvent(self, ev)
 
 class SortWidgetItem(Qw.QTableWidgetItem):
     """Sorting"""
@@ -465,7 +663,7 @@ class Table_widget(Qw.QTableWidget):
         return item
 
     def _numItem(self, num):
-        item = SortWidgetItem(dec2gr(num), num)
+        item = SortWidgetItem(gr.dec2gr(num), num)
         item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
         return item
 
@@ -477,21 +675,21 @@ class Table_widget(Qw.QTableWidget):
         return item
 
     def populate(self):
-        self.setRowCount(self.data.lines)
-        self.setColumnCount(self.data.number_of_columns)
-        self.setHorizontalHeaderLabels(self.data.list_of_labels())
+        self.setRowCount(self.data.row_number)
+        self.setColumnCount(self.data.column_number)
+        self.setHorizontalHeaderLabels(self.data.labels)
         for i, row in enumerate(self.data.rows):
             for j, col in enumerate(row):
-                if isNum(col):
+                if gr.isNum(col):
                     # if col == 'id' or col ends with id (e.g. erg_id)
-                    if self.data.names[j].endswith('id'):
+                    if self.data.columns[j].endswith('id'):
                         self.setItem(i, j, self._intItem(col))
                     elif type(col) is decimal.Decimal:
                         self.setItem(i, j, self._numItem(col))
                     else:
                         self.setItem(i, j, self._numItem(col))
-                elif is_iso_date(col):
-                    self.setItem(i, j, SortWidgetItem(date2gr(col), col))
+                elif gr.is_iso_date(col):
+                    self.setItem(i, j, SortWidgetItem(gr.date2gr(col), col))
                 else:
                     self.setItem(i, j, self._strItem(col))
         self.resizeColumnsToContents()
@@ -552,10 +750,11 @@ class Form_find(Qw.QDialog):
 class TTextButton(Qw.QWidget):
     valNotFound = Qc.pyqtSignal(str)
 
-    def __init__(self, idv, table, dbf, parent):
+    def __init__(self, idv, table, parent):
+        """parent must have ._dbf"""
         super().__init__(parent)
-        self.table = table
-        self.dbf = dbf
+        self._parent = parent
+        self._model = md.Model(parent._dbf, table)
         self.dval = None
         self._state = None
         # Create Gui
@@ -586,7 +785,7 @@ class TTextButton(Qw.QWidget):
 
     def _button_clicked(self):
         self.button.setFocus()
-        vals = sq.select(self.dbf, 'SELECT * FROM %s' % self.table)
+        vals = self._model.select_all
         ffind = Form_find(vals, u'Αναζήτηση', self.dbf, self.table, self)
         if ffind.exec_() == Qw.QDialog.Accepted:
             self.set(ffind.final_value)
@@ -619,7 +818,7 @@ class TTextButton(Qw.QWidget):
     def set(self, idv):
         sql1 = "SELECT * FROM %s WHERE id='%s'" % (self.table, idv)
         self.dval = sq.select(self.dbf, sql1)
-        val = self.dval.one(with_names=False)
+        val = self.dval.first_row_only
         self._set_state(1 if val else 0)
         vtxt = []
         vrpr = []
@@ -627,8 +826,7 @@ class TTextButton(Qw.QWidget):
             if key != 'id':
                 if val[key]:
                     vtxt.append(str(val[key]))
-            vrpr.append('%s : %s\n' % (self.dval.lbl(key),
-                        val[key] if val[key] else ''))
+            vrpr.append('%s : %s\n' % (key, val[key] if val[key] else ''))
         self.txt = ' '.join(vtxt) if val else ''
         self.rpr = ' '.join(vrpr) if val else ''
         self.text.setText(self.txt)
@@ -636,7 +834,7 @@ class TTextButton(Qw.QWidget):
         self.text.setCursorPosition(0)
 
     def get(self):
-        return self.dval.idv() if self._state else ''
+        return self.dval.first_row_id if self._state else ''
 
 
 def widget_selector(fld, dbf, parent):
@@ -692,28 +890,27 @@ class FTable(Qw.QDialog):
             sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
         else:
             sql = "SELECT * FROM %s limit 0" % self._table
-        self.fields, self.data = sq.select(self._db, sql).one()
-        for fld in self.fields:
-            self.labels.append(fld)
+        self.data = sq.select(self._db, sql)
         flayout = Qw.QFormLayout()
         self.mainlayout.addLayout(flayout)
         self.widgets = {}
         # Add fields to form
-        for i, fld in enumerate(self.fields):
+        print(self.data.columns)
+        for i, fld in enumerate(self.data.columns):
             self.widgets[fld] = widget_selector(fld, self._db, self)
-            flayout.insertRow(i, Qw.QLabel(self.labels[i]),
-                              self.widgets[fld])
-            if fld in self.data:  # if not None or empty string populate form
-                if self.data[fld] not in [None, '']:
-                    self.widgets[fld].set('%s' % self.data[fld])
-                else:
-                    self.data[fld] = ''
+            flayout.insertRow(i, Qw.QLabel(fld), self.widgets[fld])
+            if fld in self.data.columns:  # if not None or empty string populate form
+                try:
+                    self.widgets[fld].set('%s' % self.data.first_row_only[fld])
+                except Exception:
+                    # self.data[fld] = ''
+                    pass
             # replace possible None with empty string for correct comparisson
             else:
                 self.data[fld] = ''
             if fld.startswith('n'):  # Workaround to make proper comparisons
                 self.data[fld] = str(dec(self.data[fld]))
-        self.widgets['id'].setEnabled(False)
+        # self.widgets['id'].setEnabled(False)
 
     def is_empty(self):
         for fld in self.widgets:
