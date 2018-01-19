@@ -34,6 +34,74 @@ def sql_cud(table, data, typ=INSERT):
     return None
 
 
+def field_lbl(dbf, name):
+    """Run a select """
+    with sqlite3.connect(dbf) as con:
+        cur = con.cursor()
+        try:
+            cur.execute("SELECT slbl FROM zfl WHERE sfld='%s'" % name)
+        except sqlite3.OperationalError:
+            return name
+        rows = cur.fetchone()
+    return rows[0] if rows else name
+
+
+def table_lbl(dbf, name):
+    """Run a select """
+    with sqlite3.connect(dbf) as con:
+        cur = con.cursor()
+        try:
+            cur.execute("SELECT snam FROM zt WHERE stbl='%s'" % name)
+        except sqlite3.OperationalError:
+            return name
+        rows = cur.fetchone()
+    return rows[0] if rows else name
+
+
+def table_fields(dbf, tablename):
+    with sqlite3.connect(dbf) as con:
+        cur = con.cursor()
+        try:
+            cur.execute("select * from %s limit(0)" % tablename)
+            column_names = [t[0] for t in cur.description]
+        except sqlite3.OperationalError:
+            return None
+    return column_names
+
+
+def table_metadata(dbf, table_name):
+    columns = table_fields(dbf, table_name)
+    tlbl = table_lbl(dbf, table_name)
+    clbl = {}
+    clbld = []
+    for col in columns:
+        clbl[col] = field_lbl(dbf, col)
+        clbld.append(clbl[col])
+    return {'table': table_name, 'tablelbl': tlbl,
+            'cols': columns, 'colslbl': clbl, 'colslbld': clbld }
+
+
+def table_rpr(dbf, table, idv):
+        sql1 = "SELECT * FROM %s_rpr WHERE id=%s" % (table, idv)
+        sql2 = "SELECT * FROM %s WHERE id=%s" % (table, idv)
+        val = select(dbf, sql1)
+        if val:
+            return val[0]['rpr']
+        val = select(dbf, sql2)
+        rep = []
+        if val:
+            for key in val[0]:
+                if key != 'id':
+                    if key.endswith('_id') or key.endswith('_cd'):
+                        rep.append(table_rpr(dbf, key[:-3], val[0][key]))
+                    else:
+                        rep.append(str(val[0][key]))
+        else:
+            return idv
+        final = ' '.join(rep)
+        return final[:30]
+
+
 def cud(dbf, sql):
     """Safely save data to database"""
     try:
@@ -104,6 +172,10 @@ class Model():
     def fields(self):
         return self._fields
 
+    @property
+    def metadata(self):
+        return table_metadata(self._dbf, self._table)
+
     def _fields_from_db(self):
         """Get"""
         sql = 'SELECT * FROM %s LIMIT 0' % self._table
@@ -159,6 +231,9 @@ class Model():
             return val[0]
         else:
             return None
+
+    def rpr(self, idv):
+        return table_rpr(self.dbf, self.table, idv)
 
     def save(self, data):
         """code to save or update here"""

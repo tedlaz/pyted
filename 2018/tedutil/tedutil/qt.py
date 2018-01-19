@@ -9,7 +9,6 @@ import PyQt5.QtWidgets as Qw
 import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 from . import gr
-from . import sqlite as sq
 from . import model as md
 
 
@@ -401,11 +400,13 @@ class TCombo(Qw.QComboBox):
 
 class TComboDB(Qw.QComboBox):
     '''Combo'''
-    def __init__(self, val, table, dbf, parent):
+    def __init__(self, idv, table, parent):
         super().__init__(parent)
-        self.pdic = {'db': dbf, 'sql': 'SELECT * FROM %s' % table}
+        self._parent = parent
+        self._table = table
+        self._model = md.Model(parent._dbf, table)
         self.populate()
-        self.set(val)  # val must be a valid id
+        self.set(idv)  # val must be a valid id
 
     def get(self):
         return self.index2id[self.currentIndex()]
@@ -420,25 +421,30 @@ class TComboDB(Qw.QComboBox):
         2.fill Combo
         3.set current index to initial value
         """
-        vlist = sq.select_simple_safe(self.pdic)
+        vlist = self._model.select_all_cols_rows['rows']
         self.index2id = {}
         self.id2index = {}
+        self.addItem('')
+        self.index2id[0] = ''
+        self.id2index[''] = 0
         for i, elm in enumerate(vlist):
             self.addItem('%s' % elm[1])
-            self.index2id[i] = elm[0]
-            self.id2index[elm[0]] = i
+            self.index2id[i+1] = elm[0]
+            self.id2index[elm[0]] = i+1
 
 
 class AutoForm(Qw.QDialog):
     def __init__(self, dbf, table, idv=None, parent=None):
         super().__init__(parent)
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Table {}:{}'.format(table, idv if idv else 'New'))
         self._parent = parent
         self._dbf = dbf
         self._table = table
         self._id = idv
         self.model = md.Model(dbf, table)
+        self.metadata = self.model.metadata
+        self.setWindowTitle('{}: {}'.format(self.metadata['tablelbl'],
+                                            idv if idv else 'Νέα εγγραφή'))
         self.widgets = {}
         main_layout = Qw.QVBoxLayout()
         self.setLayout(main_layout)
@@ -464,9 +470,11 @@ class AutoForm(Qw.QDialog):
             self._fill()
 
     def _create_fields(self):
+        lbs = self.metadata['colslbl']
         for i, fld in enumerate(self.model.fields):
-            self.widgets[fld] = TTextLine(parent=self)
-            self.fld_layout.insertRow(i, Qw.QLabel(fld), self.widgets[fld])
+            self.widgets[fld] = wselector(fld, self)
+            self.fld_layout.insertRow(i, Qw.QLabel(lbs[fld]),
+                                      self.widgets[fld])
         self.widgets['id'].setEnabled(False)
 
     def _fill(self):
@@ -512,12 +520,13 @@ class AutoFormTable(Qw.QDialog):
     def __init__(self, dbf, table, parent=None):
         super().__init__(parent)
         # self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Table {}'.format(table))
         self.resize(550, 400)
         self._parent = parent
         self._dbf = dbf
         self._table = table
         self.model = md.Model(dbf, table)
+        self.meta = self.model.metadata
+        self.setWindowTitle('{}'.format(self.meta['tablelbl']))
         layout = Qw.QVBoxLayout()
         self.setLayout(layout)
         self.tbl = self._init_table()
@@ -532,7 +541,14 @@ class AutoFormTable(Qw.QDialog):
         blay.addWidget(self.bnew)
         self.bedt.clicked.connect(self._edit_record)
         self.bnew.clicked.connect(self._new_record)
+        self.tbl.cellDoubleClicked.connect(self._edit_record)
         self._populate()
+
+    def keyPressEvent(self, ev):
+        '''use enter or return for fast selection'''
+        if ev.key() in (Qc.Qt.Key_Enter, Qc.Qt.Key_Return):
+            self._edit_record()
+        Qw.QDialog.keyPressEvent(self, ev)
 
     def _new_record(self):
         dialog = AutoForm(self._dbf, self._table, parent=self)
@@ -559,21 +575,23 @@ class AutoFormTable(Qw.QDialog):
         data = self._get_data()
         self.tbl.setRowCount(data['rownum'])
         self.tbl.setColumnCount(data['colnum'])
-        self.tbl.setHorizontalHeaderLabels(data['cols'])
+        self.tbl.setHorizontalHeaderLabels(self.model.metadata['colslbld'])
         for i, row in enumerate(data['rows']):
             for j, col in enumerate(data['cols']):
                 val = row[j]
-                if gr.isNum(val):
-                    if data['cols'][j].endswith('id'):
-                        self.tbl.setItem(i, j, self._intItem(val))
-                    elif type(val) is decimal.Decimal:
-                        self.tbl.setItem(i, j, self._numItem(val))
-                    else:
-                        self.tbl.setItem(i, j, self._numItem(val))
-                elif gr.is_iso_date(val):
-                    self.tbl.setItem(i, j, SortWidgetItem(gr.date2gr(val), val))
+                if data['cols'][j].startswith('id'):
+                    item = self._intItem(val)
+                elif data['cols'][j].endswith('_id'):
+                    item = self._keyItem(val, data['cols'][j][:-3])
+                elif data['cols'][j].endswith('_cd'):
+                    item = self._keyItem(val, data['cols'][j][:-3])
+                elif data['cols'][j][0] == 'n':
+                    item = self._numItem(val)
+                elif data['cols'][j][0] == 'd':
+                    item = SortWidgetItem(gr.date2gr(val), val)
                 else:
-                    self.tbl.setItem(i, j, self._strItem(val))
+                    item = self._strItem(val)
+                self.tbl.setItem(i, j, item)
         self.tbl.resizeColumnsToContents()
 
     def _init_table(self):
@@ -609,11 +627,19 @@ class AutoFormTable(Qw.QDialog):
         item = Qw.QTableWidgetItem(st)
         return item
 
+    def _keyItem(self, strv, table):
+        stv = md.table_rpr(self._dbf, table, strv)
+        if stv == 'None':
+            stv = ''
+        item = Qw.QTableWidgetItem(stv)
+        return item
+
 
 class AutoFormTableFound(AutoFormTable):
     def __init__(self, dbf, table, search_string, parent=None):
         self.search_string = search_string
         super().__init__(dbf, table, parent)
+        self.tbl.cellDoubleClicked.disconnect(self._edit_record)
         self.tbl.cellDoubleClicked.connect(self.accept)
 
     def _get_data(self):
@@ -625,6 +651,7 @@ class AutoFormTableFound(AutoFormTable):
             self.accept()
         Qw.QDialog.keyPressEvent(self, ev)
 
+
 class SortWidgetItem(Qw.QTableWidgetItem):
     """Sorting"""
     def __init__(self, text, sortKey):
@@ -635,118 +662,6 @@ class SortWidgetItem(Qw.QTableWidgetItem):
         return self.sortKey < other.sortKey
 
 
-class Table_widget(Qw.QTableWidget):
-    """:param data: Tuple with two elements (labels, rows)"""
-    def __init__(self, data, parent=None):
-        super().__init__(parent)
-        self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.data = data
-        # self.labels, self.rows = data.labels_tuples()
-        self.parent = parent
-        # Εδώ ορίζουμε το πλάτος της γραμμής του grid
-        # self.verticalHeader().setDefaultSectionSize(20)
-        self.verticalHeader().setStretchLastSection(False)
-        self.verticalHeader().setVisible(False)
-        self.setSelectionMode(Qw.QAbstractItemView.SingleSelection)
-        self.setSelectionBehavior(Qw.QAbstractItemView.SelectRows)
-        self.setEditTriggers(Qw.QAbstractItemView.NoEditTriggers)
-        self.setAlternatingRowColors(True)
-        # self.setStyleSheet("alternate-background-color: rgba(208,246,230);")
-        self.setSortingEnabled(True)
-        self.populate()
-        self.wordWrap()
-
-    def _intItem(self, num):
-        item = Qw.QTableWidgetItem()
-        item.setData(Qc.Qt.DisplayRole, num)
-        item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
-        return item
-
-    def _numItem(self, num):
-        item = SortWidgetItem(gr.dec2gr(num), num)
-        item.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
-        return item
-
-    def _strItem(self, strv):
-        st = str(strv)
-        if st == 'None':
-            st = ''
-        item = Qw.QTableWidgetItem(st)
-        return item
-
-    def populate(self):
-        self.setRowCount(self.data.row_number)
-        self.setColumnCount(self.data.column_number)
-        self.setHorizontalHeaderLabels(self.data.labels)
-        for i, row in enumerate(self.data.rows):
-            for j, col in enumerate(row):
-                if gr.isNum(col):
-                    # if col == 'id' or col ends with id (e.g. erg_id)
-                    if self.data.columns[j].endswith('id'):
-                        self.setItem(i, j, self._intItem(col))
-                    elif type(col) is decimal.Decimal:
-                        self.setItem(i, j, self._numItem(col))
-                    else:
-                        self.setItem(i, j, self._numItem(col))
-                elif gr.is_iso_date(col):
-                    self.setItem(i, j, SortWidgetItem(gr.date2gr(col), col))
-                else:
-                    self.setItem(i, j, self._strItem(col))
-        self.resizeColumnsToContents()
-
-
-class Form_find(Qw.QDialog):
-    valselected = Qc.pyqtSignal(str)
-
-    def __init__(self, data, title, dbf, tbl, parent, selectAndClose=True):
-        super().__init__(parent)
-        self.selectAndClose = selectAndClose
-        self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self._db = dbf
-        self.table = tbl
-        self.final_value = ''
-        layout = Qw.QVBoxLayout()
-        self.setLayout(layout)
-        self.tbl = Table_widget(data, parent)
-        self.tbl.cellDoubleClicked.connect(self._setvals)
-        layout.addWidget(self.tbl)
-        self.bnew = Qw.QPushButton('Νέα εγγραφή')
-        self.bnew.setFocusPolicy(Qc.Qt.NoFocus)
-        self.bnew.clicked.connect(self._new_record)
-        layout.addWidget(self.bnew)
-        self.setWindowTitle(title)
-        self.resize(550, 400)
-
-    def _new_record(self):
-        dialog = FTable(self._db, self.table, None, self)
-        if dialog.exec_() == Qw.QDialog.Accepted:
-            # self.valselected.emit('1')
-            # self.accept()
-            # self.valselected.emit(str(dialog._id))
-            self._setvalue_from_new_record(dialog._id)
-        else:
-            return False
-
-    def _setvalue_from_new_record(self, vid):
-        self.final_value = str(vid)
-        self.valselected.emit(self.final_value)
-        self.accept()
-
-    def _setvals(self):
-        self.vals = []
-        i = self.tbl.currentRow()
-        self.final_value = self.tbl.item(i, 0).text()
-        self.valselected.emit(self.final_value)
-        if self.selectAndClose:
-            self.accept()
-
-    def keyPressEvent(self, ev):
-        '''use enter or return for fast selection'''
-        if ev.key() in (Qc.Qt.Key_Enter, Qc.Qt.Key_Return):
-            self._setvals()
-        Qw.QDialog.keyPressEvent(self, ev)
-
-
 class TTextButton(Qw.QWidget):
     valNotFound = Qc.pyqtSignal(str)
 
@@ -754,6 +669,7 @@ class TTextButton(Qw.QWidget):
         """parent must have ._dbf"""
         super().__init__(parent)
         self._parent = parent
+        self._table = table
         self._model = md.Model(parent._dbf, table)
         self.dval = None
         self._state = None
@@ -772,7 +688,9 @@ class TTextButton(Qw.QWidget):
         self.text.textChanged.connect(self._text_changed)
         self.button.clicked.connect(self._button_clicked)
         # Try to set value
-        self.set(idv)
+        self.idv = None
+        if idv:
+            self.set(idv)
 
     def _set_state(self, state):
         self._state = state
@@ -786,9 +704,9 @@ class TTextButton(Qw.QWidget):
     def _button_clicked(self):
         self.button.setFocus()
         vals = self._model.select_all
-        ffind = Form_find(vals, u'Αναζήτηση', self.dbf, self.table, self)
+        ffind = AutoFormTableFound(self._parent._dbf, self._table, '', self)
         if ffind.exec_() == Qw.QDialog.Accepted:
-            self.set(ffind.final_value)
+            self.set(ffind.id)
         else:
             self._set_state(1 if self.txt == self.text.text() else 0)
 
@@ -802,48 +720,43 @@ class TTextButton(Qw.QWidget):
         """
         :param text: text separated by space multi-search values 'va1 val2 ..'
         """
-        sql = search_complex_sql(self.dbf, self.table, text)
-        vals = select(self.dbf, sql)
-        if vals.lines == 1:
-            self.set(vals.list_of_dic()[0]['id'])
-        elif vals.lines > 1:
-            ffind = Form_find(vals, u'Αναζήτηση', self.dbf, self.table, self)
+        vals = self._model.search(text)
+        if vals['rownum'] == 1:
+            self.set(vals['rows'][0][0])
+        elif vals['rownum'] > 1:
+            ffind = AutoFormTableFound(self._parent._dbf, self._table,
+                                       text, self)
             if ffind.exec_() == Qw.QDialog.Accepted:
-                self.set(ffind.final_value)
+                self.set(ffind.id)
             else:
                 self._set_state(1 if self.txt == self.text.text() else 0)
         else:
             self.valNotFound.emit(self.text.text())
 
     def set(self, idv):
-        sql1 = "SELECT * FROM %s WHERE id='%s'" % (self.table, idv)
-        self.dval = sq.select(self.dbf, sql1)
-        val = self.dval.first_row_only
+        if idv is None or idv == 'None':
+            return
+        val = self._model.search_by_id(idv)
         self._set_state(1 if val else 0)
-        vtxt = []
-        vrpr = []
-        for key in val:
-            if key != 'id':
-                if val[key]:
-                    vtxt.append(str(val[key]))
-            vrpr.append('%s : %s\n' % (key, val[key] if val[key] else ''))
-        self.txt = ' '.join(vtxt) if val else ''
-        self.rpr = ' '.join(vrpr) if val else ''
-        self.text.setText(self.txt)
-        self.setToolTip(self.rpr)
+        rpr = self._model.rpr(idv)
+        self.txt = rpr
+        self.rpr = rpr
+        self.text.setText(rpr)
+        self.setToolTip(rpr)
         self.text.setCursorPosition(0)
+        self.idv = val['id']
 
     def get(self):
-        return self.dval.first_row_id if self._state else ''
+        return self.idv
 
 
-def widget_selector(fld, dbf, parent):
+def wselector(fld, parent):
     if fld == 'id':
         return TInteger(parent=parent)
     elif fld.endswith('_id'):
-        return TTextButton(None, fld[:-3], dbf, parent)
+        return TTextButton(None, fld[:-3], parent)
     elif fld.endswith('_cd'):
-        return TComboDB(None, fld[:-3], dbf, parent)
+        return TComboDB(None, fld[:-3], parent)
     elif fld.startswith('b'):
         return TCheckbox(parent=parent)
     elif fld.startswith('d'):
@@ -862,155 +775,3 @@ def widget_selector(fld, dbf, parent):
         return TWeekdays(parent=parent)
     else:
         return TTextLine(parent=parent)
-
-
-class FTable(Qw.QDialog):
-    '''Form to display and edit row table data'''
-    def __init__(self, dbf, table, did=None, parent=None):
-        super().__init__(parent)
-        self.setAttribute(Qc.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Table {}:{}'.format(table, did if did else 'New'))
-        # basic data here
-        self._db = dbf
-        self._table = table
-        self._id = did
-        self.fields = []
-        self.labels = []
-        self.data = {}
-        # Set main layout
-        self.mainlayout = Qw.QVBoxLayout()
-        self.setLayout(self.mainlayout)
-        # Create widgets here and add them to formlayout
-        self._create_and_fill_fields()
-        self._create_buttons()
-
-    def _create_and_fill_fields(self):
-        self.dbf = self._db
-        if self._id:
-            sql = "SELECT * FROM %s WHERE id='%s'" % (self._table, self._id)
-        else:
-            sql = "SELECT * FROM %s limit 0" % self._table
-        self.data = sq.select(self._db, sql)
-        flayout = Qw.QFormLayout()
-        self.mainlayout.addLayout(flayout)
-        self.widgets = {}
-        # Add fields to form
-        print(self.data.columns)
-        for i, fld in enumerate(self.data.columns):
-            self.widgets[fld] = widget_selector(fld, self._db, self)
-            flayout.insertRow(i, Qw.QLabel(fld), self.widgets[fld])
-            if fld in self.data.columns:  # if not None or empty string populate form
-                try:
-                    self.widgets[fld].set('%s' % self.data.first_row_only[fld])
-                except Exception:
-                    # self.data[fld] = ''
-                    pass
-            # replace possible None with empty string for correct comparisson
-            else:
-                self.data[fld] = ''
-            if fld.startswith('n'):  # Workaround to make proper comparisons
-                self.data[fld] = str(dec(self.data[fld]))
-        # self.widgets['id'].setEnabled(False)
-
-    def is_empty(self):
-        for fld in self.widgets:
-            if self.widgets[fld].text() != '':
-                return False
-        self._id = None
-        return True
-
-    def _create_buttons(self):
-        '''Create buttons for the form'''
-        # Create layout first
-        buttonlayout = Qw.QHBoxLayout()
-        self.mainlayout.addLayout(buttonlayout)
-        # Create buttons here
-        self.bcancel = Qw.QPushButton(u'Ακύρωση', self)
-        self.bsave = Qw.QPushButton(u'Αποθήκευση', self)
-        # Make them loose focus
-        self.bcancel.setFocusPolicy(Qc.Qt.NoFocus)
-        self.bsave.setFocusPolicy(Qc.Qt.NoFocus)
-        # Add them to buttonlayout
-        buttonlayout.addWidget(self.bcancel)
-        buttonlayout.addWidget(self.bsave)
-        # Make connections here
-        self.bcancel.clicked.connect(self.close)
-        self.bsave.clicked.connect(self.save)
-
-    def validate(self):
-        return False
-
-    def save(self):
-        if self.widgets['id'].get() == '':  # Σε νέα εγγραφή τα παίρνουμε όλα
-            datadic = self.get_data_from_form(only_changed=False)
-        else:  # Διαφορετικά παίρνουμε μόνο τα αλλαγμένα
-            datadic = self.get_data_from_form(only_changed=True)
-        if len(datadic) <= 1:
-            return
-        sql, typ = self.create_sql(datadic)
-        status, response = sq.insert(self._db, sql)
-        msg = response
-        if status:
-            if typ == sq.INSERT:
-                self._id = response
-                msg = "Η εγγραφή καταχωρήθηκε με αριθμό : %s" % response
-                Qw.QMessageBox.information(self, "Αποθήκευση", msg)
-            elif typ == sq.UPDATE:
-                msg = "Η εγγραφή No : %s  ενημερώθηκε" % self._id
-                Qw.QMessageBox.information(self, "Αποθήκευση", msg)
-            self.accept()
-        else:
-            if response.startswith('UNIQUE constraint failed:'):
-                fld = response.split(':')[1].strip().split('.')[1]
-                lfld = LBL.get(fld, fld)
-                msg = 'Υπάρχει εγγραφή με ίδια τιμή για το πεδίο %s' % lfld
-            elif response.startswith('NOT NULL constraint failed:'):
-                fld = response.split(':')[1].strip().split('.')[1]
-                lfld = LBL.get(fld, fld)
-                msg = 'Tο πεδίο %s δεν έχει συμπληρωθεί' % lfld
-            Qw.QMessageBox.critical(self, 'Λάθη', msg)
-
-    def create_sql(self, datadic):
-        sqlinsert = "INSERT INTO %s (%s) VALUES (%s);"
-        sqlupdate = "UPDATE %s SET %s WHERE id='%s';"
-        # datadic = self.get_data_from_form(only_changed=True)
-        flds = []
-        vals = []
-        if datadic.get('id', '') == '':
-            datadic['id'] = 'null'
-            for fld in datadic:
-                flds.append(str(fld))
-                vals.append("'%s'" % datadic[fld] if fld != 'id' else 'null')
-            sql = sqlinsert % (self._table, ', '.join(flds), ', '.join(vals))
-            typ = sq.INSERT
-        else:
-            for fld in datadic:
-                if fld == 'id':
-                    continue
-                vals.append("%s='%s'" % (fld, datadic[fld]))
-            sql = sqlupdate % (self._table, ', '.join(vals), datadic['id'])
-            typ = sq.UPDATE
-        return sql, typ
-
-    def get_data_from_form(self, only_changed=False):
-        '''Get data from the form. Assume id already exists.'''
-        dtmp = {'id': self.data['id']} if 'id' in self.data else {'id': None}
-        for field in self.widgets:
-            if only_changed:
-                if str(self.data[field]) != str(self.widgets[field].get()):
-                    dtmp[field] = self.widgets[field].get()
-            else:
-                dtmp[field] = self.widgets[field].get()
-        return dtmp
-
-    def is_dirty(self):
-        return True if len(self.get_data_from_form(True)) > 1 else False
-
-
-if __name__ == '__main__':
-    ntp = NamesTuples(('epo', 'ono'), [('laz', 'ted'), ('daz', 'popi')])
-    print(ntp.list_of_dic())
-    print(ntp.names_tuples())
-    print(ntp.value(0, 'epo'))
-    print(ntp.values('epo', 'ono'))
-    print(ntp.one())
