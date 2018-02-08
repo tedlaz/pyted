@@ -1,0 +1,20 @@
+# Για να κάνουμε compile από τον qtDesigner:
+pyuic5 untitled.ui -o output.py
+
+# Για να κάνουμε compile αρχεία qrc:
+pyrcc5 resource_file.qrc -o compiled_resource_file.py
+
+# To αρχείο .qrc περιέχει :
+
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/copy.png</file>
+    <file>images/cut.png</file>
+    <file>images/new.png</file>
+    <file>images/open.png</file>
+    <file>images/paste.png</file>
+    <file>images/save.png</file>
+</qresource>
+</RCC> 
+
+όπου images είναι το directory με τις εικόνες.

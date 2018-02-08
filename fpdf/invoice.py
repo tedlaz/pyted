@@ -51,13 +51,13 @@ class Invoice():
         self.print_header()
         for i, el in enumerate(self.data['lines']):
             j = i % self.lines_per_page
-            line = 104.5 + 3.6 * j
+            line = 104.5 + 3.617 * j
             fs = 9  # Μέγεθος γραμματοσειράς αναλυτικών γραμμών
             self.hp.txtl(10.1, line,  el['per'], fs)
             self.hp.txtc(105.0, line, el['mon'], fs)
             self.hp.num(self.col_posotita, line, dec.strGrDec(el['pos']), fs)
             self.hp.num(148.0, line, dec.strGrDec(el['timi']), fs)
-            self.hp.txtc(155.0, line, '%s %%' % el['synt'], fs)
+            self.hp.txtc(155.0, line, '%s' % el['synt'], fs)
             ajia = round(el['pos'] * el['timi'], 2)
             self.make_sums(int(el['synt']), el['pos'], ajia)
             self.hp.num(self.col_ajia, line, dec.strGrDec(ajia), fs)
