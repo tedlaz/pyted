@@ -1,5 +1,6 @@
 '''Basic module for accounting'''
 import utils as ul
+import parse_singularo_afm as pafm
 
 FORMAT_LINE = '%-15s %12s %12s'
 SPLIT_CHAR = '.'
@@ -325,31 +326,49 @@ class Book():
                          'fpa': fpa, 'tot': art.val, 'lmo': lmo})
         return lins
 
-    def eebook_print(self):
+    def eebook_print(self, eefile):
+        afms = pafm.parsefile(eefile)
+        a5398 = {'53.98.00.197': '999758350'}
         eedata = self.eebook()
-        stc = ('{aa:<5}{date} {typ:2} {lmo:12} {par:22} {per:30} {es:12} {te:12} '
-               '{esf:12} {ej:12} {tj:12} {ejf:12} {tot:12}')
+        stc = ('{aa:<5}{date} {typ:2} {lmo:12} {par:22} {afm:9} {per:30} {es:12}'
+               '{esf:12} {est:12} {ej:12} {ejf:12} {ejt:12}')
         te = ul.dec(0)
         tj = ul.dec(0)
+        total_paroxi = 0
         for line in eedata:
             line['per'] = line['per'][:30] if len(line['per']) > 29 else line['per']
-            if line['typ'] == 'ΕΣ':
+            per_name = line['per'][:14] if len(line['per']) > 14 else line['per']
+            per_name = per_name.split('-')[0].strip()
+            line['afm'] = afms[per_name] if per_name in afms else ''
+            if line['lmo'].startswith('53.98.'):
+                line['afm'] = a5398.get(line['lmo'], '   ???   ')
+            if line['per'].startswith('ΑΠΟΔΕΙΞΗ ΛΙΑΝΙΚΗΣ ΠΩΛΗΣΗΣ'):
+                line['afm'] = '1'
+            if line['per'].startswith('ΑΠΟΔΕΙΞΗ ΠΑΡΟΧΗΣ ΥΠΗΡΕΣΙΩΝ'):
+                line['afm'] = '    ?    '
+                total_paroxi += 1
+            if line['typ'] == '7':
                 line['es'] = line['poso']
-                line['ej'] = ul.dec(0)
+                line['ej'] = ''  # ul.dec(0)
                 line['esf'] = line['fpa']
-                line['ejf'] = ul.dec(0)
+                line['ejf'] = ''  # ul.dec(0)
                 te += line['poso']
                 line['te'] = te
-                line['tj'] = tj
+                line['tj'] = ''  # tj
+                line['est'] = line['tot']
+                line['ejt'] = ''
             else:
-                line['es'] = ul.dec(0)
+                line['es'] = ''  # ul.dec(0)
                 line['ej'] = line['poso']
-                line['esf'] = ul.dec(0)
+                line['esf'] = ''  # ul.dec(0)
                 line['ejf'] = line['fpa']
                 tj += line['poso']
-                line['te'] = te
+                line['te'] = ''  # te
                 line['tj'] = tj
+                line['est'] = ''
+                line['ejt'] = line['tot']
             print(stc.format(**line))
+        print('Esoda : %s Ejoda : %s paroxi: %s' % (te, tj, total_paroxi))
 
     def eebook_totals(self, apo, eos):
         eedata = self.eebook()
@@ -357,10 +376,10 @@ class Book():
         for line in eedata:
             if not (apo <= line['date'] <= eos):
                 continue
-            if line['typ'] == 'ΕΣ':
+            if line['typ'] == '7':
                 eposo += line['poso']
                 efpa += line['fpa']
-            elif line['typ'] in ('ΕΞ', 'ΠΑ'):
+            elif line['typ'] in ('26', '1'):
                 xposo += line['poso']
                 xfpa += line['fpa']
             else:
