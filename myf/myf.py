@@ -10,6 +10,7 @@ import xml.etree.ElementTree as et
 Ημερομηνία ΑΦΜ Αξια ΦΠΑ Νορμαλ/inverse ypoxreos
 '''
 
+
 def dec(poso=0, decimals=2):
     """ use : Given a number, it returns a decimal with a specific number
         of decimals
@@ -114,13 +115,13 @@ class Myf():
                 tval += dec(el[1])
                 tfpa += dec(el[2])
             elif el[3] == 'credit':
-                #print(el, el[1], el[2])
+                # print(el, el[1], el[2])
                 tval -= dec(el[1])
                 tfpa -= dec(el[2])
         return tval, tfpa
 
     def getexp(self):
-        parr = [[0,0]]
+        parr = [[0, 0]]
         el = self.pack.find('otherExpenses')
         if el:
             amount = coma2dot(el.find('amount').text)
@@ -136,6 +137,7 @@ class Myf():
         tv1, tfpa1 = self.getagt()
         tv2, tfpa2 = self.getexpt()
         return tv1 + tv2, tfpa1 + tfpa2
+
 
 def printanalytic(xmlfile):
     myf = Myf(xmlfile)
@@ -169,8 +171,8 @@ def printmyf(xmlfile):
     print('Loipa ej %12s %12s' % myf.getexpt())
     print('---------------------------------------')
     print('agores   %12s %12s' % myf.getagorest())
-    #for el in myf.getag():
-    #    print(el)
+    # for el in myf.getag():
+    #     print(el)
 
 
 def file2txt(afile):
@@ -184,8 +186,8 @@ def file2txt(afile):
 
 if __name__ == '__main__':
     printmyf('/home/tedlaz/tedfiles/prj/samaras2016d/myf/091767623-2016-4.xml')
-    #printmyf('s2.xml')
-    #printmyf('s3.xml')
-    #printmyf('s4.xml')
-    #printanalytic('s1.xml')
-    #print(file2txt('grpexpn.sql'))
+    # printmyf('s2.xml')
+    # printmyf('s3.xml')
+    # printmyf('s4.xml')
+    # printanalytic('s1.xml')
+    # print(file2txt('grpexpn.sql'))

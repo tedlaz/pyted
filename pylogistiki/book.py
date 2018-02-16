@@ -40,12 +40,14 @@ class Line():
             typ.add('ΑΓΟΡΕΣ')
         if self.lmo.startswith('3'):
             typ.add('ΑΠΑΙΤΗΣΕΙΣ')
+            typ.add('3-5')
         if self.lmo.startswith('38'):
             typ.add('ΜΕΤΡΗΤΑ')
         if self.lmo.startswith('4'):
             typ.add('ΚΕΦΑΛΑΙΟ')
         if self.lmo.startswith('5'):
             typ.add('ΥΠΟΧΡΕΩΣΕΙΣ')
+            typ.add('3-5')
         if self.lmo.startswith('50'):
             typ.add('ΠΡΟΜΗΘΕΥΤΕΣ')
         if self.lmo.startswith('54.00'):
@@ -147,11 +149,11 @@ class Arthro():
     @property
     def ee_typos(self):
         if 'ΕΕ ΕΣΟΔΑ' in self.typos:
-            return 'ΕΣ'
+            return '7'
         elif 'ΕΕ ΕΞΟΔΑ' in self.typos:
-            return 'ΕΞ'
+            return '26'
         elif '1' in self.typos:
-            return 'ΠΑ'
+            return '1'
         else:
             return 'ΛΑΘΟΣ'
 
@@ -302,6 +304,7 @@ class Book():
             i += 1
             poso = ul.dec(0)
             fpa = ul.dec(0)
+            lmo = ''
             for line in art.z:
                 if '54.00' in line.typos:
                     fpa += ul.dec(line.y * art.ee_synt)
@@ -313,16 +316,18 @@ class Book():
                     poso += ul.dec(line.y * art.ee_synt)
                 elif '7' in line.typos:
                     poso += ul.dec(line.y * art.ee_synt)
+                elif '3-5' in line.typos:
+                    lmo = line.lmo
                 else:
                     pass
             lins.append({'aa': i, 'date': art.dat, 'typ': art.ee_typos,
                          'par': art.par, 'per': art.per, 'poso': poso,
-                         'fpa': fpa, 'tot': art.val})
+                         'fpa': fpa, 'tot': art.val, 'lmo': lmo})
         return lins
 
     def eebook_print(self):
         eedata = self.eebook()
-        stc = ('{aa:<5}{date} {typ:2} {par:22} {per:30} {es:12} {te:12} '
+        stc = ('{aa:<5}{date} {typ:2} {lmo:12} {par:22} {per:30} {es:12} {te:12} '
                '{esf:12} {ej:12} {tj:12} {ejf:12} {tot:12}')
         te = ul.dec(0)
         tj = ul.dec(0)
