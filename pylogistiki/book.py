@@ -408,8 +408,6 @@ class Book():
         a5398, pfpa5398 = parse_afm_5398()
         l5398 = []
         eedata = self.eebook()
-        stc = ('{aa:<5}{date} {typ:2} {lmo:12} {par:22} {afm:9} {per:30} {es:12}'
-               '{esf:12} {est:12} {ej:12} {ejf:12} {ejt:12}')
         te = ul.dec(0)
         tj = ul.dec(0)
         total_paroxi = 0
@@ -462,6 +460,8 @@ class Book():
                     line['myft'] = 'otherExpenses'
                 else:
                     line['myft'] = 'exp'
+                    if line['fpa'] != 0:
+                        print('Error', line)
             if line['poso'] < 0:
                 line['decr'] = 'credit'
                 line['mposo'] = -1 * line['poso']
