@@ -7,6 +7,32 @@ SPLIT_CHAR = '.'
 LM1 = ul.read_txt_to_dict('log_sxedio.txt')
 
 
+def parse_afm_5398(file='afm-5398.txt'):
+    afmdic = {}
+    pfpadic = {}
+    with open(file) as fle:
+        for line in fle:
+            lmos, afm, pfpa, _ = line.split('|')
+            afmdic[lmos] = afm
+            pfpadic[lmos] = ul.dec(ul.dec(pfpa) / ul.dec(100))
+    return afmdic, pfpadic
+
+
+def date2period(isodate):
+    year, month, _ = isodate.split('-')
+    imonth = int(month)
+    if imonth <= 3:
+        return '%s-%s-%s' % (year, '03', '31')
+    elif imonth <= 6:
+        return '%s-%s-%s' % (year, '06', '30')
+    elif imonth <= 9:
+        return '%s-%s-%s' % (year, '09', '30')
+    elif imonth <= 12:
+        return '%s-%s-%s' % (year, '12', '31')
+    else:
+        return '%s-%s-%s' % (year, '12', '31')
+
+
 class Line():
     def __init__(self, lmo, xre, pis):
         assert xre + pis != 0
@@ -328,7 +354,8 @@ class Book():
 
     def eebook_print(self, eefile):
         afms = pafm.parsefile(eefile)
-        a5398 = {'53.98.00.197': '999758350'}
+        a5398, _ = parse_afm_5398()
+        l5398 = []
         eedata = self.eebook()
         stc = ('{aa:<5}{date} {typ:2} {lmo:12} {par:22} {afm:9} {per:30} {es:12}'
                '{esf:12} {est:12} {ej:12} {ejf:12} {ejt:12}')
@@ -342,6 +369,9 @@ class Book():
             line['afm'] = afms[per_name] if per_name in afms else ''
             if line['lmo'].startswith('53.98.'):
                 line['afm'] = a5398.get(line['lmo'], '   ???   ')
+                if line['lmo'] not in l5398:
+                    if line['lmo'] not in a5398:
+                        l5398.append(line['lmo'])
             if line['per'].startswith('ΑΠΟΔΕΙΞΗ ΛΙΑΝΙΚΗΣ ΠΩΛΗΣΗΣ'):
                 line['afm'] = '1'
             if line['per'].startswith('ΑΠΟΔΕΙΞΗ ΠΑΡΟΧΗΣ ΥΠΗΡΕΣΙΩΝ'):
@@ -368,7 +398,88 @@ class Book():
                 line['est'] = ''
                 line['ejt'] = line['tot']
             print(stc.format(**line))
+        l5398.sort()
+        if l5398:
+            print('Λογαριασμοί που λείπουν ΑΦΜ:', l5398)
         print('Esoda : %s Ejoda : %s paroxi: %s' % (te, tj, total_paroxi))
+
+    def eebook_myf(self, eefile):
+        afms = pafm.parsefile(eefile)
+        a5398, pfpa5398 = parse_afm_5398()
+        l5398 = []
+        eedata = self.eebook()
+        stc = ('{aa:<5}{date} {typ:2} {lmo:12} {par:22} {afm:9} {per:30} {es:12}'
+               '{esf:12} {est:12} {ej:12} {ejf:12} {ejt:12}')
+        te = ul.dec(0)
+        tj = ul.dec(0)
+        total_paroxi = 0
+        lines = []
+        for line in eedata:
+            line['mdate'] = date2period(line['date'])
+            line['per'] = line['per'][:30] if len(line['per']) > 29 else line['per']
+            per_name = line['per'][:14] if len(line['per']) > 14 else line['per']
+            per_name = per_name.split('-')[0].strip()
+            line['afm'] = afms[per_name] if per_name in afms else ''
+            if line['lmo'].startswith('53.98.'):
+                line['afm'] = a5398.get(line['lmo'], '   ???   ')
+                if line['lmo'] not in l5398:
+                    if line['lmo'] not in a5398:
+                        l5398.append(line['lmo'])
+            if line['per'].startswith('ΑΠΟΔΕΙΞΗ ΛΙΑΝΙΚΗΣ ΠΩΛΗΣΗΣ'):
+                line['afm'] = '1'
+            if line['per'].startswith('ΑΠΟΔΕΙΞΗ ΠΑΡΟΧΗΣ ΥΠΗΡΕΣΙΩΝ'):
+                line['afm'] = '    ?    '
+                total_paroxi += 1
+            if line['typ'] == '7':
+                line['es'] = line['poso']
+                line['ej'] = ''  # ul.dec(0)
+                line['esf'] = line['fpa']
+                line['ejf'] = ''  # ul.dec(0)
+                te += line['poso']
+                line['te'] = te
+                line['tj'] = ''  # tj
+                line['est'] = line['tot']
+                line['ejt'] = ''
+                if line['afm'] == '1':
+                    line['myft'] = 'groupedCashRegisters'
+                elif line['afm']:
+                    line['myft'] = 'groupedRevenues'
+                else:
+                    line['myft'] = '   rev   '
+            else:
+                line['es'] = ''  # ul.dec(0)
+                line['ej'] = line['poso']
+                line['esf'] = ''  # ul.dec(0)
+                line['ejf'] = line['fpa']
+                tj += line['poso']
+                line['te'] = ''  # te
+                line['tj'] = tj
+                line['est'] = ''
+                line['ejt'] = line['tot']
+                if line['afm'].strip():
+                    line['myft'] = 'groupedExpenses'
+                elif line['lmo'].startswith('53.98.'):
+                    line['myft'] = 'otherExpenses'
+                else:
+                    line['myft'] = 'exp'
+            if line['poso'] < 0:
+                line['decr'] = 'credit'
+                line['mposo'] = -1 * line['poso']
+                line['mfpa'] = -1 * line['fpa']
+            else:
+                line['decr'] = 'normal'
+                line['mposo'] = line['poso']
+                line['mfpa'] = line['fpa']
+            if line['mfpa'] == 0 and line['lmo'] in pfpa5398:
+                poso = ul.dec(line['mposo'] / (1 + pfpa5398[line['lmo']]))
+                fpa = line['mposo'] - poso
+                line['mposo'] = poso
+                line['mfpa'] = fpa
+            lines.append(line)
+        l5398.sort()
+        if l5398:
+            print('Λογαριασμοί που λείπουν ΑΦΜ:', l5398)
+        return lines
 
     def eebook_totals(self, apo, eos):
         eedata = self.eebook()
