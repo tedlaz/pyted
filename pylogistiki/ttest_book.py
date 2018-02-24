@@ -12,7 +12,8 @@ if __name__ == '__main__':
     # book.eebook_print(eefile)
     fst = '{aa:<5} {date} {mdate} {myft:<20} {afm:9} {decr:6} {mposo:12} {mfpa:12} {poso:12} {fpa:12} {lmo}'
     for lin in book.eebook_myf(eefile):
-        print(fst.format(**lin))
+        # print(fst.format(**lin))
+        print('|'.join([str(i) for i in lin.values()]))
     # print(book.typoi)
     # book.isozygio_print('2017-01-01', '2017-12-31')
     # book.kartella_print('38.00.00.000', '2017-01-01', '2017-09-30')

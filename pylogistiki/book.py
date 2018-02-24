@@ -481,6 +481,9 @@ class Book():
             print('Λογαριασμοί που λείπουν ΑΦΜ:', l5398)
         return lines
 
+    def myf(self, lines):
+        pass
+
     def eebook_totals(self, apo, eos):
         eedata = self.eebook()
         eposo = efpa = xposo = xfpa = ul.dec(0)
