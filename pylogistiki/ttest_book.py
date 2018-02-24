@@ -20,3 +20,4 @@ if __name__ == '__main__':
     # book.arthra_print()
     # txt = 'ΦΠΑ#54.00'
     # print(txt.split('#'))
+    # from t420
