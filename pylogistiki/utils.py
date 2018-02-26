@@ -55,6 +55,17 @@ def dec2gr(poso, zeroAsSpace=False):
         replace("X", ".")
 
 
+def dec2grn(poso, zeroAsSpace=False):
+    '''
+    Returns string with Greek Formatted decimal (12345.67 becomes 12.345,67)
+    '''
+    tpo = dec(poso)
+    if tpo == 0:
+        if zeroAsSpace:
+            return ''
+    return '{:,.2f}'.format(tpo).replace(",", "").replace(".", ",")
+
+
 def iso_date_from_greek(dat):
     day, month, year = dat.split('/')
     day = day if len(day) == 2 else '0%s' % day

@@ -16,22 +16,25 @@ def delay(counter, step=1):
     print('')
 
 
+def log2file(filename, line):
+    with open(filename, 'a') as wfile:
+        wfile.write('%s\n' % line)
+
+
 def batch_check(afile, delays=5):
     alist = []
     fdic = {}
-    algorithmic_errors = 0
     with open(afile) as openedfile:
         for line in openedfile:
             afm = line.split()[0].replace('"', '')
             assert len(afm) == 9
             if not isvat(afm):
-                print('AFM: %s is not valid' % afm)
-                algorithmic_errors += 1
-            alist.append(afm)
-    if algorithmic_errors > 0:
-        print('Before you continue please correct the errors')
-        return
-    print('%s afm for check ...' % len(alist))
+                log2file('log.txt', '%s algorithmic err' % afm)
+                print('AFM: %s has algorithmic err' % afm)
+            else:
+                alist.append(afm)
+    total_afms = len(alist)
+    print('%s afm for online check ...' % total_afms)
     for j, afm in enumerate(alist):
         if j > 0:
             delay(delays)
@@ -41,13 +44,17 @@ def batch_check(afile, delays=5):
                 break
             print('Error %s during verification of AFM: %s' % (i + 1, afm))
             delay(30 + (i * 30))
-        print(fdic[afm])
-    return alist
+        if fdic[afm]['valid'] is False:
+            log2file('log.txt', '%s Not Valid err' % afm)
+        else:
+            log2file('log.txt', '%s %s' % (afm, fdic[afm]['name']))
+        print('%s/%s ->' % (j + 1, total_afms), fdic[afm])
+    return True
 
 
 if __name__ == '__main__':
     import os
     CPATH = os.path.dirname(os.path.abspath(__file__))
-    file = os.path.join(CPATH, 'afm.csv')
+    file = os.path.join(CPATH, 'afm.txt')
     print(file)
     print(batch_check(file))

@@ -439,9 +439,9 @@ class Book():
                 line['est'] = line['tot']
                 line['ejt'] = ''
                 if line['afm'] == '1':
-                    line['myft'] = 'groupedCashRegisters'
+                    line['myft'] = '3cash'
                 elif line['afm']:
-                    line['myft'] = 'groupedRevenues'
+                    line['myft'] = '1rev'
                 else:
                     line['myft'] = '   rev   '
             else:
@@ -455,9 +455,9 @@ class Book():
                 line['est'] = ''
                 line['ejt'] = line['tot']
                 if line['afm'].strip():
-                    line['myft'] = 'groupedExpenses'
+                    line['myft'] = '2exp'
                 elif line['lmo'].startswith('53.98.'):
-                    line['myft'] = 'otherExpenses'
+                    line['myft'] = '4oexp'
                 else:
                     line['myft'] = 'exp'
                     if line['fpa'] != 0:
