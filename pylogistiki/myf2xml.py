@@ -1,3 +1,13 @@
+"""STEPS
+1. Parse ivoice data
+2. Create afm table
+3. Create trimino, type, afm aggregate
+4. Check alogorithmic afm
+5. Check online afm
+6. Switch Vendors to (expenses/othenExpenses) or Customers to (revenues/cash)
+7. Create xml files
+"""
+import os
 from xml.etree import ElementTree as ET
 from operator import itemgetter
 import csv
@@ -5,6 +15,31 @@ import utils as ul
 '''
 main xml creation
 '''
+
+
+def trimino(isodate: str) -> str:
+    year, month, _ = isodate.split('-')
+    imonth = int(month)
+    if imonth in (1, 2, 3):
+        return '%s-03-31' % year
+    elif imonth in (4, 5, 6):
+        return '%s-06-30' % year
+    elif imonth in (7, 8, 9):
+        return '%s-09-30' % year
+    elif imonth in (10, 11, 12):
+        return '%s-12-31' % year
+    else:
+        return '%s-12-31' % year
+
+
+def afm_for_other_expenses():
+    adi = {'090000045': 'ΔΕΗ',
+           '094079101': 'ΕΥΔΑΠ',
+           '094349850': 'Vodafone',
+           '094019245': 'ΟΤΕ',
+           '094493766': 'Cosmote',
+           '099936189': 'Wind'}
+    return adi
 
 
 def keys_in_dict(keylist, adict):
@@ -90,17 +125,21 @@ def _build_xml(afm, year, month, data, filename):
     return list_afm
 
 
-def build_year(afm, data):
+def build_year(afm, data, path):
     """
     data : {'2017-01-31'}
     """
-    trimino = {3: 1, 6: 2, 9: 3, 12: 4}
+    trimino = {1: 1, 2: 1, 3: 1,
+               4: 2, 5: 2, 6: 2,
+               7: 3, 8: 3, 9: 3,
+               10: 4, 11: 4, 12: 4}
     fafm = []
     for key, val in data.items():
         year, month, _ = key.split('-')
         month = int(month)
         filename = '%s-%s-%s.xml' % (afm, year, trimino[month])
-        lafm = _build_xml(afm, year, month, val, filename)
+        pathname = os.path.join(path, filename)
+        lafm = _build_xml(afm, year, month, val, pathname)
         fafm += lafm
     afms = list(set(fafm))
     afms.sort()
@@ -109,12 +148,17 @@ def build_year(afm, data):
 
 
 def sumdata(data):
+    afm2otherexp = afm_for_other_expenses()
     sdic = {}
     for lin in data:
-        dat = lin['date']
+        dat = trimino(lin['date'])
         typ = lin['typ']
         afm = lin.get('afm', '')
         if afm == '1':  # Για τις πωλήσεις λιανικής χωρίς ταμιακή
+            afm = ''
+        # Εάν το ΑΦΜ είναι για κουβά εξόδων αλλαξε τον τύπο σε κουβά
+        if typ == '2exp' and afm in afm2otherexp:
+            typ = '4oexp'
             afm = ''
         nte = lin.get('note', '')
         sdic[dat] = sdic.get(dat, {})
@@ -149,15 +193,23 @@ def readcsv(filename):
         spr = csv.DictReader(csf, delimiter='|')
         lst = []
         for row in spr:
-            lst.append({'date': row['mdate'], 'typ': row['myft'],
-                        'afm': row['afm'], 'note': row['decr'],
-                        'amount': row['mposo'], 'tax': row['mfpa']})
+            # lst.append({'date': row['mdate'], 'typ': row['myft'],
+            #             'afm': row['afm'], 'note': row['decr'],
+            #             'amount': row['mposo'], 'tax': row['mfpa']})
+            lst.append({'date': row['date'], 'typ': row['typ'],
+                        'afm': row['afm'], 'note': row['note'],
+                        'amount': row['amount'], 'tax': row['tax']})
         return lst
 
+
+def main(csvfile, afm_ypoxreoy):
+    assert os.path.exists(csvfile)
+    path = os.path.dirname(csvfile)
+    parsed_data = readcsv(csvfile)
+    # print(path)
+    print(build_year(afm_ypoxreoy, sumdata(parsed_data), path))
+
+
 if __name__ == "__main__":
-    # print(keys_in_dict(['a', 'b'], {'c': 1, 'a': 2, 'b': 2}))
-    # buildTree()
-    cvsf = "/home/tedlaz/pelates/2017/myf2017/myf2017.csv"
-    # print(sumdata(fna))
-    fna = readcsv(cvsf)
-    print(build_year('091767623', sumdata(fna)))
+    main("/home/tedlaz/pelates/darzos/2014/myf2014.csv",
+         afm_ypoxreoy='030812295')

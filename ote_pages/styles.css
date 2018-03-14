@@ -15,7 +15,7 @@ body {
 	background-image: url('b.jpg');
 }
 a {	color: #53E027;	background: inherit; text-decoration:none; }
-h3 { color: #CE0F3D;}
+h3 { color: #f1db0a;}
 textarea {color: #000000; background:#ffffb0;}
 input {color: #000000; background:#ffffb0;}
 ul { margin: 0; padding : 0; list-style : none; }

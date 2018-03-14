@@ -46,6 +46,7 @@ class Myf():
         self.tree = et.parse(fname)
         self.root = self.tree.getroot()
         self.pack = self.root.find('package')
+        # print(self.pack.get('month'))
 
     def revenues_group(self):
         parr = []
@@ -166,18 +167,23 @@ def printanalytic(xmlfile):
     print(fstr % ('Synola', val, vat, '', tim))
 
 
-def printmyf(xmlfile, trimino):
+def printmyf(xmlfile):
     myf = Myf(xmlfile)
-    print('Τρίμηνο: %s' % trimino)
+    trim = int(myf.pack.get('month')) // 3
+    afm = myf.pack.get('actor_afm')
+    etos = myf.pack.get('year')
+    dline = '-' * 34
+    print('\nΑΦΜ:%s Έτος:%s Τρίμηνο:%s' % (afm, etos, trim))
+    print(dline)
     print('Έσοδα')
     print('Πωλήσεις %12s %12s' % myf.revenues_group_total())
     print('Λιανική  %12s %12s' % myf.revenues_cash_total())
-    print('---------------------------------------')
+    print(dline)
     print('Σύνολο   %12s %12s' % myf.revenues_all_total())
     print('\nΈξοδα')
     print('Αγορές   %12s %12s' % myf.expenses_group_total())
     print('Λοιπά εξ %12s %12s' % myf.expenses_other_total())
-    print('---------------------------------------')
+    print(dline)
     print('Σύνολο   %12s %12s' % myf.expenses_all_total())
     ramount, rtax = myf.revenues_all_total()
     eamount, etax = myf.expenses_all_total()
@@ -196,7 +202,7 @@ def file2txt(afile):
 
 
 if __name__ == '__main__':
-    printmyf('091767623-2017-1.xml', 1)
-    printmyf('091767623-2017-2.xml', 2)
-    printmyf('091767623-2017-3.xml', 3)
-    printmyf('091767623-2017-4.xml', 4)
+    printmyf('/home/tedlaz/pelates/2017/myf2017/091767623-2017-1.xml')
+    printmyf('/home/tedlaz/pelates/2017/myf2017/091767623-2017-2.xml')
+    printmyf('/home/tedlaz/pelates/2017/myf2017/091767623-2017-3.xml')
+    printmyf('/home/tedlaz/pelates/2017/myf2017/091767623-2017-4.xml')
