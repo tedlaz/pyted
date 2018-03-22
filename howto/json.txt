@@ -1,0 +1,3 @@
+How to save human readable unicode json objects.
+use ensure_ascii=False and encoding='utf8' like:
+(python): json.dumps(dict_value, ensure_ascii=False, encoding='utf8')

@@ -18,7 +18,7 @@ document.write('\
 <li><a href="soft-office.html">Office-Utils software</a></li>\
 <li><a href="soft-web.html">Web software</a></li>\
 <li><a href="development.html">Development</a></li>\
-<li><a href="neuralnet.html">Neural Networks</a></li>\
+<li><a href="neuralnet.html">Machine Learning</a></li>\
 <li><a href="webserv.html">Web Υπηρεσίες</a></li>\
 <li><a href="personal.html">Προσωπικά</a></li>\
 <li><a href="hardware.html">Hardware</a></li>\
