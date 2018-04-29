@@ -47,12 +47,12 @@ def gr(number):
     if abs(number) <= 0.004:
         return ''
     s = '%.2f' % number
-    a, d = s.split('.')
+    int_part, decimal_part = s.split('.')
     groups = []
-    while a and a[-1].isdigit():
-        groups.append(a[-3:])
-        a = a[:-3]
-    return a + '.'.join(reversed(groups)) + ',' + d
+    while int_part and int_part[-1].isdigit():
+        groups.append(int_part[-3:])
+        int_part = int_part[:-3]
+    return int_part + '.'.join(reversed(groups)) + ',' + decimal_part
 
 
 def gr0(number):
@@ -61,12 +61,12 @@ def gr0(number):
     if abs(number) <= 0.004:
         return '0,00'
     s = '%.2f' % number
-    a, d = s.split('.')
+    int_part, decimal_part = s.split('.')
     groups = []
-    while a and a[-1].isdigit():
-        groups.append(a[-3:])
-        a = a[:-3]
-    return a + '.'.join(reversed(groups)) + ',' + d
+    while int_part and int_part[-1].isdigit():
+        groups.append(int_part[-3:])
+        int_part = int_part[:-3]
+    return int_part + '.'.join(reversed(groups)) + ',' + decimal_part
 
 
 def grint(number):
@@ -75,18 +75,18 @@ def grint(number):
     if abs(number) <= 0.004:
         return ''
     s = '%.1f' % number
-    a, d = s.split('.')
+    int_part, decimal_part = s.split('.')
     groups = []
-    while a and a[-1].isdigit():
-        groups.append(a[-3:])
-        a = a[:-3]
-    return a + '.'.join(reversed(groups)) + ',' + d
+    while int_part and int_part[-1].isdigit():
+        groups.append(int_part[-3:])
+        int_part = int_part[:-3]
+    return int_part + '.'.join(reversed(groups)) + ',' + decimal_part
 
 
 def grd(imnia):
     'Returns Greek Date'
-    y, m, d = imnia.split('-')
-    return '%s/%s/%s' % (d, m, y)
+    year, month, date = imnia.split('-')
+    return '%s/%s/%s' % (date, month, year)
 
 
 def align(opt=0):
@@ -129,27 +129,28 @@ def mfont(family, size, bold=False, italic=False):
 
 
 class TableReport():
-    def __init__(self, f={}):
+    def __init__(self, f, dfi):
         self.f = f
+        self.f['data'] = dfi
         self.printer = Qp.QPrinter()
         # Set portrait or landscape
-        if self.f['orientation'] == 0:
+        if self.f['orientation'] in (0, 'portrait'):
             self.printer.setOrientation(Qp.QPrinter.Portrait)
         else:
             self.printer.setOrientation(Qp.QPrinter.Landscape)
         self.pageRect = self.printer.pageRect()
         self.max_width = self.pageRect.width()
         self.max_height = self.pageRect.height()
-        self.x_left, self.y_top = 52, 30
+        self.x_left, self.y_top = 52, 52
         # Συνολικό ωφέλιμο μήκος σελίδας
         self.net_width = self.pageRect.width() - 2 * self.x_left + 13
         self.net_height = self.pageRect.height() - 2 * self.y_top + 13
         self.net_height_table = self.pageRect.height() - 95
         self.max_x = self.x_left + self.net_width
-        fontSize = f.get('fontsize', 6)
+        fontSize = f.get('fontsize', 9)
         self.x_off = self.y_off = f.get('offset', 3)
         # Set Fonts
-        family = self.f['fontFamily']
+        family = self.f.get('fontFamily', 'Helvetica')
         self.font_h1 = mfont(family, 20, bold=True)
         self.font_h2 = mfont(family, 12, bold=True, italic=True)
         self.font_h3 = mfont(family, 10, italic=True)
@@ -180,7 +181,7 @@ class TableReport():
         self.page_footer()
         self.table_header()
         self.table_lines()
-        self.box()
+        # self.box()
         self.table_footer()
         self.pnt.end()  # Πρέπει οπωσδήποτε να υπάρχει αυτό στο τέλος
 
