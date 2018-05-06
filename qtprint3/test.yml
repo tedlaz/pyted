@@ -1,0 +1,27 @@
+Name:         Δοκιμαστική εκτύπωση
+Type:         TableReport
+HtmlTemplate:
+Orientation:  Portrait
+PdfName:      test.pdf
+FontFamily:   Helvetica
+FontSize:     9
+Header1:      ΚΑΤΑΣΤΑΣΗ ΜΙΣΘΟΔΟΣΙΑΣ
+Header2:      'Περίοδος : Μάρτιος 2017'
+Header3:      'Τύπος : Κανονική'
+FooterText:   Μιχάλης Σπαρτιώτης - Ακτή Φάραγγα Πάρου ΕΠΕ
+FooterLine:   True
+FooterPageNo: True
+Parameters:
+  #  name        type    label    defaultValue
+  - [date_apo,   DATE,    Από,      datenow]
+  - [date_eos,   DATE,    Έως,         ''  ]
+Fields:
+  #  field     label          size   align   type  totals
+  - [epo,    Επώνυμο,          10,     L,    txt,    0]
+  - [ono,    Όνομα,            12,     C,    int,    1]
+  - [pat,    Όνομα Πατέρα,     12,     R,    dec,    1]
+  - [mit,    Όνομα Μητέρας,    12,     R,    date,   0]
+Sql:
+  SELECT epo, ono, pat, mit
+  FROM erg
+  WHERE date BETWEEN {date_apo} AND {date_eos}

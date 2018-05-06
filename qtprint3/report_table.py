@@ -119,26 +119,14 @@ def frmt(val, typos):
     return frmtVal
 
 
-def mfont(family, size, bold=False, italic=False):
-    new_font = Qg.QFont(family, size)
-    if bold:
-        new_font.setBold(True)
-    if italic:
-        new_font.setItalic(True)
-    return new_font
-
-
 class TableReport():
     def __init__(self, f, dfi):
         self.f = f
         self.f['data'] = dfi
         self.printer = Qp.QPrinter()
-        # Set portrait or landscape
-        if self.f['orientation'] in (0, 'portrait'):
-            self.printer.setOrientation(Qp.QPrinter.Portrait)
-        else:
-            self.printer.setOrientation(Qp.QPrinter.Landscape)
+        self.set_orientation(self.f['orientation'])
         self.pageRect = self.printer.pageRect()
+        print(self.pageRect, self.pageRect.width(), self.pageRect.height())
         self.max_width = self.pageRect.width()
         self.max_height = self.pageRect.height()
         self.x_left, self.y_top = 52, 52
@@ -147,19 +135,10 @@ class TableReport():
         self.net_height = self.pageRect.height() - 2 * self.y_top + 13
         self.net_height_table = self.pageRect.height() - 95
         self.max_x = self.x_left + self.net_width
-        fontSize = f.get('fontsize', 9)
+        self.fontSize = f.get('fontsize', 9)
         self.x_off = self.y_off = f.get('offset', 3)
         # Set Fonts
-        family = self.f.get('fontFamily', 'Helvetica')
-        self.font_h1 = mfont(family, 20, bold=True)
-        self.font_h2 = mfont(family, 12, bold=True, italic=True)
-        self.font_h3 = mfont(family, 10, italic=True)
-        self.font_th = mfont(family, fontSize, bold=True)  # table header
-        self.font_tl = mfont(family, fontSize)  # table line
-        self.font_pf = mfont(family, fontSize)  # page footer
-        self.tableMetrics = Qg.QFontMetrics(self.font_tl)
-        self.tableHeaderHeight = int(self.tableMetrics.height() * 3)
-        self.tableColumnHeight = int(self.tableMetrics.height() * 1.7)
+        self.set_fonts()
         # Το πλάτος των στηλών
         self.colWidths = [self.tableMetrics.width('w' * i) +
                           self.x_off for i in self.f['columnSizes']]
@@ -167,23 +146,51 @@ class TableReport():
         # Ο αριθμός των στηλών
         self.column_number = len(self.colWidths)
         self.y_footer = self.pageRect.height() - 54
+        self.table_totals = {}
+
+    def set_fonts(self):
+        self.font_family = self.f.get('fontFamily', 'Helvetica')
+        self.font_h1 = self.new_font(20, 1)
+        self.font_h2 = self.new_font(12, 3)
+        self.font_h3 = self.new_font(10, 2)
+        self.font_th = self.new_font(self.fontSize, 1)  # table header
+        self.font_tl = self.new_font(self.fontSize, 0)  # table line
+        self.font_pf = self.new_font(self.fontSize, 0)  # page footer
+        self.tableMetrics = Qg.QFontMetrics(self.font_tl)
+        self.tableHeaderHeight = int(self.tableMetrics.height() * 3)
+        self.tableColumnHeight = int(self.tableMetrics.height() * 1.7)
+
+    def new_font(self, size, font_type=0):
+        """
+        font_type: 0=normal, 1=bold, 2=italic, 3=bolditalic
+        """
+        new_font = Qg.QFont(self.font_family, size)
+        if font_type in (1, 3):
+            new_font.setBold(True)
+        if font_type in (2, 3):
+            new_font.setItalic(True)
+        return new_font
+
+    def set_orientation(self, orientation):
+        if orientation in (0, 'Portrait'):
+            self.printer.setOrientation(Qp.QPrinter.Portrait)
+        else:
+            self.printer.setOrientation(Qp.QPrinter.Landscape)
 
     def report(self):
         '''Here we assemble the pieces to make the final report'''
-        # Για κάποιο άγνωστο λόγο δεν μπορεί να οριστεί στο __init__
-        self.pnt = Qg.QPainter(self.printer)
-        self.x = self.x_left
-        self.y = self.y_top
-        self.page_number = 1
-        # self.fix_painter_bug()
-        self.report_header()
-        # self.page_header()
-        self.page_footer()
-        self.table_header()
-        self.table_lines()
-        # self.box()
-        self.table_footer()
-        self.pnt.end()  # Πρέπει οπωσδήποτε να υπάρχει αυτό στο τέλος
+        with Qg.QPainter(self.printer) as self.pnt:
+            self.x = self.x_left
+            self.y = self.y_top
+            self.page_number = 1
+            # self.fix_painter_bug()
+            self.report_header()
+            # self.page_header()
+            self.page_footer()
+            self.table_header()
+            self.table_lines()
+            # self.box()
+            self.table_footer()
 
     def report_header(self, hspaceAfter=20):
         self.text_centered(
@@ -227,8 +234,8 @@ class TableReport():
         # print(wid, brec.width(), hei, brec.height(), self.tableColumnHeight)
         if brec.height() > hei:
             hei = brec.height()
-        # if yvl + hei > self.net_height_table:
-        #     print('ektos selidas')
+        if yvl + hei > self.net_height_table:
+            print('??', val, yvl, hei, self.net_height_table)
         self.pnt.drawText(Qc.QRectF(xvl, yvl, wid, hei), val, align)
         self.pnt.restore()
         return hei + 5

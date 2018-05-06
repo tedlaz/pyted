@@ -1,5 +1,5 @@
 # Δοκιμαστικό report
-orientation: 1
+orientation: Portrait
 pdfName: test.pdf
 fontFamily: Helvetica
 ReportHeader1: ΚΑΤΑΣΤΑΣΗ ΜΙΣΘΟΔΟΣΙΑΣ
@@ -7,16 +7,16 @@ ReportHeader2: 'Περίοδος : Μάρτιος 2017'
 ReportHeader3: 'Τύπος : Κανονική'
 headerLabels:
   - Εργαζόμενος
-  - Ημέρες εργασίας
+  - Ημέρες
   - Αποδοχές
-  - ΙΚΑ εργαζομένου
+  - ΙΚΑ εργνου
   - ΙΚΑ εργοδότη
   - ΙΚΑ
   - ΦΜΥ
   - ΕΕΑ
   - Σύνολο κρατήσεων
   - Πληρωτέο
-columnSizes: [25, 6, 7, 7, 7, 7, 8, 6, 10, 10]
+columnSizes: [15, 6, 7, 7, 7, 7, 6, 6, 7, 7]
 columnTypes: [0,  1, 2, 2, 2, 2,  2, 2, 2,  2]
 columnAlign: [0,  2, 2, 2, 2, 2,  2, 2, 2,  2]
 columnToSum: [0,  1, 1, 1, 1, 1,  1, 1, 1,  1]
@@ -24,6 +24,12 @@ footerText: Μιχάλης Σπαρτιώτης - Ακτή Φάραγγα Πάρ
 footerLine: True
 footerPageNumbers: True
 fontsize: 9
+Fields:
+  #  field     label          size   align   type  totals
+  - [epo,    Επώνυμο,          10,     L,    txt,    0]
+  - [ono,    Όνομα,            12,     C,    int,    1]
+  - [pat,    Όνομα Πατέρα,     12,     R,    dec,    1]
+  - [mit,    Όνομα Μητέρας,    12,     R,    date,   0]
 sql:
   SELECT per, ajia, fpa, synolo
   FROM tst
