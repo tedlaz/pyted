@@ -1,6 +1,6 @@
 document.write('\
 <ul class="sidebar-nav">\
-<li><a href="index.html">Νέα</a></li>\
+<li><a href="index.html">News</a></li>\
 <li><a href="downloads.html">Downloads</a></li>\
 <li><a href="sintv.html">Σινεμά-Τηλεόραση</a></li>\
 <li><a href="stores.html">Καταστήματα</a></li>\
