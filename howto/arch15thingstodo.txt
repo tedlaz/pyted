@@ -88,4 +88,3 @@
 
 18.Install Uncomplicated Linux Firewall
    yaourt gufw
-
