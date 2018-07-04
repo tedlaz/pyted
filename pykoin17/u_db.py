@@ -6,6 +6,7 @@ from logger import log
 from u_dict import merge_dict_to_listdic
 from collections import OrderedDict as odi
 
+
 def isdb_ok(db):
     '''
     Basic check for all (almost) functions here
@@ -475,7 +476,7 @@ def script(db, sql, newDb=False):
 
 def main():
     db = 'tst.sql3'
-    print(select_master_detail(db, 'dia', 'dapx',1))
+    print(select_master_detail(db, 'dia', 'dapx', 1))
 
 
 if __name__ == '__main__':

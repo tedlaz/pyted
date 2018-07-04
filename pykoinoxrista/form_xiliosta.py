@@ -2,7 +2,12 @@
 '''
 Programmer : Ted Lazaros (tedlaz@gmail.com)
 '''
-from PyQt4 import QtGui, QtCore, Qt
+import PyQt5.QtCore as Qc
+import PyQt5.QtGui as Qg
+import PyQt5.QtWidgets as Qw
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5 import Qt
 import u_db
 
 
@@ -12,20 +17,20 @@ def item(text, align='l'):
     text: το κείμενο που εμφανίζεται
     align: Στοίχιση του κειμένου (l = left, c = center, r = right)
     '''
-    el = QtGui.QTableWidgetItem()
+    el = Qw.QTableWidgetItem()
     el.setText('%s' % text)
     if align == 'r':
-        el.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        el.setTextAlignment(Qc.Qt.AlignRight | Qc.Qt.AlignVCenter)
     elif align == 'c':
-        el.setTextAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        el.setTextAlignment(Qc.Qt.AlignCenter | Qc.Qt.AlignVCenter)
     else:
-        el.setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        el.setTextAlignment(Qc.Qt.AlignLeft | Qc.Qt.AlignVCenter)
     return el
 
 
 def itemb(text, align='l'):
     el = item(text, align)
-    font = QtGui.QFont()
+    font = Qg.QFont()
     font.setBold(True)
     font.setWeight(75)
     el.setFont(font)
@@ -38,13 +43,13 @@ def iteml(text, align='r', bold=True):
     else:
         el = item(text, align)
 
-    el.setFlags(QtCore.Qt.ItemIsSelectable |
-                QtCore.Qt.ItemIsEnabled |
-                QtCore.Qt.ItemIsUserCheckable)
+    el.setFlags(Qc.Qt.ItemIsSelectable |
+                Qc.Qt.ItemIsEnabled |
+                Qc.Qt.ItemIsUserCheckable)
     return el
 
 
-class Form_koinoxrista(QtGui.QDialog):
+class Form_koinoxrista(Qw.QDialog):
 
     '''
     Δημιουργία ενός φύλλου εργασίας για την εισαγωγή και διόρθωση
@@ -56,38 +61,33 @@ class Form_koinoxrista(QtGui.QDialog):
         self.setAttribute(Qt.Qt.WA_DeleteOnClose)
         self.setWindowTitle(u'Κατανομή Δαπανών σε χιλιοστά')
         self.setMinimumSize(800, 400)
-
         # Database metadata
         self.db = db
         self.row_tbl = row_tbl
         self.col_tbl = col_tbl
         self.val_tbl = val_tbl
-
         # Δημιουργία του grid
-        self.tbl = QtGui.QTableWidget(self)
-
+        self.tbl = Qw.QTableWidget(self)
         # Δημιουργία γραμμής κουμπιών
-        spacerItem = QtGui.QSpacerItem(40,
-                                       20,
-                                       QtGui.QSizePolicy.Expanding,
-                                       QtGui.QSizePolicy.Minimum)
-        self.btadddi = QtGui.QPushButton(u'Νέο Διαμέρισμα', self)
-        self.btaddej = QtGui.QPushButton(u'Νέο Έξοδο', self)
-        self.btnsave = QtGui.QPushButton(u'Αποθήκευση', self)
-
+        spacerItem = Qw.QSpacerItem(40,
+                                    20,
+                                    Qw.QSizePolicy.Expanding,
+                                    Qw.QSizePolicy.Minimum)
+        self.btadddi = Qw.QPushButton(u'Νέο Διαμέρισμα', self)
+        self.btaddej = Qw.QPushButton(u'Νέο Έξοδο', self)
+        self.btnsave = Qw.QPushButton(u'Αποθήκευση', self)
         # layout κουμπιών
-        buttonlayout = QtGui.QHBoxLayout()
+        buttonlayout = Qw.QHBoxLayout()
         buttonlayout.addWidget(self.btadddi)
         buttonlayout.addWidget(self.btaddej)
         buttonlayout.addItem(spacerItem)
         buttonlayout.addWidget(self.btnsave)
-
         # Κεντρικό layout
-        mainlayout = QtGui.QVBoxLayout()
+        mainlayout = Qw.QVBoxLayout()
         mainlayout.addWidget(self.tbl)
         mainlayout.addLayout(buttonlayout)
         self.setLayout(mainlayout)
-
+        # Connections
         self.tbl.cellChanged.connect(self.cell_changed)
         self.btnsave.clicked.connect(self.on_btnsave)
         self.fill_tbl()
@@ -97,23 +97,19 @@ class Form_koinoxrista(QtGui.QDialog):
         self._diam = u_db.select_table(self.db, self.row_tbl)
         self._ej = u_db.select_table(self.db, self.col_tbl)
         self._vals = u_db.select_table(self.db, self.val_tbl)
-
         self.tbl.cellChanged.disconnect()
         n_ej = len(self._ej)  # Πλήθος κατηγοριών εξόδων
         n_diam = len(self._diam)  # Πλήθος διαμερισμάτων
         self.tbl.setColumnCount(n_ej)
         self.tbl.setRowCount(n_diam + 2)
-
         # Τίτλοι στηλών
-        for i, ej in enumerate(self._ej):
+        for i, _ in enumerate(self._ej):
             self.tbl.setHorizontalHeaderItem(i, item(self._ej[i]['ej'], 'c'))
-
         # Τίτλοι γραμμών
-        for i, diam in enumerate(self._diam):
+        for i, _ in enumerate(self._diam):
             self.tbl.setVerticalHeaderItem(i, item(self._diam[i]['dia'], 'l'))
         self.tbl.setVerticalHeaderItem(n_diam, itemb(u'Σύνολο', 'c'))
         self.tbl.setVerticalHeaderItem(n_diam + 1, itemb(u'Υπόλοιπο', 'c'))
-
         # Αρχικοποίηση δεδομένων πίνακα με μηδενικές τιμές
         for i in range(n_diam):
             for j in range(n_ej):
@@ -121,11 +117,9 @@ class Form_koinoxrista(QtGui.QDialog):
         for i in range(n_diam, n_diam + 2):
             for j in range(n_ej):
                 self.tbl.setItem(i, j, iteml('0'))
-
         # Σύνδεση του event μετά από την αρχικοποίηση εδώ
         # έτσι ώστε οι τιμές που εισάγονται παρακάτω να αθροίζονται αυτόματα
         self.tbl.cellChanged.connect(self.cell_changed)
-
         for val in self._vals:
             row = self.find_row(val['dia_id'])
             col = self.find_col(val['ej_id'])
@@ -165,12 +159,11 @@ class Form_koinoxrista(QtGui.QDialog):
                     dic = {'id': id, 'dia_id': did, 'ej_id': eid, 'val': val}
                     fvals.append(dic)
         save_result = u_db.save_many(self.db, self.val_tbl, fvals)
-
         if len(fvals) == 0:
             QtGui.QMessageBox.about(self, u'Οκ', u'Είναι ήδη αποθηκευμένα ...')
         elif save_result:
             self.fill_tbl()
-            QtGui.QMessageBox.about(self, u'Εντάξει', u'Έγινε αποθήκευση ...')
+            Qw.QMessageBox.about(self, u'Εντάξει', u'Έγινε αποθήκευση ...')
 
     def cell_changed(self, row, col):
         if row < len(self._diam) and col < len(self._ej):
@@ -184,7 +177,9 @@ class Form_koinoxrista(QtGui.QDialog):
         for i in range(len_diam):
             total += int(self.tbl.item(i, column_number).text())
         self.tbl.setItem(len_diam, column_number, iteml('%s' % total))
-        self.tbl.setItem(len_diam + 1, column_number, iteml('%s' % (1000 - total)))
+        self.tbl.setItem(len_diam + 1,
+                         column_number,
+                         iteml('%s' % (1000 - total)))
 
     def find_row(self, id):
         for i, diam in enumerate(self._diam):
@@ -201,8 +196,9 @@ class Form_koinoxrista(QtGui.QDialog):
 
 if __name__ == '__main__':
     import sys
-    app = QtGui.QApplication([])
-    dialog = Form_koinoxrista('tst.sql3', 'dia', 'ej', 'dapx')
+    dbf = '/home/ted/devtest/ted1/koinoxrista.sql3'
+    app = Qw.QApplication([])
+    dialog = Form_koinoxrista(dbf, 'dia', 'ej', 'dapx')
     dialog.show()
     appex = app.exec_()
     sys.exit(appex)

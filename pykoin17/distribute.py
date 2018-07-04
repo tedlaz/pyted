@@ -58,7 +58,7 @@ def distribute(val, distArray, decimals=2):
     val = dec(val, decimals)
     try:
         tar = dec(sum(distArray), decimals)
-    except:
+    except Exception:
         return tmpArr
     for el in distArray:
         tmpArr.append(dec(val * dec(el, decimals) / tar, decimals))
@@ -149,6 +149,7 @@ def sumdic(key, skey, dicarr):
 
 def str(dicarr):
     pass
+
 
 if __name__ == '__main__':
     print(distribute(100, [10, 20, 30, 0]))

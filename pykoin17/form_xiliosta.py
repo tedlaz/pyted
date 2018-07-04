@@ -61,16 +61,13 @@ class Form_xiliosta(Qw.QDialog):
         self.setAttribute(Qc.Qt.WA_DeleteOnClose)
         self.setWindowTitle(u'Κατανομή Δαπανών σε χιλιοστά')
         self.setMinimumSize(800, 400)
-
         # Database metadata
         self.db = db
         self.row_tbl = row_tbl
         self.col_tbl = col_tbl
         self.val_tbl = val_tbl
-
         # Δημιουργία του grid
         self.tbl = Qw.QTableWidget(self)
-
         # Δημιουργία γραμμής κουμπιών
         spacerItem = Qw.QSpacerItem(40,
                                     20,
@@ -82,14 +79,12 @@ class Form_xiliosta(Qw.QDialog):
         self.btaddej.setFocusPolicy(Qc.Qt.NoFocus)
         self.btnsave = Qw.QPushButton(u'Αποθήκευση', self)
         self.btnsave.setFocusPolicy(Qc.Qt.NoFocus)
-
         # layout κουμπιών
         buttonlayout = Qw.QHBoxLayout()
         buttonlayout.addWidget(self.btadddi)
         buttonlayout.addWidget(self.btaddej)
         buttonlayout.addItem(spacerItem)
         buttonlayout.addWidget(self.btnsave)
-
         # Κεντρικό layout
         mainlayout = Qw.QVBoxLayout()
         mainlayout.addWidget(self.tbl)
@@ -222,7 +217,8 @@ class Form_xiliosta(Qw.QDialog):
         for i in range(len_diam):
             total += int(self.tbl.item(i, column_number).text())
         self.tbl.setItem(len_diam, column_number, iteml('%s' % total))
-        self.tbl.setItem(len_diam + 1, column_number, iteml('%s' % (1000 - total)))
+        self.tbl.setItem(
+            len_diam + 1, column_number, iteml('%s' % (1000 - total)))
 
     def find_row(self, id):
         for i, diam in enumerate(self._diam):
@@ -240,7 +236,7 @@ class Form_xiliosta(Qw.QDialog):
 if __name__ == '__main__':
     import sys
     app = Qw.QApplication([])
-    dialog = Form_xiliosta('/home/tedlaz/prj/pyted/pykoin17/zzz.sql3',
+    dialog = Form_xiliosta('/home/ted/prj/pyted/pykoin17/zzz.sql3',
                            'diam',
                            'dap',
                            'xiliosta')

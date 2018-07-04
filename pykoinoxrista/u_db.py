@@ -6,6 +6,7 @@ from logger import log
 from u_dict import merge_dict_to_listdic
 from collections import OrderedDict as odi
 
+
 def isdb_ok(db):
     '''
     Basic check for all (almost) functions here

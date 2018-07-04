@@ -2,7 +2,7 @@
 '''
 Programmer : Ted Lazaros (tedlaz@gmail.com)
 '''
-from PyQt5 import QtGui as Qg
+# from PyQt5 import QtGui as Qg
 from PyQt5 import QtCore as Qc
 from PyQt5 import QtWidgets as Qw
 import u_db
@@ -11,7 +11,7 @@ import u_db
 class Form_dapani(Qw.QDialog):
 
     '''
-    Διαχείρηση διαμερισμάτων
+    Διαχείριση διαμερισμάτων
     '''
 
     def __init__(self, dbf, did=None, parent=None):
@@ -24,14 +24,14 @@ class Form_dapani(Qw.QDialog):
         mainlayout = Qw.QVBoxLayout()
         self.setLayout(mainlayout)
 
-        self.dfld = ['dap',]
+        self.dfld = ['dap', ]
         self.labels = []
         self.fields = []
         self.labels.append(Qw.QLabel('Δαπάνη'))
         self.fields.append(Qw.QLineEdit())
 
         flayout = Qw.QFormLayout()
-        for i, wid in enumerate(self.labels):
+        for i, _ in enumerate(self.labels):
             flayout.insertRow(i, self.labels[i], self.fields[i])
         mainlayout.addLayout(flayout)
 
@@ -92,6 +92,7 @@ class Form_dapani(Qw.QDialog):
             if i == 0:
                 continue
             self.fields[i-1].setText('%s' % diam[0][el])
+
 
 if __name__ == '__main__':
     import sys

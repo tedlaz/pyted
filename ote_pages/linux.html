@@ -49,7 +49,6 @@
 <ul>
 <li><a href="https://www.archlinux.org/" target="_blank">Arch Linux</a></li>
 <li><a href="https://rancher.com/rancher-os/" target="_blank">RancherOS</a></li>
-<li><a href="https://www.archlinux.org/mirrorlist/" target="_blank">Arch mirrorlist</a></li>
 <li><a href="https://manjaro.github.io/" target="_blank">Manjaro Linux (Easy arch)</a></li>
 <li><a href="https://www.centos.org/" target="_blank">CentOS linux server</a></li>
 <li><a href="https://www.ubuntu.com/" target="_blank">Ubuntu</a></li>
@@ -63,7 +62,6 @@
 <li><a href="https://www.kali.org/" target="_blank">Kali Linux - Penetration testing</a></li>
 <li><a href="http://www.osboxes.org/" target="_blank">OSBOXES - Virtualbox/Vmware Linux Images</a></li>
 <li><a href="http://distrowatch.com/" target="_blank">DistroWatch</a></li>
-
 </ul>
 
 <h3>Εργαλεία εγκατάστασης</h3>
@@ -72,6 +70,12 @@
 <li><a href="https://en.opensuse.org/SDB:Create_a_Live_USB_stick_using_Windows" target="_blank">Linux ImageWriter</a> ή
     <a href="http://www.linuxliveusb.com/" target="_blank">Linux Live USB Creator</a>
 </li>
+</ul>
+
+<h3>Arch Linux tools</h3>
+<ul>
+<li><a href="https://www.archlinux.org/mirrorlist/" target="_blank">Arch mirrorlist</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/AUR_helpers" target="_blank">Arch AUR helpers (yaourt, yay,..)</a></li>
 </ul>
 
 <h3>Μόνο σε Linux</h3>
@@ -106,125 +110,160 @@ sudo gpasswd -a ${USER} docker
 sudo service docker restart
 </textarea><br>
 
-<h3>Εγκατάσταση Arch  Linux</h3>
+<h3>Arch Linux setup</h3>
 <ul>
 <li><a href="https://sourceforge.net/projects/revenge-installer/files/?source=navbar" target="_blank">Revenge installer - Eύκολη εγκατάσταση Arch Linux</a></li>
 <li><a href="https://sourceforge.net/projects/feliz/" target="_blank">feliz installer - Eύκολη εγκατάσταση Arch Linux</a></li>
 <li><a href="https://archlinux.fr/yaourt-en" target="_blank">Arch Linux Yaourt instructions</a></li>
 <textarea name="comments" cols="80" rows="24" readonly>
+1   Κατέβασμα iso από https://www.archlinux.org/download/
+2   iso σε usb (rufus απο windows για να γράψουμε το usb:https://rufus.akeo.ie)
+3   Bootάρουμε από το iso και ξεκινάμε.
+4   Ορίζουμε τα mirrors(https://www.archlinux.org/mirrorlist/). 
+    Tρέχουμε: nano /etc/pacman.d/mirrorlist και βάζουμε πάνω πάνω το πιο κοντινό.
+5   fdisk -l # για να δούμε τι δίσκους έχουμε
+6   cfdisk /dev/sda και από το μενού επιλέγουμε dos
+6.1 Δημιουργούμε 1 partition (primary, bootable) ή εναλλακτικά
+    1. 1GB (primary, bootable)
+    2. 2GB (primary, type linux swap / Solaris)
+    3. όλος ο υπόλοιπος δίσκος (primary)
+6.2 Επιλέγουμε write για αποθήκευση των αλλαγών και Quit
+7   mkfs.ext4 /dev/sda1
+8   mkswap /dev/sda2 (Εάν έχουμε φτιάξει partition για swap)
+9   swapon /dev/sda2 (Εάν έχουμε φτιάξει partition για swap)
+10  mkfs.ext4 /dev/sda3
+11  mount /dev/sda3 /mnt
+12  mkdir /mnt/boot /mnt/var /mnt/home
+13  mount /dev/sda1 /mnt/boot
+14  ping -c 3 www.google.com # Για να βεβαιωθούμε ότι έχουμε σύνδεση internet
+15  pacstrap /mnt base base-devel
+16  pacstrap /mnt grub-bios
+17  genfstab -U /mnt >> /mnt/etc/fstab ή genfstab -p /mnt >> /mnt/etc/fstab
+    -U είναι για UUID που σημαίνει οτι οι δίσκοι είναι μοναδικοί και -p για γενικώτερο setup 
+18  arch-chroot /mnt /bin/bash # Συνδεόμαστε με το νέο σύστημα
+19  nano /etc/locale.gen # Ενεργοποιούμε το locale που θέλουμε (en_US.UTF-8 UTF-8)
+20  locale-gen
+21  echo LANG=en_US.UTF-8 > /etc/locale.conf # Δημιουργούμε το αρχείο locale.conf
+22  export LANG=en_US.UTF-8
+23  hwclock --systohc --utc
+24  ls /usr/share/zoneinfo/ # Για να βρούμε Ζώνη/Χώρα
+25  rm -rf /etc/localtime # Διαγράφουμε το αρχείο localtime
+26  ln -s /usr/share/zoneinfo/Europe/Athens /etc/localtime # Δημιουργούμε σύνδεσμο για τη χώρα
+27  echo arch2017 > /etc/hostname # Ορίζουμε το όνομα του υπολογιστή
+28  systemctl enable dhcpcd.service
+29  pacman -Sy openssh
+30  systemctl enable sshd.service
+31  passwd root
+32  useradd -m -g users -G wheel -s /bin/bash ted
+33  passwd ted
+34  nano /etc/sudoers και ενεργοποιώ τη γραμμή: %wheel ALL=(ALL) ALL
+    Δημιουργία φακέλλου swap
+    fallocate -l 512M /swapfile  # Βάλτε μέγεθος ίσο με τη RAM του συστήματος
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    nano /etc/fstab και προσθέτουμε τη γραμμή: 
+    /swapfile none swap defaults 0 0
+35  grub-install /dev/sda # Εγκατάσταση του grub
+36  grub-mkconfig -o /boot/grub/grub.cfg
+37  mkinitcpio -p linux
+38  exit
+39  exit
+40  umount /mnt/boot
+41  umount /mnt
+42  reboot
 
-1.Εγκατάσταση από architect (Evolution) iso
+Και ξαναμπαίνουμε στο φρέσκο σύστημα σαν root
 
-2.Πάμε στο αρχείο /etc/pacman.conf και:
+43  ping -c 3 www.google.com # Για να βεβαιωθούμε ότι έχουμε σύνδεση internet
+44  nano /etc/pacman.conf και :
+    1. Ενεργοποιούμε την επιλογή color (αφαιρούμε το #)
+    2. Ενεργοποιούμε την επιλογή TotalDownload
+    3. Προσθέτουμε κάτω από τη γραμμή #VerbosePkgLists την επιλογή: ILoveCandy
+    4. Ενεργοποιούμε το multilib(Αφαιρούμε το # και από τις δύο γραμμές)
+    5. git clone https://aur.archlinux.org/yay.git
+       cd yay
+       makepkg -si
+45  pacman -Syu
+46  pacman -S pkgfile      
+47  pacman -Sy xorg xorg-xinit # Για εγκατάσταση του xserver
+48  pacman -Sy xfce4 xfce4-goodies # Εγκατάσταση Desktop Environment
+49  pacman -Sy lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+50  systemctl enable lightdm.service
+51  pacman -Sy networkmanager network-manager-applet net-tools # Για network manager
+52  systemctl enable NetworkManager.service
+52  pacman -Sy pulseaudio pulseaudio-alsa pavucontrol mpd gmpc clementine # Audio drivers
+53  pacman -S ttf-freefont ttf-ubuntu-font-family ttf-dejavu papirus-icon-theme neofetch
+54  pacman -S gvfs gvfs-smb gvfs-mtp sshfs wget samba smbclient
+    και για να δουλεύει σωστά η αναζήτηση shares στον thunar : 
+      sudo echo "client max protocol = NT1" > /etc/samba/smb.conf
+55  pacman -S tumbler ffmpegthumbnailer raw-thumbnailer libgsf thunar-archive-plugin xarchiver zip unrar unzip
 
-2.1.Ενεργοποιούμε την επιλογή color (βγάζουμε το #)
+56  pacman -S xdg-user-dirs htop mpv  conky conky-manager
+57  Εγκατάσταση drivers κάρτας γραφικών.
+    Γιά virtualbox:
+       1 pacman -Sy virtualbox-guest-utils # Π Ρ Ο Σ Ο Χ Η επιλογή 2(arch)
+       2 systemctl enable vboxservice.service
+    Γιά Intel:
 
-2.2.Ενεργοποιούμε την επιλογή TotalDownload (βγάζουμε το #)
+    Για Nvidia:
+	pacman -S nvidia nvidia-libgl nvidia-settings lib32-libldap lib32-nvidia-utils lib32-nvidia-libgl
 
-2.3.Προσθέτουμε κάτω από τη γραμμή #VerbosePkgLists τη γραμμή:
+    Για Ati:
 
-ILoveCandy
-    
-2.4.Ενεργοποιούμε το multilib(Αφαιρούμε το # και από τις δύο γραμμές)
+reboot και πλέον μπαίνουμε σαν κανονικοί χρήστες
 
-2.5.Κάτω από το multilib προσθέτουμε το archlinuxfr και το infinality (γραμματοσειρές):
+58  xdg-user-dirs-update # Δημιουργία default φακέλων χρήστη 
+59  yay mugshot # Για τα στοιχεία του χρήστη
+60  yay pacli # Ενισχυμένο εργαλείο εγκατάστασης
 
-[archlinuxfr]
-SigLevel = Never
-Server = http://repo.archlinux.fr/$arch
-
-[infinality-bundle]
-Server = http://bohoomil.com/repo/$arch
-
-[infinality-bundle-multilib]
-Server = http://bohoomil.com/repo/multilib/$arch
-
-[infinality-bundle-fonts]
-Server = http://bohoomil.com/repo/fonts
+61  sudo pacman -Sy chromium firefox git lsb-release
+62  yay fsearch
+63  yay rar compression για εγκατάσταση του rar
 
 
-3.Τρέχουμε στη γραμμή εντολής:
+Για music player daemon (mpd) : https://wiki.archlinux.org/index.php/Music_Player_Daemon#Local_configuration_.28per_user.29
+Για multimedia codecs δες  https://wiki.archlinux.org/index.php/GStreamer
+Για να βρούμε τους πιο γρήγορους mirrors:
+   sudo pacman -S reflector
 
-sudo pacman-key --init
-sudo dirmngr και όταν τρέξει πατάμε ctrl+c
-sudo pacman-key -r 962DDE58  #(Εγκατάσταση κλειδιού infinality)
-sudo pacman-key --lsign-key 962DDE58  #(Υπογραφή κλειδιού infinality)
-sudo pacman -Syu  $(Ενημέρωση αποθετηρίων pacman)
-sudo pacman -Sy yaourt  #(εγκατάσταση yaourt)
-sudo pacman -S infinality-bundle
-sudo pacman -S infinality-bundle-multilib
-sudo pacman -S ibfonts-meta-base ibfonts-meta-extended
+   Verbosely rate and sort the five most recently synchronized mirrors by download speed, and overwrite the file /etc/pacman.d/mirrorlist:
+   sudo reflector --verbose --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
 
-4.Για να μην μας ζητάει επιβεβαιώσεις ο yaourt τρέχουμε στη γραμμή εντολής:
+   Select the 200 most recently synchronized HTTP or HTTPS mirrors, and overwrite the file /etc/pacman.d/mirrorlist:
+   sudo reflector --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
-cp /etc/yaourtrc ~/.yaourtrc 
-echo BUILD_NOCONFIRM=1 >> ~/.yaourtrc
-echo EDITFILES=0 >> ~/.yaourtrc
-     
-5.Βήματα για την παραμετροποίηση των fonts
-5.1.Τρέχουμε σε γραμμή εντολής διαδοχικά :
-5.1.1. cd /etc/fonts/conf.d/
-5.1.2. sudo ln -s ../conf.avail/11-lcdfilter-default.conf
-5.1.3. sudo cp /usr/share/doc/freetype2-infinality-ultimate/infinality-settings.sh /etc/X11/xinit/xinitrc.d/
-5.1.4. Με δεδομένο ότι έχουμε εγκαταστήσει τον texteditor leafpad τρέχουμε:
-       sudo leafpad /etc/X11/xinit/xinitrc.d/infinality-settings.sh
-       Πηγαίνουμε στη γραμμή που λέει #export INFINALITY_FT="κλπ" και βγάζουμε το #
+   Select the HTTPS mirrors synchronized within the last 12 hours and located in the US, sort them by download speed:
+   sudo reflector --country 'United States' --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
-Για μοντέρνα icons τρέχουμε
-yaourt oranchelo
+Για development:
+   yay visual-studio-code-bin
+   yay sublime sublime-text-dev
+   yay xed  # Text editor
+   yay remarkable  # Markdown editor
+   yay marker  # Very strong markdown editor
+   sudo pacman -S gvim
 
-για ωραίο screen recorder τρέχουμε
-sudo pacman -S simplescreenrecorder
+Για zsh:
+  pacman -S zsh awesome-terminal-fonts powerline-common powerline-fonts powerline2 
+  chsh -s $(which zsh)
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+  Για περισσότερες πληροφορίες εδώ : https://github.com/robbyrussell/oh-my-zsh
 
-5.2.Κάνουμε επαννεκίνηση και βλέπουμε το αποτέλεσμα των ενεργειών μας.     
-   
-6. Γιά εγκατάσταση του openbox
-6.0. Δημιουργούμε το ~/.config/openbox directory αν δεν υπάρχει
-     
-cp /etc/xdg/openbox/rc.xml ~/.config/openbox/rc.xml
+Μερικά ενδιαφέροντα προγράμματα:
+  sudo pacman -S filezilla qbittorrent grsync bleachbit
 
-6.1. Τρέχουμε σε γραμμή εντολής:
+sudo pacman -S libreoffice-fresh libreoffice-fresh-el hunspell-el gimp gimp-plugin-gmic inkscape 
+sudo pacman -S veracrypt keepassxc moneymanagerex sqlite sqlitebrowser simplescreenrecorder gpick nomacs
+sudo pacman -S gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly
+Για mp3 thumbnails τρέχουμε sudo pacman -S totem
+Για συγχρονισμό του pkgfile τρέχουμε pkgfile -u
+Για ένα πολύ ωραίο θέμα yaourt zuki-themes και μετά την εγκατάσταση menu->settings->appearance->zukitwo
+sudo pacman -S evince mupdf qpdfview pdfshuffler # Για preview, εμφάνιση, επεξεργασία pdf
+sudo pacman -S fbreader  # Για διάβασμα e-books
+yay gtkhash-thunar
+sudo pacman -S baobab  # Που καταναλώνεται αποθηκευτικός χώρος
 
-pacman -S feh
-pacman -S tint2
-pacman -S volumeicon
-pacman -S oblogout
-pacman -S obconf
-pacman -S lxappearance
-yaourt obmenu-generator
-
-6.2. Δημιουργούμε στο ~/.config/openbox/ το αρχείο autostart με περιεχόμενο:
-
-setxkbmap -layout us,el -variant -option grp:alt_shift_toggle,terminate:ctrl_alt_bksp & 
-feh --bg-scale /path/to/wallpaper/wallpaper.jpg
-tint2 &
-volumeicon &
-
-6.3. Δημιουργούμε στο ~/.config/openbox/ το αρχείο menu.xml με περιεχόμενο:
-
-<?xml version="1.0" encoding="utf-8"?>
-<openbox_menu>
-    <menu id="root-menu" label="OpenBox 3" execute="/usr/bin/obmenu-generator -i">
-    </menu>
-</openbox_menu>
-
-6.4.Τρέχουμε από το menu : 
-
-reconfigure openbox
-
-7.Autologin/logout Menu se LXDM
-7.1. sudo nano /etc/lxdm/lxdm.conf και διόρθωση της γραμμής #autologin=username
-7.2. nano ~/.config/openbox/rc.xml και προσθέτουμε στο keyboard section :
-
-    <keybind key="W-x">
-      <action name="Execute">
-        <startupnotify>
-         <enabled>true</enabled>
-         <name>oblogout</name>
-        </startupnotify> 
-        <command>oblogout</command>
-      </action>
-    </keybind>
 </textarea><br>
 </ul>
 

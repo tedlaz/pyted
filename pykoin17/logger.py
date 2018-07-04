@@ -16,5 +16,5 @@ logging.basicConfig(format=frm,
 # logging.basicConfig(filename='koinoxrista.log',level=logging.DEBUG)
 # Get OpenShot logger and set log level
 log = logging.getLogger('Koinoxrista')
-#log.setLevel(logging.DEBUG)
-log.setLevel(logging.CRITICAL)
+log.setLevel(logging.DEBUG)
+# log.setLevel(logging.CRITICAL)

@@ -40,7 +40,6 @@ class Sqlcon(object):
         else:
             return self._other()
 
-
     def _connect(self):
         try:
             self.con = sqlite3.connect(self.db)
@@ -48,7 +47,7 @@ class Sqlcon(object):
             self.connected = True
             return True
         except sqlite3.Error as sqe:
-            log.error('Connection error : %' % sqe)
+            log.error('Connection error : %s' % sqe)
             return False
 
     def __del__(self):
@@ -176,10 +175,11 @@ class Dbm(object):
             self.conn.close()
         print('cur and con closed')
 
+
 if __name__ == '__main__':
-    #for row in Dbm('tst.sql3').select("select * from dia"):
-    #    print(row)
-    #for row in Dbm('tst.sql3').select("select * from ej"):
-    #    print(row)
+    # for row in Dbm('tst.sql3').select("select * from dia"):
+    #     print(row)
+    # for row in Dbm('tst.sql3').select("select * from ej"):
+    #     print(row)
     print(Dbm('tst.sql3').select_one('dia', 100).values())
-    #dbm.qprint("select * from ej")
+    # dbm.qprint("select * from ej")

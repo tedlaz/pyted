@@ -2,7 +2,7 @@
 '''
 Programmer : Ted Lazaros (tedlaz@gmail.com)
 '''
-from PyQt5 import QtGui as Qg
+# from PyQt5 import QtGui as Qg
 from PyQt5 import QtCore as Qc
 from PyQt5 import QtWidgets as Qw
 import u_db
@@ -92,6 +92,7 @@ class Form_diamerisma(Qw.QDialog):
             if i == 0:
                 continue
             self.fields[i-1].setText('%s' % diam[0][el])
+
 
 if __name__ == '__main__':
     import sys
