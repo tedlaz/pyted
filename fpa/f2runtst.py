@@ -29,4 +29,4 @@ if __name__ == '__main__':
     EPO = u'Σαμαράς ΟΕ'
     DBF = '/home/tedlaz/pelates/2017/d/2017d.sql3'
     HTMLF = '/home/tedlaz/pelates/2017/d/2017d.html'
-    main(EPO, DBF, HTMLF, '2018-01-1', '2018-31-31', 0)
+    main(EPO, DBF, HTMLF, '2018-01-01', '2018-31-31', 0)
