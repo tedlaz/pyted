@@ -5,24 +5,28 @@ import os
 FDIR = os.path.dirname(os.path.abspath(__file__))
 
 
-if __name__ == '__main__':
-    EPON = u'Σαμαράς ΟΕ'
-    DBF = '/home/tedlaz/pelates/2017/d/2017d.sql3'
-    HTMLF = '/home/tedlaz/pelates/2017/d/2017d.html'
+def main(epo, dbf, htmlf, apo, eos, ypo=0):
     TMPLF = os.path.join(FDIR, '1tmpl.txt')
     LMOIF = os.path.join(FDIR, '2lmoi.txt')
     FIS = os.path.join(FDIR, './3is.sql')
     FFP = os.path.join(FDIR, '4fpa.sql')
-    f2run.run(EPON,
-              '2017-10-01',
-              '2017-12-31',
-              DBF,
-              HTMLF,
+    f2run.run(epo,
+              apo,
+              eos,
+              dbf,
+              htmlf,
               TMPLF,
               LMOIF,
               FIS,
               FFP,
-              4722.77)
+              ypo)
     f2run.checkDictionaries(TMPLF, LMOIF)
     import webbrowser
-    webbrowser.get('google-chrome-stable %s').open(HTMLF)
+    webbrowser.get('google-chrome-stable %s').open(htmlf)
+
+
+if __name__ == '__main__':
+    EPO = u'Σαμαράς ΟΕ'
+    DBF = '/home/tedlaz/pelates/2017/d/2017d.sql3'
+    HTMLF = '/home/tedlaz/pelates/2017/d/2017d.html'
+    main(EPO, DBF, HTMLF, '2018-01-1', '2018-31-31', 0)
