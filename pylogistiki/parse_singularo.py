@@ -8,7 +8,7 @@ def lnv(line, positions, chars):
     """
     Έλεγχος αν σε συγκεκριμένες θέσεις ενός string υπόρχουν συγκεκριμένα chars
     positions : λίστα ακεραίων με τις θέσεις που ψάχνουμε
-    chars: string με τους ατίστοιχουσ χαρακτήρες που ψάχνουμε
+    chars: string με τους ατίστοιχους χαρακτήρες που ψάχνουμε
     """
     assert len(positions) == len(chars)
     for i, position in enumerate(positions):
