@@ -7,14 +7,23 @@ from . import arthro_line
 
 
 class Arthro():
-    def __init__(self, date, parastatiko, perigrafi):
+    def __init__(self, date, parastatiko, perigrafi, arthro_number=0, pe2=''):
+        self.num = arthro_number
         self.dat = date
         self.par = parastatiko
         self.per = perigrafi
+        self.pe2 = pe2
         self.lines = []
 
-    def add_line(self, lmo, xre, pis):
-        self.lines.append(arthro_line.Line(lmo, xre, pis))
+    def add_line(self, lmo, xre, pis, line_number=None):
+        if not line_number:
+            line_number = len(self.lines) + 1
+        self.lines.append(arthro_line.Line(lmo, xre, pis, line_number))
+
+    def lins(self, line_number):
+        if line_number < len(self.lines):
+            return self.lines[line_number]
+        return None
 
     def add_final(self, lmo):
         assert len(self.lines) > 0
@@ -42,6 +51,29 @@ class Arthro():
         for lin in self.lines:
             tset = tset.union(lin.typos)
         return tset
+
+    @property
+    def htyp(self):
+        """
+        Τύπος άρθρου. Πχ 3 χρέωση, 7 πίστωση, 54.00 πίστωση πωλήσεις
+        {'3': 1, '7': 2, '54.00': 2} πωλήσεις
+        {'3': -1, '7': -2, '54.00': -2} Αντίστροφο
+        {'30.00': 1, '70.01': 2, '54.00': 2}
+        '3:1|54.00:2|7:2'
+        """
+        set_type = set()
+        for line in self.lines:
+            set_type = set_type.union(line.htyp)
+        return set_type
+
+    def category(self, dict_of_categories):
+        # print(self)
+        categories = 'ERROR'
+        for name, cat_set in dict_of_categories.items():
+            if cat_set < self.htyp:
+                categories = name
+                break
+        return categories
 
     @property
     def ee_typos(self):
@@ -97,12 +129,13 @@ class Arthro():
         return txre - tpis
 
     def __repr__(self):
-        sst = 'Ημ/νία: %s\nΠαραστατικό: %s\nΠεριγραφή: %s\n'
-        ast = sst % (ul.greek_date_from_iso(self.dat), self.par, self.per)
+        sst = '\nNo: %s\nΗμ/νία: %s\nΠαραστατικό: %s\nΠεριγραφή: %s\nΠ2: %s\n'
+        grdate = ul.greek_date_from_iso(self.dat)
+        ast = sst % (self.num, grdate, self.par, self.per, self.pe2)
         txr = tpi = ul.dec(0)
         for line in self.lines:
             ast += ' %s\n' % line
             txr += line.xre
             tpi += line.pis
-        ast += ' ' + FORMAT_LINE % ('Σύνολο', txr, tpi)
+        ast += ' ' + FORMAT_LINE % ('', 'Σύνολο', txr, tpi)
         return ast

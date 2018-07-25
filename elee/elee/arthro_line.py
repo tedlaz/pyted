@@ -7,9 +7,10 @@ from .settings import FORMAT_LINE
 
 
 class Line():
-    def __init__(self, lmo, xreosi, pistosi):
+    def __init__(self, lmo, xreosi, pistosi, line_number=0):
         assert (xreosi == 0) or (pistosi == 0)
         assert xreosi != pistosi
+        self.num = line_number
         self.lmo = lmo
         self.xre = ul.dec(xreosi)
         self.pis = ul.dec(pistosi)
@@ -96,18 +97,6 @@ class Line():
         return self.pis < 0
 
     @property
-    def line_type(self):
-        if self.is_xreostiko:
-            return 'Xreostiko'
-        elif self.is_xreostiko_negative:
-            return 'Xreostiko Negative'
-        elif self.is_pistotiko:
-            return 'Pistotiko'
-        elif self.is_pistotiko_negative:
-            return 'Pistotiko Negative'
-        return 'Error Value'
-
-    @property
     def delta(self):
         return self.xre - self.pis
 
@@ -121,11 +110,23 @@ class Line():
 
     @property
     def gxre(self):
-        return ul.dec2gr(self.xre)
+        return ul.dec2gr(self.xre, True)
 
     @property
     def gpis(self):
-        return ul.dec2gr(self.pis)
+        return ul.dec2gr(self.pis, True)
+
+    @property
+    def line_type(self):
+        if self.is_xreostiko:
+            return 1
+        elif self.is_xreostiko_negative:
+            return -1
+        elif self.is_pistotiko:
+            return 2
+        elif self.is_pistotiko_negative:
+            return -2
+        return 0
 
     @property
     def hierarchy(self):
@@ -146,5 +147,13 @@ class Line():
             listfinal.append(tmp)
         return listfinal
 
+    @property
+    def htyp(self):
+        vset = set()
+        ltyp = self.line_type
+        for hier in self.hierarchy:
+            vset.add('%s:%s' % (hier, ltyp))
+        return vset
+
     def __repr__(self):
-        return FORMAT_LINE % (self.lmo, self.gxre, self.gpis)
+        return FORMAT_LINE % (self.num, self.lmo, self.gxre, self.gpis)

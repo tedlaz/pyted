@@ -246,8 +246,9 @@ def is_afm(a):
 
 def starts_with(st1, st2):
     """
-    st1: string
+    st1: string π.χ. 'ted'
     st2: string με τις τιμές που θέλουμε να αρχίζει το st1 χωρισμένες με |
+         π.χ. 't|T'
     """
     try:
         assert type(st1) == str
@@ -260,3 +261,23 @@ def starts_with(st1, st2):
         if st1.startswith(char):
             return True
     return False
+
+
+def match(st1, tml):
+    """
+    st1 = '20.01.00.024'
+    tml = '2?.??.??.?24'
+    tml = '*24'
+    """
+    if tml.startswith('*'):
+        return st1.endswith(tml[1:])
+    if tml.endswith('*'):
+        return st1.startswith(tml[:-1])
+    if len(st1) != len(tml):
+        return False
+    for i, elm in enumerate(tml):
+        if elm == '?':
+            continue
+        if elm != st1[i]:
+            return False
+    return True

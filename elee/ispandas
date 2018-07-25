@@ -1,0 +1,21 @@
+#!/home/ted/.venv/jupyter/bin/python
+import pandas as pd
+import numpy as np
+from elee import parsers as ps
+
+
+if __name__ == '__main__':
+    import os.path
+    import argparse
+    pars = argparse.ArgumentParser(description='Parse imerologio ...')
+    pars.add_argument('imerologio', help='Singular text file')
+    pars.add_argument('--version', action='version', version='2.0')
+    args = pars.parse_args()
+    if not os.path.isfile(args.imerologio):
+        print('No such file : %s' % args.imerologio)
+    else:
+        lmoi, arthra, lines = ps.parse_el_pandas(args.imerologio)
+        df = pd.DataFrame(np.array(lines),
+                          columns=['ano', 'lno', 'date', 'par',
+                                   'lmo', 'xre', 'pis'])
+        print(df)

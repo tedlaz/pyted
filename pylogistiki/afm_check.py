@@ -20,8 +20,6 @@ def vatol(afm, countryCode='EL'):
     return result
 
 
-def check_from_file(filename):
-    with open
 if __name__ == '__main__':
     print('Testing function vatchk ...')
     print(vatol('091767623'))
