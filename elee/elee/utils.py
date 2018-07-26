@@ -140,6 +140,10 @@ def date2group(adate, per='m'):
     return dat
 
 
+def trimino(adate):
+    return period(adate, 3)
+
+
 def lmo_hierarchy(lmos, split_char='.'):
     assert len(lmos) > 1
     listlmo = lmos.split(split_char)

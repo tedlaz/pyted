@@ -2,11 +2,23 @@
 import pandas as pd
 import numpy as np
 from elee import parsers as ps
+from elee import utils as ul
+
+
+def pivot(dframe, idx):
+    return pd.pivot_table(dframe,
+                          values=['yp'],
+                          index=[idx],
+                          columns='trim',
+                          aggfunc=np.sum,
+                          fill_value=0,
+                          margins=True)
 
 
 if __name__ == '__main__':
     import os.path
     import argparse
+    pd.options.display.max_rows = 999
     pars = argparse.ArgumentParser(description='Parse imerologio ...')
     pars.add_argument('imerologio', help='Singular text file')
     pars.add_argument('--version', action='version', version='2.0')
@@ -15,7 +27,26 @@ if __name__ == '__main__':
         print('No such file : %s' % args.imerologio)
     else:
         lmoi, arthra, lines = ps.parse_el_pandas(args.imerologio)
-        df = pd.DataFrame(np.array(lines),
-                          columns=['ano', 'lno', 'date', 'par',
-                                   'lmo', 'xre', 'pis'])
-        print(df)
+        if not lines:
+            print('Errors parsing file %s' % args.imerologio)
+        else:
+            df = pd.DataFrame(np.array(lines),
+                              columns=['ano', 'lno', 'date', 'par',
+                                       'lmo', 'xre', 'pis'])
+            df['yp'] = df['xre'] - df['pis']
+            df['trim'] = df['date'].apply(lambda x: ul.date2group(x, 'm3'))
+            df['v3'] = df['lmo'].apply(lambda x: x[:8])
+            df['v2'] = df['lmo'].apply(lambda x: x[:5])
+            df['v1'] = df['lmo'].apply(lambda x: x[:2])
+            df['v0'] = df['lmo'].apply(lambda x: x[0])
+            tbl = pivot(df, 'lmo')
+            tb3 = pivot(df, 'v3')
+            tb2 = pivot(df, 'v2')
+            tb1 = pivot(df, 'v1')
+            tb0 = pivot(df, 'v0')
+
+            # tbl.fillna(0, inplace=True)
+            # print(tbl)
+
+            print(pd.concat([tbl, tb3, tb2, tb1, tb0]).sort_index())
+            # print(tbl[['xre', 'pis']])
