@@ -50,3 +50,14 @@ class Tests(unittest.TestCase):
 
     def test_match_06(self):
         self.assertFalse(ul.match('20.00.00.23', '*.024'))
+
+    def test_calc_synt_01(self):
+        self.assertEqual(ul.calc_synt(100, [13, 24]), {'13': 13, '24': 24})
+
+    def test_calc_synt_02(self):
+        tmp = {'13': ul.dec(1.3), '24': ul.dec(2.4)}
+        self.assertEqual(ul.calc_synt(10, [13, 24]), tmp)
+
+    def test_calc_synt_03(self):
+        tmp = {'13': ul.dec(4.6046), '24': ul.dec(8.50)}
+        self.assertEqual(ul.calc_synt(35.42, [13, 24]), tmp)

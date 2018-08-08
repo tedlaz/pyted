@@ -285,3 +285,35 @@ def match(st1, tml):
         if elm != st1[i]:
             return False
     return True
+
+
+def calc_synt(poso, syntelestes):
+    """
+    Υπολογισμός ποσού επί συντελεστή
+    πχ poso=100, syntelestes=[13,24]
+    calc_synt={13: 13.00, 24: 24.00}
+    """
+    fdi = {}
+    syntel = set(syntelestes)
+    for synt in syntel:
+        fdi[str(synt)] = dec(dec(poso) * dec(synt) / dec(100))
+    return fdi
+
+
+def calc_synt_dict(dict_vals, syntelestes):
+    """
+    dict_vals = {'70.00.24': 200}
+    syntelestes = [13, 24]
+    returns {'70.00.24': [26, 48]}
+    """
+    fdi = {}
+    for elm, poso in dict_vals.items():
+        fdi[elm] = calc_synt(poso, syntelestes)
+    return fdi
+
+
+def closer(number, list_of_numbers):
+    diff = []
+    for lmu in list_of_numbers:
+        diff.append(abs(number - lmu))
+    return list_of_numbers[diff.index(min(diff))]

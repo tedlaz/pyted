@@ -1,4 +1,4 @@
-#!/home/ted/.venv/jupyter/bin/python
+#!/home/ted/.venv/ml/bin/python
 import pandas as pd
 import numpy as np
 from elee import parsers as ps
@@ -13,6 +13,23 @@ def pivot(dframe, idx):
                           aggfunc=np.sum,
                           fill_value=0,
                           margins=True)
+
+
+def print_isozygio(lines):
+    labels = ['ano', 'lno', 'date', 'par', 'lmo', 'xre', 'pis']
+    df = pd.DataFrame(np.array(lines), columns=labels)
+    df['yp'] = df['xre'] - df['pis']
+    df['trim'] = df['date'].apply(lambda x: ul.date2group(x, 'm3'))
+    df['v3'] = df['lmo'].apply(lambda x: x[:8])
+    df['v2'] = df['lmo'].apply(lambda x: x[:5])
+    df['v1'] = df['lmo'].apply(lambda x: x[:2])
+    df['v0'] = df['lmo'].apply(lambda x: x[0])
+    tbl = pivot(df, 'lmo')
+    tb3 = pivot(df, 'v3')
+    tb2 = pivot(df, 'v2')
+    tb1 = pivot(df, 'v1')
+    tb0 = pivot(df, 'v0')
+    print(pd.concat([tbl, tb3, tb2, tb1, tb0]).sort_index())
 
 
 if __name__ == '__main__':
@@ -30,23 +47,4 @@ if __name__ == '__main__':
         if not lines:
             print('Errors parsing file %s' % args.imerologio)
         else:
-            df = pd.DataFrame(np.array(lines),
-                              columns=['ano', 'lno', 'date', 'par',
-                                       'lmo', 'xre', 'pis'])
-            df['yp'] = df['xre'] - df['pis']
-            df['trim'] = df['date'].apply(lambda x: ul.date2group(x, 'm3'))
-            df['v3'] = df['lmo'].apply(lambda x: x[:8])
-            df['v2'] = df['lmo'].apply(lambda x: x[:5])
-            df['v1'] = df['lmo'].apply(lambda x: x[:2])
-            df['v0'] = df['lmo'].apply(lambda x: x[0])
-            tbl = pivot(df, 'lmo')
-            tb3 = pivot(df, 'v3')
-            tb2 = pivot(df, 'v2')
-            tb1 = pivot(df, 'v1')
-            tb0 = pivot(df, 'v0')
-
-            # tbl.fillna(0, inplace=True)
-            # print(tbl)
-
-            print(pd.concat([tbl, tb3, tb2, tb1, tb0]).sort_index())
-            # print(tbl[['xre', 'pis']])
+            print_isozygio(lines)

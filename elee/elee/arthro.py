@@ -2,7 +2,7 @@
 Άρθρο λογιστικής
 """
 from . import utils as ul
-from .settings import FORMAT_LINE
+from . import settings as stt
 from . import arthro_line
 
 
@@ -14,6 +14,90 @@ class Arthro():
         self.per = perigrafi
         self.pe2 = pe2
         self.lines = []
+
+    def check_fpa1(self):
+        assert self.is_complete
+        if self.number_of_lines == 2:
+            return -1  # Δεν μπορεί ένα άρθρο με 2 γραμμές να έχει ΦΠΑ
+        fpa = {}
+        l4fpa = {}
+        for lin in self.lines:
+            if lin.lmo.startswith(stt.FPA_LMO):
+                fpa[lin.lmo] = fpa.get(lin.lmo, 0) + lin.delta
+            elif lin.lmo[0] in stt.FPA_OMADES:
+                l4fpa[lin.lmo] = l4fpa.get(lin.lmo, 0) + lin.delta
+        lfpa = ul.calc_synt_dict(l4fpa, stt.FPA_SYNTELESTES)
+        delta = {}
+        for lmofpa, valfpa in fpa.items():
+            for lmoom, valom in lfpa.items():
+                dmin = {}
+                for pfpa, vfpa in valom.items():
+                    dif = abs(valfpa - vfpa)
+                    dmin[pfpa] = dif
+                pkey = min(dmin, key=dmin.get)
+                pval = dmin[pkey]
+                key = '%s|%s|%s' % (lmofpa, lmoom, pkey)
+                if pval <= stt.THRESHOLD:
+                    delta[key] = pval
+        return fpa, l4fpa, lfpa, delta
+
+    @property
+    def is_ee(self):
+        assert self.is_complete
+        for lin in self.lines:
+            # print(self.num, lin.lmo[0])
+            if lin.lmo[0] in stt.EE_OMADES:
+                return True
+        return False
+
+    @property
+    def esej(self):
+        if not self.is_ee:
+            return None
+        lval = []
+        val = []
+        lfpa = []
+        fpa = []
+        for lin in self.lines:
+            if lin.lmo.startswith(stt.FPA_LMO):
+                lfpa.append(lin.lmo)
+                fpa.append(lin.delta)
+            elif lin.lmo[0] in stt.EE_OMADES:
+                lval.append(lin.lmo)
+                val.append(lin.delta)
+        lst = [self.num, self.dat, self.par, self.per, self.pe2,
+               sum(val), sum(fpa), sum(val) + sum(fpa)]
+        return lst
+
+    def check_fpa(self):
+        assert self.is_complete
+        if self.number_of_lines == 2:
+            return -1  # Δεν μπορεί ένα άρθρο με 2 γραμμές να έχει ΦΠΑ
+        lval = []
+        val = []
+        lfpa = []
+        fpa = []
+        for lin in self.lines:
+            if lin.lmo.startswith(stt.FPA_LMO):
+                lfpa.append(lin.lmo)
+                fpa.append(lin.delta)
+            elif lin.lmo[0] in stt.FPA_OMADES:
+                lval.append(lin.lmo)
+                val.append(lin.delta)
+        val_len, val_fpa = len(lval), len(lfpa)
+        if val_len == 0 or val_fpa == 0:
+            return True
+        assert val_len >= val_fpa  # Οι γραμμές ΦΠΑ πάντα λιγότερες/ίσες
+        for i, _ in enumerate(lfpa):
+            if val[i] < 1 and fpa[i] < 0.24:
+                continue
+            synt = ul.closer(fpa[i] / val[i] * 100, stt.FPA_SYNTELESTES)
+            diff = abs(ul.dec(val[i] * ul.dec(synt)/ ul.dec(100)) - fpa[i])
+            if diff > stt.THRESHOLD:
+                print('Error in %s' % self.num)
+                print('Diff %s > %s (synt=%s%%)' % (diff, stt.THRESHOLD, synt))
+                return False
+        return True
 
     def add_line(self, lmo, xre, pis, line_number=None):
         if not line_number:
@@ -137,5 +221,5 @@ class Arthro():
             ast += ' %s\n' % line
             txr += line.xre
             tpi += line.pis
-        ast += ' ' + FORMAT_LINE % ('', 'Σύνολο', txr, tpi)
+        ast += ' ' + stt.FORMAT_LINE % ('', 'Σύνολο', txr, tpi)
         return ast
