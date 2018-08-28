@@ -58,15 +58,30 @@ class Arthro():
         val = []
         lfpa = []
         fpa = []
+        esextyp = 0
         for lin in self.lines:
+            # Εδώ ορίζουμε τον τύπο της γραμμής
+            if lin.lmo[0] in stt.EE_PAGIA:
+                esextyp = 1
+            elif lin.lmo[0] in stt.EE_EJODA:
+                esextyp = 2
+            elif lin.lmo[0] in stt.EE_ESODA:
+                esextyp = 3
+            # Εδώ χωρίζουμε τις γραμμές ανα κωδικό λογιστικής
             if lin.lmo.startswith(stt.FPA_LMO):
                 lfpa.append(lin.lmo)
                 fpa.append(lin.delta)
             elif lin.lmo[0] in stt.EE_OMADES:
                 lval.append(lin.lmo)
                 val.append(lin.delta)
+        tposo = sum(val)
+        tfpa = sum(fpa)
+        if esextyp == 3:
+            tposo = -1 * tposo
+            tfpa = -1 * tfpa
+        ttot = tposo + tfpa
         lst = [self.num, self.dat, self.par, self.per, self.pe2,
-               sum(val), sum(fpa), sum(val) + sum(fpa)]
+               tposo, tfpa, ttot, esextyp]
         return lst
 
     def check_fpa(self):
