@@ -1,0 +1,4 @@
+# Copy file to .bin and give it execute permissions
+cp minoracc.py ~/.bin/minoracc
+chmod +x ~/.bin/minoracc
+
