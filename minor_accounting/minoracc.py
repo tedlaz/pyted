@@ -16,6 +16,7 @@ class Logariasmos:
     debitor = 'χρεώστες'
     creditor = 'πιστωτές'
 
+
 def add_lists(lista, listb):
     fin = []
     assert len(lista) == len(listb)
@@ -23,14 +24,17 @@ def add_lists(lista, listb):
         fin.append(lista[i] + listb[i])
     return fin
 
+
 def ranks(lmos):
     als = lmos.split(LOGARIASMOS_SPLITTER)
-    ranks = ['.'.join(als[:i+1]) for i in range(len(als))]
+    ranks = ['.'.join(als[:i + 1]) for i in range(len(als))]
     return ['𐅃 Σύνολα'] + ranks
+
 
 class SimpleTransaction:
     __slots__ = ['dat', 'apo', 'se', 'val', 'per']
     stt = '%10s %-30s %-30s %10.2f %s'
+
     def __init__(self, dat, apo, se, val, per):
         assert apo != se
         self.dat = dat
@@ -43,7 +47,7 @@ class SimpleTransaction:
     def datgr(self):
         yyyy, mm, dd = self.dat.split('-')
         return dd + '/' + mm + '/' + yyyy
-    
+
     @property
     def to_json(self):
         fdi = {'dat': self.dat, 'apo': self.apo, 'se': self.se,
@@ -52,10 +56,10 @@ class SimpleTransaction:
 
     @property
     def to_json_normal(self):
-        fdi = {'dat': self.dat, 'apo': self.apo, 'per': self.per, 
+        fdi = {'dat': self.dat, 'apo': self.apo, 'per': self.per,
                'lines': [{'lmo': self.apo, 'xr': 0, 'pi': self.val},
                          {'lmo': self.se, 'xr': self.val, 'pi': 0}]}
-        return json.dumps(fdi, ensure_ascii=False)   
+        return json.dumps(fdi, ensure_ascii=False)
 
     def __repr__(self):
         return self.stt % (self.dat, self.apo, self.se, self.val, self.per)
@@ -83,9 +87,9 @@ class Book:
         assert isinstance(simple_transaction, SimpleTransaction)
         self.trans.append(simple_transaction)
         self.lmoi.add(simple_transaction.apo)
-        self.lmoi.add(simple_transaction.se)        
+        self.lmoi.add(simple_transaction.se)
 
-    def read_file(self, filename):  
+    def read_file(self, filename):
         with open(filename) as file:
             for i, line in enumerate(file.readlines()):
                 tr = line.strip().split('|')
@@ -109,8 +113,8 @@ class Book:
 
     def write_csv_files(self, filename, separate_lmoi=True):
         """We create two files:
-           1. <filename>-lmoi.csv for accounts 
-           2.<filename>.csv for transactions
+        1. <filename>-lmoi.csv for accounts
+        2.<filename>.csv for transactions
         """
         filename_lmoi = '%s-lmoi.csv' % filename
         filename_data = '%s.csv' % filename
@@ -121,7 +125,7 @@ class Book:
             lin = '|'.join([no, lmo])
             dlmoi += lin + '\n'
         with open(filename_lmoi, 'w') as fil:
-            fil.write(dlmoi)        
+            fil.write(dlmoi)
         data = 'id|dat|apo|se|val|per\n'
         for i, trn in enumerate(self.trans):
             no = str(i + 1)
@@ -134,8 +138,8 @@ class Book:
             fil.write(data)
 
     def isozygio(self):
-        lmoi = defaultdict(lambda : {'xr': 0, 'pi': 0})
-        txr = tpi = 0
+        lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
+        txr = 0
         for egr in self.trans:
             txr += egr.val
             for lmop in ranks(egr.apo):
@@ -145,7 +149,7 @@ class Book:
         return lmoi, {'xr': txr, 'pi': txr, 'yp': 0}
 
     def isozygio_kinoymenon(self):
-        lmoi = defaultdict(lambda : {'xr': 0, 'pi': 0})
+        lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
         for egr in self.trans:
             if egr.apo.startswith(('εξοδα', 'εσοδα')):
                 lmoi['ανοιγμα']['pi'] += egr.val
@@ -177,8 +181,7 @@ class Book:
 
     def print_isozygio(self, not_show_zero_yp=False):
         stt = '%-50s %12.2f %12.2f %12.2f'
-        typ = 0
-        lmoi, tot = self.isozygio()
+        lmoi, _ = self.isozygio()
         print('\n      Ισοζύγιο λογαριασμών')
         for lmo in sorted(lmoi.keys()):
             xr, pi = round(lmoi[lmo]['xr'], 2), round(lmoi[lmo]['pi'], 2)
@@ -211,10 +214,10 @@ class Book:
             else:
                 continue
             per50 = wrap(tran.per, 50) if tran.per else ['']
-            stf += stt % (tran.datgr,  per50[0], 0, tran.val, ypo, anti)
+            stf += stt % (tran.datgr, per50[0], 0, tran.val, ypo, anti)
             for per in per50[1:]:
                 stf += stb % ('', per)
-        # stf += stt % ('', '   Σύνολα', txr, tpi, ypo, '')              
+        # stf += stt % ('', '   Σύνολα', txr, tpi, ypo, '')
         return stf
 
     def kartella(self, lmos):
@@ -236,10 +239,10 @@ class Book:
                 ypo = ypo + tr.val
                 txr += tr.val
                 per50 = wrap(tr.per, 50) if tr.per else ['']
-                stf += stt % (tr.datgr,  per50[0], tr.se, tr.val, 0, ypo)
+                stf += stt % (tr.datgr, per50[0], tr.se, tr.val, 0, ypo)
                 for per in per50[1:]:
                     stf += stb % ('', per)
-        # stf += stt % ('', '   Σύνολα', '', txr, tpi, ypo)              
+        # stf += stt % ('', '   Σύνολα', '', txr, tpi, ypo)
         return stf
 
     def kartella_joined(self, list_lmoi):
@@ -254,12 +257,12 @@ class Book:
                 per50 = wrap(tr.per, 50) if tr.per else ['']
                 stf += stt % (tr.datgr, per50[0], tr.apo, 0, tr.val, ypo)
                 for per in per50[1:]:
-                    stf += stb % ('', per) 
+                    stf += stb % ('', per)
             if tr.se in list_lmoi:
                 ypo = ypo + tr.val
                 txr += tr.val
                 per50 = wrap(tr.per, 50) if tr.per else ['']
-                stf += stt % (tr.datgr,  per50[0], tr.se, tr.val, 0, ypo)
+                stf += stt % (tr.datgr, per50[0], tr.se, tr.val, 0, ypo)
                 for per in per50[1:]:
                     stf += stb % ('', per)
         return stf
@@ -275,14 +278,13 @@ class Book:
             per = 'τελευταίες %s γραμμές' % last_lines
         ypo = 0
         for i, tr in enumerate(sorted(self.trans, key=attrgetter('dat'))):
+            j = i + 1
             if lmos == tr.apo:
                 ypo = ypo - tr.val
-                anti = tr.se
-                klis.append(Kli(i+1, tr.datgr, tr.per, tr.se, 0, tr.val, ypo))
+                klis.append(Kli(j, tr.datgr, tr.per, tr.se, 0, tr.val, ypo))
             elif lmos == tr.se:
                 ypo = ypo + tr.val
-                anti = tr.apo
-                klis.append(Kli(i+1, tr.datgr, tr.per, tr.apo, tr.val, 0, ypo))
+                klis.append(Kli(j, tr.datgr, tr.per, tr.apo, tr.val, 0, ypo))
         return lmos, per, klis
 
     def print_kartella(self, lmos):
@@ -305,7 +307,6 @@ class Book:
 
     def episkopisi(self, lmos):
         met = eso = ejo = ypo = 0
-        lmos0 = lmos.split('.')[0]
         metaf = ('ταμείο', 'ανοιγμα', 'χρεώστες', 'πιστωτές')
         for tr in self.trans:
             if lmos == tr.apo:
