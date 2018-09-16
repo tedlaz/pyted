@@ -6,6 +6,7 @@ from collections import namedtuple
 from collections import defaultdict
 from collections import deque
 LOGARIASMOS_SPLITTER = '.'
+TRTUPLE = namedtuple('TRTUPLE', 'dat lmo per xr pi')
 
 
 class Logariasmos:
@@ -33,7 +34,6 @@ def ranks(lmos):
 
 class SimpleTransaction:
     __slots__ = ['dat', 'apo', 'se', 'val', 'per']
-    stt = '%10s %-30s %-30s %10.2f %s'
 
     def __init__(self, dat, apo, se, val, per):
         assert apo != se
@@ -42,6 +42,18 @@ class SimpleTransaction:
         self.se = se
         self.val = val
         self.per = per
+
+    @property
+    def linesd(self):
+        return {self.se: {'xr': self.val, 'pi': 0, 'dat': self.dat},
+                self.apo: {'xr': 0, 'pi': self.val, 'dat': self.dat}}
+
+    @property
+    def lines(self):
+        return (TRTUPLE(dat=self.dat, lmo=self.se, xr=self.val, pi=0,
+                        per=self.per),
+                TRTUPLE(dat=self.dat, lmo=self.apo, xr=0, pi=self.val,
+                        per=self.per))
 
     @property
     def datgr(self):
@@ -62,7 +74,12 @@ class SimpleTransaction:
         return json.dumps(fdi, ensure_ascii=False)
 
     def __repr__(self):
-        return self.stt % (self.dat, self.apo, self.se, self.val, self.per)
+        stt = 'SimpleTransaction(dat:%s, apo:%s, se:%s, val:%f, per:%s)'
+        return stt % (self.dat, self.apo, self.se, self.val, self.per)
+
+    def __str__(self):
+        stt = '%10s %-30s %-30s %10.2f %s'
+        return stt % (self.dat, self.apo, self.se, self.val, self.per)
 
 
 class Book:
@@ -92,18 +109,12 @@ class Book:
     def read_file(self, filename):
         with open(filename) as file:
             for i, line in enumerate(file.readlines()):
-                tr = line.strip().split('|')
-                if len(tr) < 5:
-                    continue
                 try:
-                    val = float(tr[3].replace(',', '.'))
+                    dat, apo, se, val, per = (
+                        i.strip() for i in line.strip().split('|'))
+                    val = float(val.replace(',', '.'))
                 except Exception:
                     print(i + 1, line)
-                dat = tr[0].strip()
-                apo = tr[1].strip()
-                se = tr[2].strip()
-                val = float(tr[3].replace(',', '.').strip())
-                per = tr[4].strip()
                 self.create_and_add_transaction(dat, apo, se, val, per)
         self.last_date = dat
 
@@ -139,14 +150,12 @@ class Book:
 
     def isozygio(self):
         lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
-        txr = 0
-        for egr in self.trans:
-            txr += egr.val
-            for lmop in ranks(egr.apo):
-                lmoi[lmop]['pi'] += egr.val
-            for lmox in ranks(egr.se):
-                lmoi[lmox]['xr'] += egr.val
-        return lmoi, {'xr': txr, 'pi': txr, 'yp': 0}
+        for trn in self.trans:
+            for line in trn.lines:
+                for lmop in ranks(line.lmo):
+                    lmoi[lmop]['xr'] += line.xr
+                    lmoi[lmop]['pi'] += line.pi
+        return lmoi
 
     def isozygio_kinoymenon(self):
         lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
@@ -181,7 +190,7 @@ class Book:
 
     def print_isozygio(self, not_show_zero_yp=False):
         stt = '%-50s %12.2f %12.2f %12.2f'
-        lmoi, _ = self.isozygio()
+        lmoi = self.isozygio()
         print('\n      Ισοζύγιο λογαριασμών')
         for lmo in sorted(lmoi.keys()):
             xr, pi = round(lmoi[lmo]['xr'], 2), round(lmoi[lmo]['pi'], 2)
@@ -332,6 +341,49 @@ class Book:
                     print('problem se', tr)
         return lmos, round(met, 2), round(eso, 2), round(ejo, 2), round(ypo, 2)
 
+    def tamiaka(self, root_lmos_tamioy='ταμείο'):
+        tamd = defaultdict(lambda: {'me': 0, 'es': 0, 'ej': 0, 'yp': 0})
+        metaf = ('ταμείο', 'ανοιγμα', 'χρεώστες', 'πιστωτές')
+        for tr in self.trans:
+            if tr.apo.startswith(root_lmos_tamioy):
+                if tr.se.startswith('εξοδα'):
+                    tamd[tr.apo]['ej'] -= tr.val
+                    tamd[tr.apo]['yp'] -= tr.val
+                elif tr.se.startswith(metaf):
+                    tamd[tr.apo]['me'] -= tr.val
+                    tamd[tr.apo]['yp'] -= tr.val
+                elif tr.se.startswith('εσοδα'):
+                    tamd[tr.apo]['es'] -= tr.val
+                    tamd[tr.apo]['yp'] -= tr.val
+                else:
+                    print('problem apo', tr)
+            if tr.se.startswith(root_lmos_tamioy):
+                if tr.apo.startswith('εσοδα'):
+                    tamd[tr.se]['es'] += tr.val
+                    tamd[tr.se]['yp'] += tr.val
+                elif tr.apo.startswith(metaf):
+                    tamd[tr.se]['me'] += tr.val
+                    tamd[tr.se]['yp'] += tr.val
+                else:
+                    print('problem se', tr)
+        stt = '%-30s %12.2f %12.2f %12.2f %12.2f\n'
+        sta = '%-30s %12s %12s %12s %12s\n'
+        fin = sta % ('Λογαριασμοί', 'Μεταφορά', 'Έσοδα', 'Έξοδα', 'Υπόλοιπο')
+        tme = tes = tej = typ = 0
+        for key in sorted(tamd.keys()):
+            me = round(tamd[key]['me'], 2)
+            es = round(tamd[key]['es'], 2)
+            ej = round(tamd[key]['ej'], 2)
+            yp = round(tamd[key]['yp'], 2)
+            if yp != 0:
+                fin += stt % (key, me, es, ej, yp)
+                tme += me
+                tes += es
+                tej += ej
+                typ += yp
+        fin += stt % ('Σύνολα', tme, tes, tej, typ)
+        print(fin)
+
     def episkopisi_all(self):
         stt = '%-30s %12.2f %12.2f %12.2f %12.2f\n'
         sta = '%-30s %12s %12s %12s %12s\n'
@@ -366,10 +418,9 @@ if __name__ == '__main__':
         print('No such file : %s' % args.csv)
     book = Book.from_file(args.csv)
     # book = Book.from_file('tst.csv')
-    book.print_isozygio(not_show_zero_yp=False)
-    book.episkopisi_all()
+    book.print_isozygio(not_show_zero_yp=True)
+    book.tamiaka()
     print('Ημερομηνία τελευταίας εγγραφής:', book.last_date)
-    # print(book.kartella('ταμείο.μετρητά.τσέπη'))
     try:
         lin = int(args.Lines)
     except Exception:
@@ -377,7 +428,7 @@ if __name__ == '__main__':
     if args.Account:
         if args.Account in book.lmoi:
             book.print_kart(args.Account, last_lines=lin)
-            print(book.episkopisi(args.Account))
+            # print(book.episkopisi(args.Account))
         else:
             print(book.kartella(args.Account))
     # book.metafora_ypoloipon('2018-08-31', 'tst.csv')
