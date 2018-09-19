@@ -87,10 +87,12 @@ class Book:
         self.trans = []
         self.lmoi = set()
         self.last_date = ''
+        self.date_eos = None
 
     @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filename, date_eos):
         fcls = cls()
+        fcls.date_eos = date_eos
         fcls.read_file(filename)
         return fcls
 
@@ -107,15 +109,22 @@ class Book:
         self.lmoi.add(simple_transaction.se)
 
     def read_file(self, filename):
+        print('date_eos', self.date_eos)
         with open(filename) as file:
             for i, line in enumerate(file.readlines()):
+                if len(line) < 20:
+                    continue
                 try:
                     dat, apo, se, val, per = (
                         i.strip() for i in line.strip().split('|'))
                     val = float(val.replace(',', '.'))
                 except Exception:
                     print(i + 1, line)
-                self.create_and_add_transaction(dat, apo, se, val, per)
+                if self.date_eos:
+                    if dat <= self.date_eos:
+                        self.create_and_add_transaction(dat, apo, se, val, per)
+                else:
+                    self.create_and_add_transaction(dat, apo, se, val, per)
         self.last_date = dat
 
     def write_json_file(self, filename):
@@ -412,11 +421,12 @@ if __name__ == '__main__':
     pars.add_argument('csv', help='csv file with data')
     pars.add_argument('-a', '--Account', help='Account')
     pars.add_argument('-l', '--Lines', help='Lines', default=10)
+    pars.add_argument('-d', '--Date', help='Date limit', default=None)
     pars.add_argument('-v', '--version', action='version', version='1.0')
     args = pars.parse_args()
     if not os.path.isfile(args.csv):
         print('No such file : %s' % args.csv)
-    book = Book.from_file(args.csv)
+    book = Book.from_file(args.csv, args.Date)
     # book = Book.from_file('tst.csv')
     book.print_isozygio(not_show_zero_yp=True)
     book.tamiaka()

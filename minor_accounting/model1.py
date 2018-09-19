@@ -25,10 +25,10 @@ class ModelTable(qc.QAbstractTableModel):
         #     return qg.QBrush(qc.Qt.red)
         # elif role == qc.Qt.CheckStateRole:
         #     return qc.Qt.Checked
-        elif role == qc.Qt.FontRole:
-            fnt = qg.QFont()
-            fnt.setBold(True)
-            return fnt
+        # elif role == qc.Qt.FontRole:
+        #     fnt = qg.QFont()
+        #     fnt.setBold(True)
+        #     return fnt
         elif role == qc.Qt.TextAlignmentRole:
             if self.types[idx.column()] == 0:
                 return ALEFT
@@ -59,9 +59,11 @@ class ModelTable(qc.QAbstractTableModel):
 
 
 if __name__ == '__main__':
-    hdata = {'headers': ('id', 'epo'),
-             'types': (0, 0),
-             'mdata': [[1, 'ted'], [2, 'popi']]}
+    hdata = {'headers': ('Ημ/νία', 'Από', 'Σε', 'Ποσό', 'Σχόλια'),
+             'types': (0, 0, 0, 1, 0),
+             'mdata': [['2018-01-01', 'ταμείο.τσέπη', 'εξοδα', 10, 'Δοκιμή'],
+                       ['2018-01-02', 'ταμείο.τσέπη', 'εξοδα', 23, 'Δεύτερη']
+                       ]}
     import sys
     app = qw.QApplication(sys.argv)
     tview = qw.QTableView()

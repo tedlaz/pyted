@@ -1,9 +1,11 @@
+from collections import namedtuple
 from PyQt5 import QtCore as qc
 from PyQt5 import QtWidgets as qw
 from PyQt5 import QtGui as qg
+# LMT = namedtuple('LMT', 'lmo metafora esoda ejoda')
 ALIR = qc.Qt.AlignRight | qc.Qt.AlignTrailing | qc.Qt.AlignVCenter
 STYLE_NORMAL = "background-color: rgb(200, 200, 200);"
-STYLE_HILIGHTED = "background-color: rgb(220, 220, 220);"
+STYLE_HILIGHTED = "background-color: rgb(200, 230, 200);"
 STR_ACCOUNT = 'Λογαριασμός'
 STR_TRANSFER = 'Μεταφορά'
 STR_INCOME = 'Έσοδα'
@@ -13,12 +15,14 @@ STR_TOTALS = 'Σύνολα'
 
 
 class AccountWidget(qw.QWidget):
-    def __init__(self, lmos, meta, eso, ejo, parent=None):
+    acc_clicked = qc.pyqtSignal(str)
+
+    def __init__(self, lmos, metafora, esoda, ejoda, parent=None):
         super().__init__(parent)
         self.setStyleSheet(STYLE_NORMAL)
         self.setMouseTracking(True)
         self._create_ui()
-        self.set_vals(lmos, meta, eso, ejo)
+        self.set_vals(lmos, metafora, esoda, ejoda)
 
     def _create_bold_font(self):
         font = qg.QFont()
@@ -29,9 +33,9 @@ class AccountWidget(qw.QWidget):
 
     def set_vals(self, lmos, meta, eso, ejo):
         self.lmos = lmos
-        self.meta = meta
-        self.eso = eso
-        self.ejo = ejo
+        self.meta = meta or 0
+        self.eso = eso or 0
+        self.ejo = ejo or 0
         self.logariasmos.setText(lmos)
         self.metafora.setText('%12.2f' % meta)
         self.esoda.setText('%12.2f' % eso)
@@ -43,7 +47,8 @@ class AccountWidget(qw.QWidget):
         return (self.lmos, self.meta, self.eso, self.ejo)
 
     def mousePressEvent(self, ev):
-        qw.QMessageBox.information(self, 'Title Ted', 'msg here')
+        qw.QMessageBox.information(self, 'Title Ted', 'lmos: %s' % self.lmos)
+        self.acc_clicked.emit(self.lmos)
         return qw.QWidget.mousePressEvent(self, ev)
 
     def enterEvent(self, ev):
@@ -95,6 +100,7 @@ class AccountWidget(qw.QWidget):
 
 
 class SideBar(qw.QWidget):
+
     def __init__(self, parent=None):
         super().__init__(parent)
         laym = qw.QVBoxLayout(self)
@@ -113,7 +119,7 @@ class SideBar(qw.QWidget):
         scroll.setWidget(scont)
         self.accounts = {}
 
-    def account(self, lmos, met, eso, ejo):
+    def add(self, lmos, met, eso, ejo):
         tlmos, tmet, teso, tejo = self.totals.vals()
         tmet += met
         teso += eso
@@ -125,21 +131,27 @@ class SideBar(qw.QWidget):
             self.layn.addWidget(self.accounts[lmos])
         self.totals.set_vals(tlmos, tmet, teso, tejo)
 
+    def add_many(self, lmoi):
+        '''lmoi: tuple'''
+        lmoi.sort()
+        for lmo in lmoi:
+            self.add(*lmo)
 
-def test_sidebar():
+
+def test_sidebar(lmoi):
     import sys
     app = qw.QApplication(sys.argv)
-    form = SideBar()
-    form.account('ταμείο.μετρητά.τσέπη', 52699.41, 11649.91, 64036.22)
-    form.account('ταμείο.μετρητά.σπίτι', 32256.85, 4513.91, 16770.76)
-    form.account('ταμείο.τράπεζες.alpha', 34954.91, 3804.31, 31205.82)
-    form.account('ταμείο.τράπεζες.visa', 4324.38, -1260.13, 3075.25)
-    form.account('ταμείο.τράπεζες.αττικής', -14900, 26040.22, 11136.62)
-    # form.account('δοκιμή', 0, 0, 0)
-    # form.account('δοκιμή', 100, 0, 50)
-    form.show()
+    sbar = SideBar()
+    sbar.add_many(lmoi)
+    sbar.show()
     sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
-    test_sidebar()
+    lms = [('ταμείο.μετρητά.τσέπη', 52699.41, 11649.91, 64036.22),
+           ('ταμείο.τράπεζες.visa', 4324.38, -1260.13, 3075.25),
+           ('ταμείο.μετρητά.σπίτι', 32256.85, 4513.91, 16770.76),
+           ('ταμείο.τράπεζες.alpha', 34954.91, 3804.31, 31205.82),
+           ('ταμείο.τράπεζες.αττικής', -14900, 26040.22, 11136.62)
+           ]
+    test_sidebar(lms)
