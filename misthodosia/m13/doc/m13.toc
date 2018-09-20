@@ -4,8 +4,8 @@
 \contentsline {section}{\numberline {1.2}Απαραίτητα προγράμματα για εγκατάσταση}{1}
 \contentsline {subsection}{\numberline {1.2.1}Python}{1}
 \contentsline {subsection}{\numberline {1.2.2}Δοκιμαστικό}{1}
-\contentsline {subsection}{\numberline {1.2.3}sqlite}{1}
-\contentsline {subsection}{\numberline {1.2.4}PyQt}{1}
+\contentsline {subsection}{\numberline {1.2.3}sqlite}{2}
+\contentsline {subsection}{\numberline {1.2.4}PyQt}{2}
 \contentsline {subsection}{\numberline {1.2.5}Py2exe}{2}
 \contentsline {subsection}{\numberline {1.2.6}Inno Setup}{2}
 \contentsline {subsection}{\numberline {1.2.7}Eclipse}{2}

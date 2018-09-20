@@ -8,6 +8,34 @@
 \title{Εφαρμογή Μισθοδοσίας M13 δοκιμή}
 \author{Λάζαρος Θεόδωρος}
 
+% start
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+  language=Python,
+  captionpos=b, 
+  backgroundcolor=\color{backcolour},
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+% end
 \begin{document}
 \maketitle
 
@@ -38,6 +66,20 @@
 
 \subsection{Python}
 Γλώσσα προγραμματισμού Python\footnote{http://www.python.org}. Είναι δημιούργημα του Guido van Rossum και η ανάπτυξή του ξεκίνησε τον Δεκέμβριο του 1989 στην Ολλανδία. ΤΟ ΑΠΟΛΥΤΟ ΕΡΓΑΛΕΙΟ ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΥ !!!
+
+\begin{lstlisting}[caption=Python example]
+'''Hello.python'''
+import os
+
+class Erg:
+    def __init__(self):
+        self.val = 10
+
+def main(par1):
+    print('this is a test')
+    print(par1)
+
+\end{lstlisting}
 
 Για λόγους συμβατότητας με άλλα υποσυστήματα, εγκαθιστούμε την έκδοση 2.7 32bit.
 
