@@ -57,7 +57,10 @@ class ModelTable(qc.QAbstractTableModel):
 
     def setData(self, idx, value, role):
         if role == qc.Qt.EditRole:
-            self.mdata[idx.row()][idx.column()] = value
+            if idx.column() == 0:
+                self.mdata[idx.row()][idx.column()] = value.toString("yyyy-MM-dd")
+            else:
+                self.mdata[idx.row()][idx.column()] = value
         self.dataChanged.emit(idx, idx, [])
         return True
 
@@ -66,28 +69,40 @@ class Form1(qw.QDialog):
     def __init__(self, data, parent=None):
         super().__init__(parent)
         self.model = ModelTable(data)
-        lay = qw.QVBoxLayout(self)
+        self.tApo = qc.QStringListModel(('ταμείο', 'τράπεζα', 'εξοδα'), self)
+
         self.tview = qw.QTableView()
         self.tview.setModel(self.model)
-        lay.addWidget(self.tview)
+
+        dat = qw.QDateEdit()
+        dat.setCalendarPopup(True)
+        apo = qw.QComboBox()
+        apo.setModel(self.tApo)
+        se = qw.QComboBox()
+        se.setModel(self.tApo)
+        val = qw.QLineEdit()
+        per = qw.QTextEdit()
+        # Set mapper
         self.map = qw.QDataWidgetMapper(self)
         self.map.setModel(self.model)
         self.map.setSubmitPolicy(qw.QDataWidgetMapper.ManualSubmit)
-        self.text = qw.QLineEdit()
-        self.map.addMapping(self.text, 4)
-        lay.addWidget(self.text)
-        self.tApo = qc.QStringListModel(('ταμείο', 'τράπεζα'), self)
-        typeComboBox = qw.QComboBox()
-        typeComboBox.setModel(self.tApo)
-        # self.map.addMapping(typeComboBox, 1, b'currentIndex')
-        self.map.addMapping(typeComboBox, 1)
-        lay.addWidget(typeComboBox)
-        dat = qw.QDateEdit()
-        dat.setCalendarPopup(True)
-        lay.addWidget(dat)
         self.map.addMapping(dat, 0)
+        self.map.addMapping(apo, 1)
+        self.map.addMapping(se, 2)
+        # self.map.addMapping(typeComboBox, 1, b'currentIndex')
+        self.map.addMapping(val, 3)
+        self.map.addMapping(per, 4, b'plainText')
+        # fill layout
+        lay = qw.QVBoxLayout(self)
+        lay.addWidget(self.tview)
+        lay.addWidget(dat)
+        lay.addWidget(apo)
+        lay.addWidget(se)
+        lay.addWidget(val)
+        lay.addWidget(per)
         self.btn = qw.QPushButton('save')
         lay.addWidget(self.btn)
+        # Make connections
         self.btn.clicked.connect(self.map.submit)
         self.tview.clicked.connect(self.map.setCurrentModelIndex)
         self.map.toFirst()
@@ -96,8 +111,8 @@ class Form1(qw.QDialog):
 if __name__ == '__main__':
     hdata = {'headers': ('Ημ/νία', 'Από', 'Σε', 'Ποσό', 'Σχόλια'),
              'types': (0, 0, 0, 1, 0),
-             'mdata': [['2018-10-15', '0', 'εξοδα', 10, 'Δοκιμή'],
-                       ['2018-01-02', '1', 'εξοδα', 23, 'Δεύτερη']
+             'mdata': [['2018-10-15', 'ταμείο', 'εξοδα', 10, 'Δοκιμή'],
+                       ['2018-01-02', 'ταμείο', 'εξοδα', 23, 'Δεύτερη']
                        ]}
     import sys
     app = qw.QApplication(sys.argv)
