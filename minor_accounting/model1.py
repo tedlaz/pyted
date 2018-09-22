@@ -56,11 +56,13 @@ class ModelTable(qc.QAbstractTableModel):
         return qc.QVariant()
 
     def setData(self, idx, value, role):
+        irow = idx.row()
+        icol = idx.column()
         if role == qc.Qt.EditRole:
             if idx.column() == 0:
-                self.mdata[idx.row()][idx.column()] = value.toString("yyyy-MM-dd")
+                self.mdata[irow][icol] = value.toString("yyyy-MM-dd")
             else:
-                self.mdata[idx.row()][idx.column()] = value
+                self.mdata[irow][icol] = value
         self.dataChanged.emit(idx, idx, [])
         return True
 
