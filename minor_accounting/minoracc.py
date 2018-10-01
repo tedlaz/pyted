@@ -146,6 +146,7 @@ class Book:
             dlmoi += lin + '\n'
         with open(filename_lmoi, 'w') as fil:
             fil.write(dlmoi)
+        print('File %s created' % filename_lmoi)
         data = 'id|dat|apo|se|val|per\n'
         for i, trn in enumerate(self.trans):
             no = str(i + 1)
@@ -156,6 +157,8 @@ class Book:
             data += lin + '\n'
         with open(filename_data, 'w') as fil:
             fil.write(data)
+        print('File %s created' % filename_data)
+        print('Finished creating csv files')
 
     def isozygio(self):
         lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
@@ -422,6 +425,7 @@ if __name__ == '__main__':
     pars.add_argument('-a', '--Account', help='Account')
     pars.add_argument('-l', '--Lines', help='Lines', default=10)
     pars.add_argument('-d', '--Date', help='Date limit', default=None)
+    pars.add_argument('-w', '--Write', help='Write to csv', default=None)
     pars.add_argument('-v', '--version', action='version', version='1.0')
     args = pars.parse_args()
     if not os.path.isfile(args.csv):
@@ -441,4 +445,6 @@ if __name__ == '__main__':
             # print(book.episkopisi(args.Account))
         else:
             print(book.kartella(args.Account))
+    if args.Write:
+        book.write_csv_files(args.Write)
     # book.metafora_ypoloipon('2018-08-31', 'tst.csv')
