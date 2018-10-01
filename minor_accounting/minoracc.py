@@ -78,7 +78,7 @@ class SimpleTransaction:
         return stt % (self.dat, self.apo, self.se, self.val, self.per)
 
     def __str__(self):
-        stt = '%10s %-30s %-30s %10.2f %s'
+        stt = '%10s %-25s %-25s %10.2f %s'
         return stt % (self.dat, self.apo, self.se, self.val, self.per)
 
 
@@ -96,6 +96,10 @@ class Book:
         fcls.read_file(filename)
         return fcls
 
+    def tail(self, last_lines=10):
+        for trn in self.trans[last_lines*-1:]:
+            print(trn)
+
     def create_and_add_transaction(self, dat, apo, se, val, per):
         """Add a new transaction"""
         tran = SimpleTransaction(dat, apo, se, val, per)
@@ -109,7 +113,7 @@ class Book:
         self.lmoi.add(simple_transaction.se)
 
     def read_file(self, filename):
-        print('date_eos', self.date_eos)
+        # print('date_eos', self.date_eos)
         with open(filename) as file:
             for i, line in enumerate(file.readlines()):
                 if len(line) < 20:
@@ -417,24 +421,52 @@ class Book:
         return tmp
 
 
+def insert_record(filename, lmoi):
+    import readline
+
+    def completer(text, state):
+        options = [x for x in lmoi if x.startswith(text)]
+        try:
+            return options[state]
+        except IndexError:
+            return None
+    dat = input('Ημερομηνία:').strip()
+    readline.set_completer(completer)
+    readline.parse_and_bind("tab: complete")
+    apo = input('Από       :').strip()
+    se = input('Σε        :').strip()
+    readline.set_completer(completer)
+    val = input('Ποσό      :').strip()
+    per = input('Περιγραφή :').strip()
+    line = '\n%s|%s|%s|%s|%s' % (dat, apo, se, val, per)
+    with open(filename, 'a') as afil:
+        afil.write(line)
+    print('Line %s added succesfully...')
+
+
 if __name__ == '__main__':
     import os.path
     import argparse
+    import sys
     pars = argparse.ArgumentParser(description=u'Minor-Accounting')
     pars.add_argument('csv', help='csv file with data')
     pars.add_argument('-a', '--Account', help='Account')
     pars.add_argument('-l', '--Lines', help='Lines', default=10)
     pars.add_argument('-d', '--Date', help='Date limit', default=None)
     pars.add_argument('-w', '--Write', help='Write to csv', default=None)
-    pars.add_argument('-v', '--version', action='version', version='1.0')
+    pars.add_argument('-i', '--Insert', help='Insert', action='store_true')
+    pars.add_argument('-v', '--version', action='version', version='1.1')
     args = pars.parse_args()
+    book = Book.from_file(args.csv, args.Date)
     if not os.path.isfile(args.csv):
         print('No such file : %s' % args.csv)
-    book = Book.from_file(args.csv, args.Date)
-    # book = Book.from_file('tst.csv')
+    if args.Insert:
+        insert_record(args.csv, book.lmoi)
+        sys.exit(0)
     book.print_isozygio(not_show_zero_yp=True)
     book.tamiaka()
-    print('Ημερομηνία τελευταίας εγγραφής:', book.last_date)
+    print('Τελευταίες 10 εγγραφές:')
+    book.tail()
     try:
         lin = int(args.Lines)
     except Exception:
