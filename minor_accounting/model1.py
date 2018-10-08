@@ -75,7 +75,6 @@ class Form1(qw.QDialog):
 
         self.tview = qw.QTableView()
         self.tview.setModel(self.model)
-
         dat = qw.QDateEdit()
         dat.setCalendarPopup(True)
         apo = qw.QComboBox()

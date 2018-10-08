@@ -1,4 +1,4 @@
-from collections import namedtuple
+# from collections import namedtuple
 from PyQt5 import QtCore as qc
 from PyQt5 import QtWidgets as qw
 from PyQt5 import QtGui as qg
