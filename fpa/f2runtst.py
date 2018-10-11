@@ -25,8 +25,29 @@ def main(epo, dbf, htmlf, apo, eos, ypo=0):
     webbrowser.get('google-chrome-stable %s').open(htmlf)
 
 
-if __name__ == '__main__':
+def runit(dbf, xrisi, period=None, ypoloipo=0):
     EPO = u'Σαμαράς ΟΕ'
-    DBF = '/home/tedlaz/pelates/2017/d/2017d.sql3'
-    HTMLF = '/home/tedlaz/pelates/2017/d/2017d.html'
-    main(EPO, DBF, HTMLF, '2018-01-01', '2018-31-31', 0)
+    dname = os.path.dirname(os.path.abspath(dbf))
+    HTMLF = dname + ('/fpa%s%s.html' % (xrisi, period))
+    papo = '%s-01-01' % xrisi
+    peos = '%s-12-31' % xrisi
+    if period in 'aA':
+        papo = '%s-01-01' % xrisi
+        peos = '%s-03-31' % xrisi
+    elif period in 'bB':
+        papo = '%s-04-01' % xrisi
+        peos = '%s-06-30' % xrisi
+    elif period in 'cC':
+        papo = '%s-07-01' % xrisi
+        peos = '%s-09-30' % xrisi
+    elif period in 'bB':
+        papo = '%s-10-01' % xrisi
+        peos = '%s-12-31' % xrisi
+    #print(EPO, HTMLF, papo, peos, period, ypoloipo)
+    main(EPO, dbf, HTMLF, papo, peos, ypoloipo)
+
+
+if __name__ == '__main__':
+    DBF = '/home/ted/tmp/fpa/2018.sql3'
+    HTMLF = '/home/ted/tmp/fpa/2018c.html'
+    runit(DBF, '2018', 'b', 0)

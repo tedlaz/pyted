@@ -204,11 +204,15 @@ def f2n(isoz, dfpa5400, dl2c, lg, pisypol=0):
     f2i[410] = sumd(f2i, [400, 402, 407])
     f2i[428] = sumd(f2i, [411, 422, 423])
     f2i[430] = f2i[387] + f2i[410] - f2i[428]
-    ffpa = f2i[337] + f2i.get(483, dec(0)) - f2i[430] - f2i.get(401, dec(0))
+    ffpa = f2i[337] + f2i.get(483, dec(0)) - f2i[430]  # - f2i.get(401, dec(0))
     if ffpa < 0:
         f2i[470] = abs(ffpa)
+        f2i[511] = dec(0)
+        f2i[502] = f2i[470] + f2i.get(401, dec(0))
     else:
         f2i[480] = ffpa
+        f2i[511] = ffpa - f2i.get(401, dec(0))
+        f2i[502] = dec(0)
     printDic(f2i, 'Τελικό για f2')
     return f2i
 
@@ -236,7 +240,7 @@ def str_f2(f):
     st += '311:%(311)13s               411:%(411)13s\n'
     st += '312:%(312)13s               422:%(422)12s 428:%(428)13s\n'
     st += '                            423:%(423)12s\n\n'
-    st += '                          430:%(430)12s\n\n'
+    st += '                            430:%(430)12s\n\n'
     st += '470:%(470)13s   480:%(480)13s\n\n'
     st += '401:%(401)13s   483:%(483)13s\n'
     st += '403:%(403)13s   505:%(505)13s\n'

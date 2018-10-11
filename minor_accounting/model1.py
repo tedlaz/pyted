@@ -110,11 +110,11 @@ class Form1(qw.QDialog):
 
 
 if __name__ == '__main__':
-    hdata = {'headers': ('Ημ/νία', 'Από', 'Σε', 'Ποσό', 'Σχόλια'),
-             'types': (0, 0, 0, 1, 0),
-             'mdata': [['2018-10-15', 'ταμείο', 'εξοδα', 10, 'Δοκιμή'],
-                       ['2018-01-02', 'ταμείο', 'εξοδα', 23, 'Δεύτερη']
-                       ]}
+    import minoracc as mac
+    fil = "/home/ted/Documents/ted-data"
+    book = mac.Book.from_file(fil, '2018-10-31')
+    hdata = book.to_model()
+    print(book.tamiaka2list())
     import sys
     app = qw.QApplication(sys.argv)
     form = Form1(hdata)

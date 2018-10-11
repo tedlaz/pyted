@@ -39,8 +39,8 @@ class AccountWidget(qw.QWidget):
         self.logariasmos.setText(lmos)
         self.metafora.setText('%12.2f' % meta)
         self.esoda.setText('%12.2f' % eso)
-        self.ejoda.setText('%12.2f' % (0 - ejo))
-        ypo = meta + eso - ejo
+        self.ejoda.setText('%12.2f' % (ejo))
+        ypo = meta + eso + ejo
         self.ypoloipo.setText('%12.2f' % ypo)
 
     def vals(self):
@@ -148,10 +148,14 @@ def test_sidebar(lmoi):
 
 
 if __name__ == "__main__":
+    import minoracc as mac
+    fil = "/home/ted/Documents/ted-data"
+    book = mac.Book.from_file(fil, '2018-10-31')
+
     lms = [('ταμείο.μετρητά.τσέπη', 52699.41, 11649.91, 64036.22),
            ('ταμείο.τράπεζες.visa', 4324.38, -1260.13, 3075.25),
            ('ταμείο.μετρητά.σπίτι', 32256.85, 4513.91, 16770.76),
            ('ταμείο.τράπεζες.alpha', 34954.91, 3804.31, 31205.82),
            ('ταμείο.τράπεζες.αττικής', -14900, 26040.22, 11136.62)
            ]
-    test_sidebar(lms)
+    test_sidebar(book.tamiaka2list())

@@ -149,5 +149,5 @@ def main(dbpath):
 
 
 if __name__ == '__main__':
-    dbpath = '/home/tedlaz/pelates/2017/d/2017d.sql3'
+    dbpath = '/home/ted/tmp/fpa/2018.sql3'
     main(dbpath)

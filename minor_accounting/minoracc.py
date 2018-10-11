@@ -56,6 +56,10 @@ class SimpleTransaction:
                         per=self.per))
 
     @property
+    def row_line(self):
+        return [self.dat, self.apo, self.se, self.val, self.per]
+
+    @property
     def datgr(self):
         yyyy, mm, dd = self.dat.split('-')
         return dd + '/' + mm + '/' + yyyy
@@ -95,6 +99,12 @@ class Book:
         fcls.date_eos = date_eos
         fcls.read_file(filename)
         return fcls
+
+    def to_model(self):
+        headers = ('Ημ/νία', 'Από', 'Σε', 'Ποσό', 'Σχόλια')
+        types = (0, 0, 0, 1, 0)
+        mdata = [tran.row_line for tran in self.trans]
+        return {'headers': headers, 'types': types, 'mdata': mdata}
 
     def tail(self, last_lines=10):
         for trn in self.trans[last_lines*-1:]:
@@ -382,6 +392,17 @@ class Book:
                     tamd[tr.se]['yp'] += tr.val
                 else:
                     print('problem se', tr)
+        return tamd
+
+    def tamiaka2list(self):
+        tamd = self.tamiaka()
+        lst = []
+        for key, val in tamd.items():
+            lst.append([key, val['me'], val['es'], val['ej']])
+        return lst
+
+    def tamiaka_print(self, root_lmos_tamioy='ταμείο'):
+        tamd = self.tamiaka(root_lmos_tamioy)
         stt = '%-30s %12.2f %12.2f %12.2f %12.2f\n'
         sta = '%-30s %12s %12s %12s %12s\n'
         fin = sta % ('Λογαριασμοί', 'Μεταφορά', 'Έσοδα', 'Έξοδα', 'Υπόλοιπο')
@@ -464,7 +485,7 @@ if __name__ == '__main__':
         insert_record(args.csv, book.lmoi)
         sys.exit(0)
     book.print_isozygio(not_show_zero_yp=True)
-    book.tamiaka()
+    book.tamiaka_print()
     print('Τελευταίες 10 εγγραφές:')
     book.tail()
     try:
