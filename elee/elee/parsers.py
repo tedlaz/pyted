@@ -133,7 +133,7 @@ def parse_ee(eefile, encoding='WINDOWS-1253'):
     adi = {}
     dat = ''
     with open(eefile, encoding=encoding) as afile:
-        for i, lin in enumerate(afile):
+        for lin in afile:
             if lin[2:14] == 'Κινήσεις της':
                 dat = lin[32:42]
                 # print(dat)
