@@ -106,7 +106,7 @@ class Trans:
     def info(self):
         print(self)
 
-    def isozygio(self, apo=None, eos=None, mono_kinoymenoi=False):
+    def isozygio(self, apo=None, eos=None, not_full=False):
         dis = defaultdict(lambda: [dec(0), dec(0), dec(0)])
         dfi = defaultdict(lambda: [dec(0), dec(0), dec(0)])
         for lin in self.trad.values():
@@ -119,7 +119,7 @@ class Trans:
             dis[lin.lmo][0] += lin.xre
             dis[lin.lmo][1] += lin.pis
             dis[lin.lmo][2] += lin.xre - lin.pis
-        if mono_kinoymenoi:
+        if not_full:
             return dis
         # Για λόγους ταχύτητας κάνουμε εδώ τους ανωτεροβάθμιους
         for lmo, vals in dis.items():
@@ -130,8 +130,8 @@ class Trans:
             dfi[lmo] = vals
         return dfi
 
-    def isozygio_print(self, apo=None, eos=None):
-        dis = self.isozygio(apo, eos)
+    def isozygio_print(self, apo=None, eos=None, not_full=False):
+        dis = self.isozygio(apo, eos, not_full)
         stt = '%-12s %-50s %12s %12s %12s'
         for lmo, val in sorted(dis.items()):
             print(stt % (lmo, self.dlmo.get(lmo, ''), val[0], val[1], val[2]))
@@ -166,6 +166,6 @@ class Trans:
 
 
 if __name__ == '__main__':
-    trans = Trans(*parse_imerologio('el201809.txt'))
-    trans.isozygio_print()
+    trans = Trans(*parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
+    trans.isozygio_print(apo='2018-07-01', eos='2018-09-30', not_full=False)
     # print_vals('el201809.txt')
