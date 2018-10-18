@@ -50,4 +50,4 @@ def runit(dbf, xrisi, period=None, ypoloipo=0):
 if __name__ == '__main__':
     DBF = '/home/ted/tmp/fpa/2018.sql3'
     HTMLF = '/home/ted/tmp/fpa/2018c.html'
-    runit(DBF, '2018', 'b', 0)
+    runit(DBF, '2018', 'c', 0)

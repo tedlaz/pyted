@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from dbsqlite import Db
+ACCOUNT_SPLITTER = '.'
+ACCOUNT_FPA = '54.00'
 
 
-def checkvat(lines, dfpa={}, threshold=0.2, lfpa='54.00'):
+def checkvat(lines, dfpa={}, threshold=0.2):
     '''
     Δίνουμε dictionary με εγγραφές λογιστικής και ελέγχει και βρίσκει
     τα άρθρα που έχουν διαφορές στο φπα με κατώφλι διαφοράς οριζόμενο
@@ -32,13 +34,12 @@ def checkvat(lines, dfpa={}, threshold=0.2, lfpa='54.00'):
     for arth in dvals:
         lenArth = len(dvals[arth])  # Εδώ βρίσκουμε τον αριθμό γραμμών
         assert lenArth > 1  # Δεν γίνεται να υπάρχει άρθρο με γραμμές < 2
+        if lenArth == 2:  # Αποκλείουμε τα συμψηφιστικά άρθρα (με 2 γραμμές)
+            continue
         lmopair = {}
         lmorev = []
         for lmo in dvals[arth]:
-            # Αποκλείουμε τα συμψηφιστικά άρθρα (με 2 γραμμές)
-            if lenArth == 2:
-                continue
-            if lmo[:len(lfpa)] == lfpa:  # Ο λογαριασμός είναι φπα 54.00*
+            if lmo.startswith(ACCOUNT_FPA):  # Ο λογαριασμός είναι φπα 54.00*
                 # Έυρεση συντελεστή φπα
                 # 1. Από λίστα και
                 # 2. Aπό τελευταία ψηφία
@@ -75,15 +76,17 @@ def checkvat(lines, dfpa={}, threshold=0.2, lfpa='54.00'):
         return logok
 
 
-def accountSimilar(acc, acclist, aaf='54.00', splitp='.'):
+def accountSimilar(acc, acclist):
     '''
     Προσπαθούμε να εντοπίσουμε τον πιο κοντινό λογαριασμό σε μορφή
     '''
-    lenaf = len(aaf) + 1
-    # print(acc[lenaf:])
-    accparts = acc[lenaf:].split(splitp)
+    lenaf = len(ACCOUNT_FPA) + 1
+    # print('acc->', acc, acclist, acc[lenaf:])
+    accparts = acc[lenaf:].split(ACCOUNT_SPLITTER)
+    # print('accparts->', accparts)
     accparts.pop()
     accparts.append(acc[-2:])  # Προσθέτουμε και τα τελευταία δύο ψηφία
+    # print('accparts2->', accparts)
     # print(accparts)
     rating = {}
     for el in acclist:
@@ -92,7 +95,7 @@ def accountSimilar(acc, acclist, aaf='54.00', splitp='.'):
         for oth in acclist:
             if par in oth:
                 rating[oth] += 1
-    # print(rating)
+    # print('rating->', rating)
     return sorted(rating, key=rating.get, reverse=True)
 
 
@@ -100,6 +103,7 @@ def is_idio_prosimo(val1, val2):
     return val1 * val2 >= 0
 
 
+# Δεν χρησιμοποιείται πουθενά ...
 def find_similarities(lines, omosimoi=False, threshold=0):
     '''Μετατροπή των γραμμών σε άρθρα'''
     dvals = {}
@@ -151,3 +155,4 @@ def main(dbpath):
 if __name__ == '__main__':
     dbpath = '/home/ted/tmp/fpa/2018.sql3'
     main(dbpath)
+    # print(accountSimilar('64.02.06.024', ['54.00.29.024', '54.00.29.025']))
