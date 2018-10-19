@@ -94,6 +94,33 @@ def parse_imerologio(fil, enc='WINDOWS-1253'):
     return trah, trad, dper, dlmo, arthro, unparsed_lines
 
 
+def kin_fpa(account_list):
+    apoac = []
+    fpaac = []
+    kinoymenos = fpa = False
+    for acc in account_list:
+        if acc.startswith(APC):
+            apoac.append(acc)
+            kinoymenos = True
+        elif acc.startswith(FPA):
+            fpaac.append(acc)
+            fpa = True
+    assert kinoymenos and fpa
+    return {'apc': apoac, 'fpa': fpaac}
+
+
+def is_arthro_for_fpa(arthro_dic):
+    if len(arthro_dic) == 2:
+        return False
+    kinoymenos = fpa = False
+    for lmo in arthro_dic:
+        if lmo.startswith(APC):
+            kinoymenos = True
+        elif lmo.startswith(FPA):
+            fpa = True
+    return kinoymenos and fpa
+
+
 class Trans:
     def __init__(self, dtrh, dtrd, dper, dlmo, dart, unparsed_lines):
         self.dtrh = dtrh  # {trno: (dat par), ...}
@@ -173,23 +200,7 @@ class Trans:
     def arthro_print(self, arthro_num):
         print(self.arthro_dic(arthro_num))
 
-    def check_fpa(self, thold=0.01):
-        for arthro_no in self.dart:
-            arthro = self.arthro_dic(arthro_no)
-            if not is_arthro_for_fpa(arthro):
-                continue
-            mached = match_accounts(arthro.keys())
-            for pair in mached:
-                poso = arthro[pair[0]]
-                fpa = arthro[pair[1]]
-                pfpa = [dec(.24), dec(.13), dec(.17)]
-                deltas = [abs(fpa - poso * s) < thold for s in pfpa]
-                tfv = [1 if i else 0 for i in deltas]
-                if sum(tfv) < 1:
-                    print(arthro_no, self.dtrh[arthro_no].dat, arthro)
-                    print('')
-
-    def check_fpa2(self, thold=0.02):
+    def fpa_find_pairs(self, thold=0.02):
         sums = {}
         for arthro_no in self.dart:
             arthro = self.arthro_dic(arthro_no)
@@ -200,109 +211,52 @@ class Trans:
                 sums[lmo] = sums.get(lmo, {})
                 for fpa in ar_acc['fpa']:
                     # FPS = [.24, .13, .17]
-                    for i, f in enumerate(FPS):
+                    # Δοκιμάζουμε με τους ισχύοντες συντελεστές ΦΠΑ
+                    for f in FPS:
                         isok = abs(arthro[lmo] * dec(f) - arthro[fpa]) < thold
                         if isok:
-                            sums[lmo][fpa] = sums[lmo].get(fpa, 0) + 1
+                            fpav = '%s|%s' % (fpa, f)
+                            sums[lmo][fpav] = sums[lmo].get(fpav, 0) + 1
                             break
+        mat = {}
         for lmo in sorted(sums):
-            print(lmo, sums[lmo])
+            Mvl = namedtuple('Mvl', 'fpaa synt')
+            mached = sorted(sums[lmo], key=sums[lmo].get, reverse=True)
+            fpaa = ''
+            synt = 0
+            if mached:
+                mach = mached[0]
+                fpaa, synt = mach.split('|')
+            mat[lmo] = Mvl(fpaa, dec(synt))
+            # print(lmo, sums[lmo])
+        return mat
 
-
-def is_arthro_for_fpa(arthro_dic):
-    if len(arthro_dic) == 2:
-        return False
-    kinoymenos = fpa = False
-    for lmo in arthro_dic:
-        if lmo.startswith(APC):
-            kinoymenos = True
-        elif lmo.startswith(FPA):
-            fpa = True
-    return kinoymenos and fpa
-
-
-def make_combinations(ls1, ls2):
-    import itertools
-    assert len(ls1) >= len(ls2)
-
-    def split(lst, num):
-        return [lst[stt:stt+num] for stt in range(0, len(lst), num)]
-
-    av1 = list([zip(x, ls2) for x in itertools.permutations(ls1, len(ls2))])
-    fls = []
-    for val in av1:
-        for elm in val:
-            fls.append(elm)
-    return split(fls, len(ls2))
-
-
-def rank(lmo, fpa):
-    clmo = lmo.replace(LMO_SPLITTER, '')
-    cfpa = fpa[len(FPA)+1:].replace(LMO_SPLITTER, '')
-    score = 0
-    for lchar in clmo:
-        if lchar in cfpa:
-            score += 1
-            s = cfpa.index(lchar)
-            cfpa = cfpa[:s] + cfpa[s+1:]
-    return score
-
-
-def rank_comb(comb):
-    result = 0
-    for elm in comb:
-        result += rank(elm[0], elm[1])
-    return result
-
-
-def kin_fpa(account_list):
-    apoac = []
-    fpaac = []
-    kinoymenos = fpa = False
-    for acc in account_list:
-        if acc.startswith(APC):
-            apoac.append(acc)
-            kinoymenos = True
-        elif acc.startswith(FPA):
-            fpaac.append(acc)
-            fpa = True
-    assert kinoymenos and fpa
-    return {'apc': apoac, 'fpa': fpaac}
-
-
-def match_accounts(account_list):
-    """
-    ['24.00.2024', '54.00.2424', '50.00.0000']
-    """
-    moving_accounts = []
-    vat_accounts = []
-    for acc in account_list:
-        if acc.startswith(APC):
-            moving_accounts.append(acc)
-        elif acc.startswith(FPA):
-            vat_accounts.append(acc)
-    # Δεν μπορεί οι λογαριασμοί φπα να είναι περισσότεροι από τους κανονικούς
-    assert len(vat_accounts) <= len(moving_accounts)
-    # Η απλή περίπτωση
-    if len(vat_accounts) == len(moving_accounts) == 1:
-        return ((moving_accounts[0], vat_accounts[0]),)
-    combs = make_combinations(moving_accounts, vat_accounts)
-    result = {}
-    for comb in combs:
-        result[tuple(comb)] = rank_comb(comb)
-    return sorted(result, key=result.get, reverse=True)[0]
+    def check_fpa(self, thres=0.02):
+        pairs = self.fpa_find_pairs()
+        err = ''
+        stt = '%s %s %s %s\n\n'
+        for ar_no in self.dart:
+            arthro = self.arthro_dic(ar_no)
+            if not is_arthro_for_fpa(arthro):
+                continue
+            ar_acc = kin_fpa(arthro.keys())
+            for lmo in ar_acc['apc']:
+                lmo_fpa = pairs[lmo].fpaa
+                if not lmo_fpa:
+                    continue
+                syn_fpa = pairs[lmo].synt
+                assert lmo_fpa in ar_acc['fpa']
+                delta = arthro[lmo] * syn_fpa - arthro[lmo_fpa]
+                if not (abs(delta) <= thres):
+                    err += stt % (ar_no, self.dtrh[ar_no], arthro, delta)
+        if err == '':
+            err = 'Everything is ok. No fpa problems found :-)'
+        return err
 
 
 if __name__ == '__main__':
     trans = Trans(*parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
-    # trans.isozygio_print(apo='2018-01-01', eos='2018-09-30', not_full=False)
+    trans.isozygio_print(apo='2018-07-01', eos='2018-09-30', not_full=False)
     # trans.kartella_print('60.00')
-    # print_vals('el201809.txt')
-    # print(match_accounts(['24.00.2024', '54.00.2424',
-    #                       '25.00.2024', '54.00.2524',
-    #                       '50.00.0000']))
-    # print(match_accounts(('25.00.2000', '54.00.2524', '25.00.2024', '50.00.0000')))
-    # print(match_accounts(['54.00.29.024', '64.02.06.013',
-    #                       '54.00.29.013', '64.02.06.024']))
     # trans.arthro_print(127)
-    trans.check_fpa2(0.3)
+    # print(trans.check_fpa())
