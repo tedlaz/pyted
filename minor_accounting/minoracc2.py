@@ -256,7 +256,7 @@ class Trans:
 
 if __name__ == '__main__':
     trans = Trans(*parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
-    trans.isozygio_print(apo='2018-07-01', eos='2018-09-30', not_full=False)
+    # trans.isozygio_print(apo='2018-01-01', eos='2018-09-30', not_full=False)
     # trans.kartella_print('60.00')
     # trans.arthro_print(127)
     # print(trans.check_fpa())

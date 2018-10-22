@@ -43,7 +43,7 @@ def runit(dbf, xrisi, period=None, ypoloipo=0):
     elif period in 'bB':
         papo = '%s-10-01' % xrisi
         peos = '%s-12-31' % xrisi
-    #print(EPO, HTMLF, papo, peos, period, ypoloipo)
+    # print(EPO, HTMLF, papo, peos, period, ypoloipo)
     main(EPO, dbf, HTMLF, papo, peos, ypoloipo)
 
 
