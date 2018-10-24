@@ -2,20 +2,24 @@ from decimal import Decimal as dec
 from collections import namedtuple
 from collections import defaultdict
 FPA = '54.00'
-FPS = [.24, .13, .17]
-APC = ('1', '2', '6', '7')
-LMO_SPLITTER = '.'
+FPS = [.24, .13, .17]  # Συντελεστές ΦΠΑ
+APC = ('1', '2', '6', '7')  # Ομάδες αποτελεσμάτων
+LMO_SPLITTER = '.'  # Διαχωριστικό λογαριασμών
 
 
 def iso_dat(greek_date):
+    """Μετατρέπει μια iso Ημερομηνία σε Ελληνική"""
     dd, mm, yyyy = greek_date.split('/')
     return '%s-%s-%s' % (yyyy, mm, dd)
 
 
-def lmo_hierarchy(lmo, split_char='.'):
-    als = lmo.split(split_char)
+def lmo_hierarchy(lmo):
+    """Δημιουργία λίστας με την ιεραρχία του λογαριασμου
+       πχ ο λογαριασμός 20.00.00 δίνει ['2', '20', '20.00', '20.00.00']
+    """
+    als = lmo.split(LMO_SPLITTER)
     ranks = ['.'.join(als[:i]) for i in range(len(als))]
-    ranks[0] = lmo[0]
+    ranks[0] = lmo[0]  # Προσθήκη της ομάδας στους λογαριασμούς
     return ranks
 
 
@@ -91,10 +95,14 @@ def parse_imerologio(fil, enc='WINDOWS-1253'):
     # print(dper)
     # print(dlmo)
     # print(unparsed_lines)
-    return trah, trad, dper, dlmo, arthro, unparsed_lines
+    return {'tr_header': trah, 'tr_lines': trad, 'tr_per': dper,
+            'lmoi': dlmo, 'arthra': arthro, 'errors': unparsed_lines}
 
 
 def kin_fpa(account_list):
+    """Από μια λίστα λογαριασμών επιστρέφει διαχωρισμένους
+       χωριστά τους αποτελεσματικούς και τους λ/μούς ΦΠΑ
+    """
     apoac = []
     fpaac = []
     kinoymenos = fpa = False
@@ -110,25 +118,29 @@ def kin_fpa(account_list):
 
 
 def is_arthro_for_fpa(arthro_dic):
+    """Ελέγχει αν το άρθρο είναι κίνηση με ΦΠΑ"""
+    # Αν το άρθρο έχει 2 γραμμές δεν λαμβάνεται υπ'οψιν
     if len(arthro_dic) == 2:
         return False
     kinoymenos = fpa = False
     for lmo in arthro_dic:
+        # Ο λογαριασμός είναι αποτελεσματικός
         if lmo.startswith(APC):
             kinoymenos = True
+        # Είναι λογαριασμός ΦΠΑ
         elif lmo.startswith(FPA):
             fpa = True
     return kinoymenos and fpa
 
 
 class Trans:
-    def __init__(self, dtrh, dtrd, dper, dlmo, dart, unparsed_lines):
-        self.dtrh = dtrh  # {trno: (dat par), ...}
-        self.dtrd = dtrd  # {aa: (tno lmo xre pis), ...}
-        self.dper = dper  # {trno: (per pe2), ...}
-        self.dlmo = dlmo  # {lmo: lmoper, ...}
-        self.dart = dart  # {trno: [aa_1, aa2, ...], ...}
-        self.lerr = unparsed_lines
+    def __init__(self, parsed):
+        self.dtrh = parsed['tr_header']  # {trno: (dat par), ...}
+        self.dtrd = parsed['tr_lines']  # {aa: (tno lmo xre pis), ...}
+        self.dper = parsed['tr_per']  # {trno: (per pe2), ...}
+        self.dlmo = parsed['lmoi']  # {lmo: lmoper, ...}
+        self.dart = parsed['arthra']  # {trno: [aa_1, aa2, ...], ...}
+        self.lerr = parsed['errors']  # Λάθη (γραμμές που δεν πέρασαν)
 
     def __str__(self):
         stt = 'Arthra   : %5s\nLines    : %5s\nAccounts : %5s\nErrors   : %5s'
@@ -190,10 +202,13 @@ class Trans:
                          lin.pis, lin.sum))
 
     def arthro_dic(self, arthro_num):
+        """Επιστρέφει: {'20.00': 100, '54.00': 24, '50.00': -124}"""
         arthro = self.dart.get(arthro_num, None)
         dfic = {}
         for lno in arthro:
             egr = self.dtrd[lno]
+            # Εάν υπάρχουν παραπάνω από μία γραμμές με τον ίδιο κωδικό
+            # λογιστικής αθροίζονται σε μία
             dfic[egr.lmo] = dfic.get(egr.lmo, dec(0)) + egr.xre - egr.pis
         return dfic
 
@@ -201,6 +216,12 @@ class Trans:
         print(self.arthro_dic(arthro_num))
 
     def fpa_find_pairs(self, thold=0.02):
+        """Βρίσκουμε ζευγάρια λογαριασμών της μορφής:
+            {'62.03.02.024': ('54.00.29.024', 0.24), ...}
+           Για να είναι εντάξει χρειάζεται κάθε λογαριασμός να έχει ένα
+           και μοναδικό αντίστοιχο λογαριασμό ΦΠΑ η τουλάχιστον ίδιο
+           συντελεστή ΦΠΑ.
+        """
         sums = {}
         for arthro_no in self.dart:
             arthro = self.arthro_dic(arthro_no)
@@ -215,7 +236,8 @@ class Trans:
                     for f in FPS:
                         isok = abs(arthro[lmo] * dec(f) - arthro[fpa]) < thold
                         if isok:
-                            fpav = '%s|%s' % (fpa, f)
+                            # Δημιουργούμε tuple ('54.00.29.024', dec(.24))
+                            fpav = (fpa, round(dec(f), 2))
                             sums[lmo][fpav] = sums[lmo].get(fpav, 0) + 1
                             break
         mat = {}
@@ -226,12 +248,14 @@ class Trans:
             synt = 0
             if mached:
                 mach = mached[0]
-                fpaa, synt = mach.split('|')
-            mat[lmo] = Mvl(fpaa, dec(synt))
+                fpaa, synt = mach
+            mat[lmo] = Mvl(fpaa, synt)
             # print(lmo, sums[lmo])
+        print(mat)
         return mat
 
     def check_fpa(self, thres=0.02):
+        # Βρές ζευγάρια λογαριασμών
         pairs = self.fpa_find_pairs()
         err = ''
         stt = '%s %s %s %s\n\n'
@@ -255,8 +279,8 @@ class Trans:
 
 
 if __name__ == '__main__':
-    trans = Trans(*parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
+    trans = Trans(parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
     # trans.isozygio_print(apo='2018-01-01', eos='2018-09-30', not_full=False)
     # trans.kartella_print('60.00')
     # trans.arthro_print(127)
-    # print(trans.check_fpa())
+    print(trans.check_fpa())
