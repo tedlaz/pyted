@@ -126,6 +126,8 @@ class Book:
         # print('date_eos', self.date_eos)
         with open(filename) as file:
             for i, line in enumerate(file.readlines()):
+                if line.startswith('*'):
+                    continue
                 if len(line) < 20:
                     continue
                 try:

@@ -25,7 +25,7 @@ def main(epo, dbf, htmlf, apo, eos, ypo=0):
     webbrowser.get('google-chrome-stable %s').open(htmlf)
 
 
-def runit(dbf, xrisi, period=None, ypoloipo=0):
+def runit(dbf, xrisi, period='', ypoloipo=0):
     EPO = u'Σαμαράς ΟΕ'
     dname = os.path.dirname(os.path.abspath(dbf))
     HTMLF = dname + ('/fpa%s%s.html' % (xrisi, period))
@@ -43,10 +43,13 @@ def runit(dbf, xrisi, period=None, ypoloipo=0):
     elif period in 'bB':
         papo = '%s-10-01' % xrisi
         peos = '%s-12-31' % xrisi
+    else:
+        papo = '%s-01-01' % xrisi
+        peos = '%s-12-31' % xrisi
     # print(EPO, HTMLF, papo, peos, period, ypoloipo)
     main(EPO, dbf, HTMLF, papo, peos, ypoloipo)
 
 
 if __name__ == '__main__':
     DBF = '/home/ted/tmp/fpa/2018.sql3'
-    runit(DBF, '2018', 'c', 0)
+    runit(DBF, '2018', 'a', 555.23)

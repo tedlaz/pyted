@@ -5,6 +5,7 @@ FPA = '54.00'
 FPS = [.24, .13, .17]  # Συντελεστές ΦΠΑ
 APC = ('1', '2', '6', '7')  # Ομάδες αποτελεσμάτων
 LMO_SPLITTER = '.'  # Διαχωριστικό λογαριασμών
+Mvl = namedtuple('Mvl', 'fpaa synt')
 
 
 def iso_dat(greek_date):
@@ -141,11 +142,19 @@ class Trans:
         self.dlmo = parsed['lmoi']  # {lmo: lmoper, ...}
         self.dart = parsed['arthra']  # {trno: [aa_1, aa2, ...], ...}
         self.lerr = parsed['errors']  # Λάθη (γραμμές που δεν πέρασαν)
+        self.pairs = self.fpa_find_pairs()  # Αντιστοιχεί λ/μούς με λ/μούς ΦΠΑ
 
     def __str__(self):
         stt = 'Arthra   : %5s\nLines    : %5s\nAccounts : %5s\nErrors   : %5s'
         return stt % (len(self.dart), len(self.dtrd),
                       len(self.dlmo), len(self.lerr))
+
+    def arthro_data(self, ar_num):
+        dat = self.dtrh[ar_num].dat
+        par = self.dtrh[ar_num].par
+        per = self.dper[ar_num].per
+        pe2 = self.dper[ar_num].pe2
+        print(dat, par, per, pe2)
 
     def info(self):
         print(self)
@@ -237,27 +246,25 @@ class Trans:
                         isok = abs(arthro[lmo] * dec(f) - arthro[fpa]) < thold
                         if isok:
                             # Δημιουργούμε tuple ('54.00.29.024', dec(.24))
-                            fpav = (fpa, round(dec(f), 2))
+                            fpav = Mvl(fpa, round(dec(f), 2))
                             sums[lmo][fpav] = sums[lmo].get(fpav, 0) + 1
                             break
         mat = {}
         for lmo in sorted(sums):
-            Mvl = namedtuple('Mvl', 'fpaa synt')
             mached = sorted(sums[lmo], key=sums[lmo].get, reverse=True)
-            fpaa = ''
-            synt = 0
             if mached:
-                mach = mached[0]
-                fpaa, synt = mach
-            mat[lmo] = Mvl(fpaa, synt)
+                mat[lmo] = mached[0]  # παίρνουμε την πρώτη τιμή
+            else:
+                mat[lmo] = Mvl('', dec(0))
             # print(lmo, sums[lmo])
-        print(mat)
+        # print(mat)
         return mat
 
     def check_fpa(self, thres=0.02):
-        # Βρές ζευγάρια λογαριασμών
-        pairs = self.fpa_find_pairs()
-        err = ''
+        """Έλεγχος ΦΠΑ ανά λογιστικό άρθρο"""
+        pairs = self.fpa_find_pairs()  # Βρές ζευγάρια λογαριασμών
+        err = 'Άρθρα με διαφορά στο ΦΠΑ:\n'
+        er_found = 0
         stt = '%s %s %s %s\n\n'
         for ar_no in self.dart:
             arthro = self.arthro_dic(ar_no)
@@ -273,14 +280,98 @@ class Trans:
                 delta = arthro[lmo] * syn_fpa - arthro[lmo_fpa]
                 if not (abs(delta) <= thres):
                     err += stt % (ar_no, self.dtrh[ar_no], arthro, delta)
-        if err == '':
-            err = 'Everything is ok. No fpa problems found :-)'
+                    er_found += 1
+        if er_found == 0:
+            err += '    Δεν βρέθηκαν άρθρα με διαφορές στο ΦΠΑ :-)'
         return err
+
+    def artro_lines_for_ee(self, ar_no):
+        """Τσεκάρει αν το άρθρο αφορά το βιβλίο εσόδων-εξόδων"""
+        Ees = namedtuple('Ees', 'dat typ par per pe2 poso fpa sfpa posd')
+        arthro = self.arthro_dic(ar_no)
+        fdic = {}
+        poso = dec(0)
+        posd = {}
+        fpa = dec(0)
+        lfpa = None
+        typ = ''
+        synt = dec(1)
+        sfpa = ''
+        for key in arthro:
+            if key.startswith(APC):
+                fdic[key] = arthro[key]
+                typ = key[0]
+                if typ == '7':
+                    synt = dec(-1)
+                lfpa = self.pairs.get(key, Mvl('', dec(0)))
+                tfpa = str(round(lfpa.synt * dec(100), 0))
+                if tfpa not in sfpa:
+                    sfpa += tfpa
+                poso += arthro[key] * synt
+                stfpa = 'p%s' % tfpa
+                posd[stfpa] = posd.get(stfpa, dec(0)) + (arthro[key] * synt)
+                if lfpa.fpaa:
+                    fpa += arthro[lfpa.fpaa] * synt
+        if fdic:
+            dat = self.dtrh[ar_no].dat
+            par = self.dtrh[ar_no].par
+            pe1 = self.dper[ar_no].per
+            pe2 = self.dper[ar_no].pe2
+            per = ' '.join([pe1, pe2])
+            return Ees(dat, typ, par, per, pe2, poso, fpa, sfpa, posd)
+        return None
+
+    def biblio_esodon_ejodon(self, apo=None, eos=None):
+        # account_pairs = self.fpa_find_pairs()
+        pfpa = ['p0'] + ['p' + str(round(dec(i) * dec(100), 0)) for i in FPS]
+        stta = ' '.join(["{%s:10}" % i for i in pfpa])
+        stt = "%10s %1s %-5s %10s %10s %-20s %s %s"
+        est = eft = ejt = jft = err = dec(0)
+        ejo = {}
+        ejf = {}
+        eso = {}
+        esf = {}
+        for arno in self.dart:
+            if apo:
+                if self.dtrh[arno].dat < apo:
+                    continue
+            if eos:
+                if self.dtrh[arno].dat > eos:
+                    continue
+            arh = self.artro_lines_for_ee(arno)
+            if arh:
+                if arh.typ in '126':
+                    ejo[arh.typ] = ejo.get(arh.typ, dec(0)) + arh.poso
+                    ejf[arh.typ] = ejf.get(arh.typ, dec(0)) + arh.fpa
+                    ejt += arh.poso
+                    jft += arh.fpa
+                elif arh.typ in '7':
+                    eso[arh.typ] = eso.get(arh.typ, dec(0)) + arh.poso
+                    esf[arh.typ] = esf.get(arh.typ, dec(0)) + arh.fpa
+                    est += arh.poso
+                    eft += arh.fpa
+                else:
+                    err += arh.poso
+                vals = {}
+                for stil in pfpa:
+                    vals[stil] = arh.posd.get(stil, dec(0))
+                svals = stta.format(**vals)
+                print(stt % (arh.dat, arh.typ, arh.sfpa, svals, arh.fpa,
+                             arh.par, arh.per[:50], ''))
+        print('Έσοδα')
+        for key in eso:
+            print(stt % (key, '', '', eso[key], esf[key], '', '', ''))
+        print('Έξοδα')
+        for key in ejo:
+            print(stt % (key, '', '', ejo[key], ejf[key], '', '', ''))
+        print(stt % ('Διαφορά', '', '', est - ejt, eft - jft, '', '', ''))
+        # print('Προσεχώς η εκτύπωση του βιβλίου εσόδων εξόδων')
 
 
 if __name__ == '__main__':
     trans = Trans(parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
-    # trans.isozygio_print(apo='2018-01-01', eos='2018-09-30', not_full=False)
-    # trans.kartella_print('60.00')
+    # trans.isozygio_print()
+    # trans.kartella_print('65.98')
     # trans.arthro_print(127)
-    print(trans.check_fpa())
+    # print(trans.check_fpa())
+    trans.biblio_esodon_ejodon('2018-07-01', '2018-09-30')
