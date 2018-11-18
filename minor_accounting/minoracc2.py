@@ -332,6 +332,7 @@ class Trans:
         eso = {}
         esf = {}
         for arno in self.dart:
+            # Έλεγχος ημερομηνιών
             if apo:
                 if self.dtrh[arno].dat < apo:
                     continue
@@ -365,6 +366,7 @@ class Trans:
         for key in ejo:
             print(stt % (key, '', '', ejo[key], ejf[key], '', '', ''))
         print(stt % ('Διαφορά', '', '', est - ejt, eft - jft, '', '', ''))
+        print('Λάθη: %s' % err)
         # print('Προσεχώς η εκτύπωση του βιβλίου εσόδων εξόδων')
 
 
@@ -374,4 +376,4 @@ if __name__ == '__main__':
     # trans.kartella_print('65.98')
     # trans.arthro_print(127)
     # print(trans.check_fpa())
-    trans.biblio_esodon_ejodon('2018-07-01', '2018-09-30')
+    trans.biblio_esodon_ejodon('2018-01-01', '2018-09-30')

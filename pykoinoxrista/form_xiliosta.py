@@ -5,8 +5,7 @@ Programmer : Ted Lazaros (tedlaz@gmail.com)
 import PyQt5.QtCore as Qc
 import PyQt5.QtGui as Qg
 import PyQt5.QtWidgets as Qw
-from PyQt5 import QtGui
-from PyQt5 import QtCore
+# from PyQt5 import QtGui
 from PyQt5 import Qt
 import u_db
 
@@ -160,7 +159,7 @@ class Form_koinoxrista(Qw.QDialog):
                     fvals.append(dic)
         save_result = u_db.save_many(self.db, self.val_tbl, fvals)
         if len(fvals) == 0:
-            QtGui.QMessageBox.about(self, u'Οκ', u'Είναι ήδη αποθηκευμένα ...')
+            Qg.QMessageBox.about(self, u'Οκ', u'Είναι ήδη αποθηκευμένα ...')
         elif save_result:
             self.fill_tbl()
             Qw.QMessageBox.about(self, u'Εντάξει', u'Έγινε αποθήκευση ...')
@@ -196,7 +195,7 @@ class Form_koinoxrista(Qw.QDialog):
 
 if __name__ == '__main__':
     import sys
-    dbf = '/home/ted/devtest/ted1/koinoxrista.sql3'
+    dbf = '/home/ted/Documents/koin.sql3'
     app = Qw.QApplication([])
     dialog = Form_koinoxrista(dbf, 'dia', 'ej', 'dapx')
     dialog.show()
