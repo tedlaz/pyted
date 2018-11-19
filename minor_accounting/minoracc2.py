@@ -79,7 +79,9 @@ def parse_imerologio(fil, enc='WINDOWS-1253'):
                 pis = dec(lin[spis].strip().replace('.', '').replace(',', '.'))
                 if lmo in dlmo:
                     if dlmo[lmo] != lmp:
-                        print('Διαφορά στο όνομα %s -> %s' % (dlmo[lmo], lmp))
+                        print('Διαφορά στο όνομα %s:  %s -> %s' % (lmo,
+                                                                   dlmo[lmo],
+                                                                   lmp))
                 else:
                     dlmo[lmo] = lmp
                 trad[lno] = Trd(tno, lmo, xre, pis)
@@ -249,6 +251,9 @@ class Trans:
                             fpav = Mvl(fpa, round(dec(f), 2))
                             sums[lmo][fpav] = sums[lmo].get(fpav, 0) + 1
                             break
+        # Debugging here
+        # for lmo in sorted(sums):
+        #     print(lmo, sums[lmo])
         mat = {}
         for lmo in sorted(sums):
             mached = sorted(sums[lmo], key=sums[lmo].get, reverse=True)
@@ -311,7 +316,11 @@ class Trans:
                 stfpa = 'p%s' % tfpa
                 posd[stfpa] = posd.get(stfpa, dec(0)) + (arthro[key] * synt)
                 if lfpa.fpaa:
-                    fpa += arthro[lfpa.fpaa] * synt
+                    try:
+                        fpa += arthro[lfpa.fpaa] * synt
+                    except KeyError:
+                        print(arthro, lfpa)
+                        raise KeyError
         if fdic:
             dat = self.dtrh[ar_no].dat
             par = self.dtrh[ar_no].par
@@ -371,9 +380,11 @@ class Trans:
 
 
 if __name__ == '__main__':
-    trans = Trans(parse_imerologio('/home/ted/tmp/fpa/el201809.txt'))
+    el17 = "/home/ted/Documents/el2017.txt"
+    el18 = "/home/ted/tmp/fpa/el201809.txt"
+    trans = Trans(parse_imerologio(el17))
     # trans.isozygio_print()
     # trans.kartella_print('65.98')
     # trans.arthro_print(127)
     # print(trans.check_fpa())
-    trans.biblio_esodon_ejodon('2018-01-01', '2018-09-30')
+    trans.biblio_esodon_ejodon('2017-01-01', '2017-12-31')
