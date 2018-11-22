@@ -15,14 +15,17 @@ def encrypt(filename, outputfile=None):
     if not outputfile:
         outputfile = filename + EXTENSION
     if os.path.isfile(outputfile):
-        print('File : %s already exists. Encryption Canceled' % outputfile)
+        print('File : %s already exists. Encryption canceled' % outputfile)
         return
-    key = get_key(getpass())
+    password1 = getpass()
+    password2 = getpass(prompt="Repeat password:")
+    if password1 != password2:
+        print("Passwords don't match. Encryption canceled")
+        return
+    key = SHA256.new(password1.encode()).digest()
     filesize = str(os.path.getsize(filename)).zfill(ISIZE)
     rnd = Random.new()
     ivv = rnd.read(16)
-    # for _ in range(ISIZE):
-    #     ivv += chr(random.randint(0, 0xFF))
     encryptor = AES.new(key, AES.MODE_CBC, ivv)
     with open(filename, 'rb') as infile:
         with open(outputfile, 'wb') as outfile:
@@ -41,14 +44,8 @@ def encrypt(filename, outputfile=None):
     print("[Done] Created encrypted file: %s" % outputfile)
 
 
-def get_key(password):
-    hasher = SHA256.new(password.encode())
-    return hasher.digest()
-
-
 def main():
     from argparse import ArgumentParser
-
     parser = ArgumentParser(description="Encrypt a file")
     parser.add_argument('file', help='file to encrypt')
     parser.add_argument('-o', '--out', help='Encrypted filename', default=None)

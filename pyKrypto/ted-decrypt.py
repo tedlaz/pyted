@@ -16,7 +16,8 @@ def decrypt(filename, outputfile=None):
     if os.path.isfile(outputfile):
         print('File : %s already exists. Decryption Canceled' % outputfile)
         return
-    key = get_key(getpass())
+    password = getpass()
+    key = SHA256.new(password.encode()).digest()
     with open(filename, 'rb') as infile:
         filesize = int(infile.read(ISIZE))
         ivv = infile.read(ISIZE)
@@ -29,11 +30,6 @@ def decrypt(filename, outputfile=None):
                 outfile.write(decryptor.decrypt(chunk))
             outfile.truncate(filesize)
     print("[Done] Created decrypted file: %s" % outputfile)
-
-
-def get_key(password):
-    hasher = SHA256.new(password.encode())
-    return hasher.digest()
 
 
 def main():
