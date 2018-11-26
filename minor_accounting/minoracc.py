@@ -461,7 +461,7 @@ def insert_record(filename, lmoi):
     readline.set_completer(completer)
     val = input('Ποσό      :').strip()
     per = input('Περιγραφή :').strip()
-    line = '\n%s|%s|%s|%s|%s' % (dat, apo, se, val, per)
+    line = '%s|%s|%s|%s|%s\n' % (dat, apo, se, val, per)
     with open(filename, 'a') as afil:
         afil.write(line)
     print('Line %s added succesfully...')
