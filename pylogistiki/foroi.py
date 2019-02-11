@@ -1,3 +1,4 @@
+"""Εδώ γίνεται ο βασικός υπολογισμός"""
 from utils import dec
 from utils import dec2gr as d2g
 

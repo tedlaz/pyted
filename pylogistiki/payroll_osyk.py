@@ -185,7 +185,7 @@ def tst():
 
 if __name__ == '__main__':
     osyk = Osyk()
-    per1 = 201606
+    per1 = 201812
     kad1 = 1120
     eid1 = 411410
     # print(osyk._kad)
@@ -195,9 +195,9 @@ if __name__ == '__main__':
     # print(osyk._kpk)
     kpk1 = osyk.find_kpk_periodou(kad1, eid1, per1)
     kpka = osyk.find_kpk_pososta(kpk1['kpk'], per1)
-    # print(kpk1, kpka)
+    print(kpk1, kpka)
     # pprint(osyk.find_kad('5540'))
-    kpkper = osyk.find_kad_eids(['5540', '5530'], 201711)
+    kpkper = osyk.find_kad_eids(['5540', '5530'], 201812)
     print(kpkper['5540']['913230'])
     print(kpkper['5530']['913230'])
     # Με ένα διάβασμα του αρχείου δημιουργούμε ένα dictionary της μορφής

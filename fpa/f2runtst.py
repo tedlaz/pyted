@@ -40,7 +40,7 @@ def runit(dbf, xrisi, period='', ypoloipo=0):
     elif period in 'cC':
         papo = '%s-07-01' % xrisi
         peos = '%s-09-30' % xrisi
-    elif period in 'bB':
+    elif period in 'dD':
         papo = '%s-10-01' % xrisi
         peos = '%s-12-31' % xrisi
     else:
@@ -52,4 +52,4 @@ def runit(dbf, xrisi, period='', ypoloipo=0):
 
 if __name__ == '__main__':
     DBF = '/home/ted/tmp/fpa/2018.sql3'
-    runit(DBF, '2018', 'a', 555.23)
+    runit(DBF, '2018', 'd', 44.44)

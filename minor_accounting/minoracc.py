@@ -185,6 +185,18 @@ class Book:
                     lmoi[lmop]['pi'] += line.pi
         return lmoi
 
+    def isozygio_model(self):
+        lmoi = self.isozygio()
+        headers = ("Λογαριασμοί", "Χρέωση", "Πίστωση", "Υπόλοιπο")
+        align = (1, 3, 3, 3)
+        vals = []
+        for lmo in sorted(lmoi.keys()):
+            xr = round(lmoi[lmo]['xr'], 2)
+            pi = round(lmoi[lmo]['pi'], 2)
+            yp = round(xr - pi, 2)
+            vals.append((lmo, xr, pi, yp))
+        return headers, vals, align
+
     def isozygio_kinoymenon(self):
         lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
         for egr in self.trans:
@@ -257,6 +269,20 @@ class Book:
         # stf += stt % ('', '   Σύνολα', txr, tpi, ypo, '')
         return stf
 
+    def kartella_model(self, lmos):
+        headers = ('Ημ/νία', 'Περιγραφή', 'Χρέωση', 'Πίστωση', 'Υπόλοιπο')
+        align = (1, 1, 3, 3, 3)
+        vals = []
+        ypo = 0
+        for tr in sorted(self.trans, key=attrgetter('dat')):
+            if tr.apo.startswith(lmos):
+                ypo -= tr.val
+                vals.append((tr.datgr, tr.per, 0, tr.val, round(ypo, 2)))
+            if tr.se.startswith(lmos):
+                ypo += tr.val
+                vals.append((tr.datgr, tr.per, tr.val, 0, round(ypo, 2)))
+        return headers, vals, align
+    
     def kartella(self, lmos):
         # if lmos in self.lmoi:
         #     return self._kartella(lmos)

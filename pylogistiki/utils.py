@@ -224,6 +224,16 @@ def has_keys(keys, adict):
     return True
 
 
+def every_word_match(str1, str2):
+    """Check if str1 words are also in str2"""
+    vst = grup(str1).split()
+    stu = grup(str2)
+    for val in vst:
+        if val not in stu:
+            return False
+    return True
+
+
 if __name__ == '__main__':
     print(read_txt_to_dict('log_sxedio.txt'))
     print(dec2text_flat(2350.46, 1))
