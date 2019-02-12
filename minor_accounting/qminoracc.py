@@ -6,6 +6,7 @@ import decimal
 import textwrap
 import minoracc as mac
 import sys
+from datetime import date
 # LMT = namedtuple('LMT', 'lmo metafora esoda ejoda')
 ALIR = qc.Qt.AlignRight | qc.Qt.AlignTrailing | qc.Qt.AlignVCenter
 STYLE_NORMAL = "background-color: rgb(200, 200, 200);"
@@ -251,7 +252,8 @@ class SideBar(qw.QWidget):
         '''lmoi: tuple'''
         lmoi.sort()
         for lmo in lmoi:
-            self.add(*lmo)
+            if dec(lmo[1] + lmo[2] + lmo[3]) != 0:
+                self.add(*lmo)
 
 
 class Dmodel(qc.QAbstractTableModel):
@@ -261,7 +263,7 @@ class Dmodel(qc.QAbstractTableModel):
         self.set_data(imodel)
 
     def set_data(self, model_data):
-        self.headers, self.vals, self.align = model_data
+        self.headers, self.vals, self.align, self.typos = model_data
 
     def rowCount(self, parent):
         return len(self.vals)
@@ -285,7 +287,10 @@ class Dmodel(qc.QAbstractTableModel):
         if not index.isValid():
             return None
         if role == qc.Qt.DisplayRole:
-            return self.vals[index.row()][index.column()]
+            if self.typos[index.column()] == 1:
+                return  dec2gr(self.vals[index.row()][index.column()])
+            else:
+                return self.vals[index.row()][index.column()]
         if role == qc.Qt.TextAlignmentRole:
             if self.align[index.column()] == 1:
                 return qc.Qt.AlignLeft
@@ -304,29 +309,49 @@ class Dialog(qw.QWidget):
         self.setLayout(mainlayout)
         hlayout = qw.QHBoxLayout()
         mainlayout.addLayout(hlayout)
+        leftv = qw.QVBoxLayout()
+        rightv = qw.QSplitter()
+        rightv.setOrientation(qc.Qt.Vertical)
+        hlayout.addLayout(leftv)
+        hlayout.addWidget(rightv)
         self.sbar = SideBar(self)
         self.sbar.add_many(self.book.tamiaka2list())
-        hlayout.addWidget(self.sbar)
-        # self.tbl = qw.QTableWidget(self)
-        self.tbl = qw.QTableView(self)
-        hlayout.addWidget(self.tbl)
-        self.model = Dmodel(self.book.isozygio_model())
-        self.tbl.setModel(self.model)
+        leftv.addWidget(self.sbar)
+        bsave_ypol = qw.QPushButton("Μεταφορά υπολοίπων")
+        leftv.addWidget(bsave_ypol)
+        self.iso = qw.QTableView(rightv)
+        self.iso.setModel(Dmodel(self.book.isozygio_model()))
+        self.iso.resizeColumnsToContents()
+        self.tbl = qw.QTableView(rightv)
         self.tbl.setWordWrap(True)
-        self.tbl.resizeColumnsToContents()
-        self.setMinimumSize(1200, 400)
-        self.sbar.some_acc_clicked.connect(self.refresh_model)
         self.setWindowTitle("Ισοζύγιο Λογαριασμών")
         if self.parent:
             self.parent.setWindowTitle("Ισοζύγιο Λογαριασμών")
-       
+        # Connections
+        bsave_ypol.clicked.connect(self.save_ypol)
+        self.sbar.some_acc_clicked.connect(self.refresh_model)
+        self.iso.clicked.connect(self.refresh_model_from_iso)
+        self.tbl.clicked.connect(self.model_rowdata)
+
+    def model_rowdata(self, idx):
+        print(idx.row())
+        print(self.model_lmos.vals[idx.row()])
+
+    def save_ypol(self):
+        fname, _ = qw.QFileDialog.getSaveFileName(self, 'Filename', 'ypol', '')
+        if fname:
+            self.book.metafora_ypoloipon(date.today().isoformat(), fname)
+
+    def refresh_model_from_iso(self, acc):
+        if acc.column() == 0:
+            self.refresh_model(acc.data())
+
     def refresh_model(self, lmos):
-        # self.model = Dmodel(self.book.kartella_model(lmos))
-        # self.model.set_data(self.book.kartella_model(lmos))
-        self.setWindowTitle("Καρτέλλα %s" % lmos)
+        self.setWindowTitle("%s" % lmos)
         if self.parent:
-            self.parent.setWindowTitle("Καρτέλλα %s" % lmos)        
-        self.tbl.setModel(Dmodel(self.book.kartella_model(lmos)))
+            self.parent.setWindowTitle("%s" % lmos)  
+        self.model_lmos = Dmodel(self.book.kartella_model(lmos))  
+        self.tbl.setModel(self.model_lmos)
         self.tbl.setColumnWidth(0, 100)
         self.tbl.setColumnWidth(1, 450)
         self.tbl.resizeRowsToContents()
@@ -350,6 +375,7 @@ class MainWindow(qw.QMainWindow):
     def __init__(self, filename=None):
         super().__init__()
         self.setAttribute(qc.Qt.WA_DeleteOnClose)
+        self.setMinimumSize(1250, 800)
         # self.isUntitled = True
         self.fnam = filename
         self.createMenus()

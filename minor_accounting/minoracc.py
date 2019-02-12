@@ -7,6 +7,28 @@ from collections import defaultdict
 from collections import deque
 LOGARIASMOS_SPLITTER = '.'
 TRTUPLE = namedtuple('TRTUPLE', 'dat lmo per xr pi')
+STT = "%10s|%-30s|%-30s|%8s|%s\n"
+
+
+def stg(num):
+    num = str(num)
+    spv = [num,]
+    if '.' in num:
+        spv = num.split('.')
+    elif ',' in num:
+        spv = num.split(',')
+    assert len(spv) < 3
+    if len(spv) == 1:
+    	return spv[0] + '   '
+    elif len(spv) == 2:
+        if int(spv[1]) == 0:
+            return spv[0] + '   '
+    if len(spv[1]) == 1:
+	    return spv[0] + '.' + spv[1] + ' '
+    elif len(spv[1]) == 2:
+	    return spv[0] + '.' + spv[1]
+    else:
+	    return spv[0] + '.' + spv[1][:2]
 
 
 class Logariasmos:
@@ -124,7 +146,7 @@ class Book:
 
     def read_file(self, filename):
         # print('date_eos', self.date_eos)
-        with open(filename) as file:
+        with open(filename, encoding="utf-8") as file:
             for i, line in enumerate(file.readlines()):
                 if line.startswith('*'):
                     continue
@@ -132,7 +154,7 @@ class Book:
                     continue
                 try:
                     dat, apo, se, val, per = (
-                        i.strip() for i in line.strip().split('|'))
+                        j.strip() for j in line.strip().split('|'))
                     val = float(val.replace(',', '.'))
                 except Exception:
                     print(i + 1, line)
@@ -176,6 +198,15 @@ class Book:
         print('File %s created' % filename_data)
         print('Finished creating csv files')
 
+    def write_to_file(self, filename):
+        # stt = "%10s|%-30s|%-30s|%8s|%s\n"
+        data = ''
+        for trn in self.trans:
+            data += STT % (trn.dat, trn.apo, trn.se, stg(trn.val), trn.per)
+        with open(filename, 'w') as fil:
+            fil.write(data)
+        print('Finished creating %s file' % filename)
+
     def isozygio(self):
         lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
         for trn in self.trans:
@@ -189,13 +220,14 @@ class Book:
         lmoi = self.isozygio()
         headers = ("Λογαριασμοί", "Χρέωση", "Πίστωση", "Υπόλοιπο")
         align = (1, 3, 3, 3)
+        typos = (0, 1, 1, 1)
         vals = []
         for lmo in sorted(lmoi.keys()):
             xr = round(lmoi[lmo]['xr'], 2)
             pi = round(lmoi[lmo]['pi'], 2)
             yp = round(xr - pi, 2)
             vals.append((lmo, xr, pi, yp))
-        return headers, vals, align
+        return headers, vals, align, typos
 
     def isozygio_kinoymenon(self):
         lmoi = defaultdict(lambda: {'xr': 0, 'pi': 0})
@@ -211,6 +243,7 @@ class Book:
         return lmoi
 
     def metafora_ypoloipon(self, dat, filename):
+        # stt = "%10s|%-30s|%-30s|%8s|%s\n"
         lmoi = self.isozygio_kinoymenon()
         ant = 'ανοιγμα'
         per = 'Μεταφορά'
@@ -222,9 +255,11 @@ class Book:
             yp = round(xr - pi, 2)
             py = round(pi - xr, 2)
             if yp > 0:
-                lns += '|'.join((dat, ant, lmo, str(yp), per)) + '\n'
+                # lns += '|'.join((dat, ant, lmo, str(yp), per)) + '\n'
+                lns += STT % (dat, ant, lmo, stg(yp), per)
             elif py > 0:
-                lns += '|'.join((dat, lmo, ant, str(py), per)) + '\n'
+                # lns += '|'.join((dat, lmo, ant, str(py), per)) + '\n'
+                lns += STT % (dat, lmo, ant, stg(py), per)
         with open(filename, 'w') as fil:
             fil.write(lns)
 
@@ -272,6 +307,7 @@ class Book:
     def kartella_model(self, lmos):
         headers = ('Ημ/νία', 'Περιγραφή', 'Χρέωση', 'Πίστωση', 'Υπόλοιπο')
         align = (1, 1, 3, 3, 3)
+        typos = (0, 0, 1, 1, 1)
         vals = []
         ypo = 0
         for tr in sorted(self.trans, key=attrgetter('dat')):
@@ -281,7 +317,7 @@ class Book:
             if tr.se.startswith(lmos):
                 ypo += tr.val
                 vals.append((tr.datgr, tr.per, tr.val, 0, round(ypo, 2)))
-        return headers, vals, align
+        return headers, vals, align, typos
     
     def kartella(self, lmos):
         # if lmos in self.lmoi:
@@ -505,6 +541,7 @@ if __name__ == '__main__':
     pars.add_argument('-w', '--Write', help='Write to csv', default=None)
     pars.add_argument('-i', '--Insert', help='Insert', action='store_true')
     pars.add_argument('-v', '--version', action='version', version='1.1')
+    pars.add_argument('-m', '--metafora', help='Metafora Ypoloipon')
     args = pars.parse_args()
     book = Book.from_file(args.csv, args.Date)
     if not os.path.isfile(args.csv):
@@ -527,5 +564,7 @@ if __name__ == '__main__':
         else:
             print(book.kartella(args.Account))
     if args.Write:
-        book.write_csv_files(args.Write)
+        book.write_to_file(args.Write)
+    if args.metafora:
+        book.metafora_ypoloipon(args.metafora, args.metafora)
     # book.metafora_ypoloipon('2018-08-31', 'tst.csv')
