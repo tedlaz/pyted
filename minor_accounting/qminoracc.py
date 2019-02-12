@@ -331,11 +331,14 @@ class Dialog(qw.QWidget):
         bsave_ypol.clicked.connect(self.save_ypol)
         self.sbar.some_acc_clicked.connect(self.refresh_model)
         self.iso.clicked.connect(self.refresh_model_from_iso)
-        self.tbl.clicked.connect(self.model_rowdata)
+        self.tbl.doubleClicked.connect(self.model_rowdata)
 
     def model_rowdata(self, idx):
-        print(idx.row())
-        print(self.model_lmos.vals[idx.row()])
+        tran = self.book.trans[self.model_lmos.vals[idx.row()][5]]
+        stv = "Ημερομηνία: {dat}\nΑπό : {apo}\nΣε  : {se}\nΠοσό: {val}\nΠεριγραφή: {per}"
+        qw.QMessageBox.information(self,
+                                   "Εγγραφή %s" % (tran.row_dict['id']), 
+                                   stv.format(**tran.row_dict))
 
     def save_ypol(self):
         fname, _ = qw.QFileDialog.getSaveFileName(self, 'Filename', 'ypol', '')

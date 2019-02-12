@@ -6,7 +6,7 @@ from collections import namedtuple
 from collections import defaultdict
 from collections import deque
 LOGARIASMOS_SPLITTER = '.'
-TRTUPLE = namedtuple('TRTUPLE', 'dat lmo per xr pi')
+TRTUPLE = namedtuple('TRTUPLE', 'dat lmo per xr pi id')
 STT = "%10s|%-30s|%-30s|%8s|%s\n"
 
 
@@ -55,31 +55,37 @@ def ranks(lmos):
 
 
 class SimpleTransaction:
-    __slots__ = ['dat', 'apo', 'se', 'val', 'per']
+    __slots__ = ['dat', 'apo', 'se', 'val', 'per', 'id']
 
-    def __init__(self, dat, apo, se, val, per):
+    def __init__(self, dat, apo, se, val, per, id):
         assert apo != se
         self.dat = dat
         self.apo = apo
         self.se = se
         self.val = val
         self.per = per
+        self.id = id
 
     @property
     def linesd(self):
-        return {self.se: {'xr': self.val, 'pi': 0, 'dat': self.dat},
-                self.apo: {'xr': 0, 'pi': self.val, 'dat': self.dat}}
+        return {self.se: {'xr': self.val, 'pi': 0, 'dat': self.dat, 'id': self.id},
+                self.apo: {'xr': 0, 'pi': self.val, 'dat': self.dat, 'id': self.id}}
 
     @property
     def lines(self):
         return (TRTUPLE(dat=self.dat, lmo=self.se, xr=self.val, pi=0,
-                        per=self.per),
+                        per=self.per, id=self.id),
                 TRTUPLE(dat=self.dat, lmo=self.apo, xr=0, pi=self.val,
-                        per=self.per))
+                        per=self.per, id=self.id))
 
     @property
     def row_line(self):
-        return [self.dat, self.apo, self.se, self.val, self.per]
+        return [self.dat, self.apo, self.se, self.val, self.per, self.id]
+
+    @property
+    def row_dict(self):
+        return {'dat': self.dat, 'apo': self.apo, 'se': self.se,
+                'val': self.val, 'per': self.per, 'id': self.id}
 
     @property
     def datgr(self):
@@ -89,23 +95,23 @@ class SimpleTransaction:
     @property
     def to_json(self):
         fdi = {'dat': self.dat, 'apo': self.apo, 'se': self.se,
-               'val': self.val, 'per': self.per}
+               'val': self.val, 'per': self.per, 'id': self.id}
         return json.dumps(fdi, ensure_ascii=False)
 
     @property
     def to_json_normal(self):
-        fdi = {'dat': self.dat, 'apo': self.apo, 'per': self.per,
+        fdi = {'dat': self.dat, 'apo': self.apo, 'per': self.per, 'id': self.id,
                'lines': [{'lmo': self.apo, 'xr': 0, 'pi': self.val},
                          {'lmo': self.se, 'xr': self.val, 'pi': 0}]}
         return json.dumps(fdi, ensure_ascii=False)
 
     def __repr__(self):
-        stt = 'SimpleTransaction(dat:%s, apo:%s, se:%s, val:%f, per:%s)'
-        return stt % (self.dat, self.apo, self.se, self.val, self.per)
+        stt = 'SimpleTransaction(dat:%s, apo:%s, se:%s, val:%f, per:%s, id: %s)'
+        return stt % (self.dat, self.apo, self.se, self.val, self.per, self.id)
 
     def __str__(self):
-        stt = '%10s %-25s %-25s %10.2f %s'
-        return stt % (self.dat, self.apo, self.se, self.val, self.per)
+        stt = '%10s %-25s %-25s %10.2f %s %s'
+        return stt % (self.dat, self.apo, self.se, self.val, self.per, self.id)
 
 
 class Book:
@@ -123,8 +129,8 @@ class Book:
         return fcls
 
     def to_model(self):
-        headers = ('Ημ/νία', 'Από', 'Σε', 'Ποσό', 'Σχόλια')
-        types = (0, 0, 0, 1, 0)
+        headers = ('Ημ/νία', 'Από', 'Σε', 'Ποσό', 'Σχόλια', 'id')
+        types = (0, 0, 0, 1, 0, 1)
         mdata = [tran.row_line for tran in self.trans]
         return {'headers': headers, 'types': types, 'mdata': mdata}
 
@@ -132,9 +138,9 @@ class Book:
         for trn in self.trans[last_lines*-1:]:
             print(trn)
 
-    def create_and_add_transaction(self, dat, apo, se, val, per):
+    def create_and_add_transaction(self, dat, apo, se, val, per, id):
         """Add a new transaction"""
-        tran = SimpleTransaction(dat, apo, se, val, per)
+        tran = SimpleTransaction(dat, apo, se, val, per, id)
         self.add_transaction(tran)
 
     def add_transaction(self, simple_transaction):
@@ -146,6 +152,7 @@ class Book:
 
     def read_file(self, filename):
         # print('date_eos', self.date_eos)
+        idx = 0 
         with open(filename, encoding="utf-8") as file:
             for i, line in enumerate(file.readlines()):
                 if line.startswith('*'):
@@ -160,9 +167,11 @@ class Book:
                     print(i + 1, line)
                 if self.date_eos:
                     if dat <= self.date_eos:
-                        self.create_and_add_transaction(dat, apo, se, val, per)
+                        self.create_and_add_transaction(dat, apo, se, val, per,idx)
+                        idx += 1
                 else:
-                    self.create_and_add_transaction(dat, apo, se, val, per)
+                    self.create_and_add_transaction(dat, apo, se, val, per, idx)
+                    idx += 1
         self.last_date = dat
 
     def write_json_file(self, filename):
@@ -305,18 +314,18 @@ class Book:
         return stf
 
     def kartella_model(self, lmos):
-        headers = ('Ημ/νία', 'Περιγραφή', 'Χρέωση', 'Πίστωση', 'Υπόλοιπο')
-        align = (1, 1, 3, 3, 3)
-        typos = (0, 0, 1, 1, 1)
+        headers = ('Ημ/νία', 'Περιγραφή', 'Χρέωση', 'Πίστωση', 'Υπόλοιπο', 'id')
+        align = (1, 1, 3, 3, 3, 1)
+        typos = (0, 0, 1, 1, 1, 0)
         vals = []
         ypo = 0
         for tr in sorted(self.trans, key=attrgetter('dat')):
             if tr.apo.startswith(lmos):
                 ypo -= tr.val
-                vals.append((tr.datgr, tr.per, 0, tr.val, round(ypo, 2)))
+                vals.append((tr.datgr, tr.per, 0, tr.val, round(ypo, 2), tr.id))
             if tr.se.startswith(lmos):
                 ypo += tr.val
-                vals.append((tr.datgr, tr.per, tr.val, 0, round(ypo, 2)))
+                vals.append((tr.datgr, tr.per, tr.val, 0, round(ypo, 2), tr.id))
         return headers, vals, align, typos
     
     def kartella(self, lmos):
