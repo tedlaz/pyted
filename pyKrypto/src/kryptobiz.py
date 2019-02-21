@@ -68,7 +68,7 @@ def shuffle(stringArray):
 def makeArrayFromUnicode(siz=5000):
     a = u''
     for i in range(0, siz):
-        a += (unichr(i))
+        a += chr(i)
     return a
 
 
@@ -82,8 +82,8 @@ def makeMessage(msg, size=5000): # size for strbasis and key
 
 def makeFileMessage(msg, fname, size=5000):
     coded = makeMessage(msg, size)
-    f = open(fname, 'w')
-    f.write(coded.encode('utf-8'))
+    f = open(fname, 'w', encoding="utf-8")
+    f.write(coded)
     f.close()
 
 
@@ -95,10 +95,10 @@ def readMessage(msgCoded, size=5000):
 
 
 def readFileMessage(fname, size=5000):
-    f = open(fname)
+    f = open(fname, encoding="utf-8")
     coded = f.read()
     f.close()
-    return readMessage(coded.decode('utf-8'), size)
+    return readMessage(coded, size)
 
 
 if __name__ == "__main__":
@@ -111,9 +111,9 @@ if __name__ == "__main__":
     #coded = encode(strBasis, key, u'2,7182818 hghj και το κρασί δωρεάν ρε φίλε')
     #print('coded message   : ' + coded)
     #print('Message Decoded : ' + decode(strBasis, key, coded))
-    cm = makeMessage(u'ted εδώ είναι ωραία')
+    cm = makeMessage('ted εδώ είναι ωραία')
     #print(cm.encode('utf-8'))
     fm = readMessage(cm)
     #print(fm.encode('utf-8'))
-    makeFileMessage(u'Με λένε θοδωρή και όλα είναι μια χαρά \n και για να δούμε τι θα πούμε ρε παιδιά εδώ σε όλους ...1234 English', 'aa.txt')
+    makeFileMessage('Με λένε θοδωρή και όλα είναι μια χαρά \n και για να δούμε τι θα πούμε ρε παιδιά εδώ σε όλους ...1234 English', 'aa.txt')
     print(readFileMessage('aa.txt'))

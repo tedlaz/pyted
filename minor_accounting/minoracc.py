@@ -314,18 +314,18 @@ class Book:
         return stf
 
     def kartella_model(self, lmos):
-        headers = ('Ημ/νία', 'Περιγραφή', 'Χρέωση', 'Πίστωση', 'Υπόλοιπο', 'id')
-        align = (1, 1, 3, 3, 3, 1)
-        typos = (0, 0, 1, 1, 1, 0)
+        headers = ('id', 'Ημ/νία', 'Περιγραφή', 'Χρέωση', 'Πίστωση', 'Υπόλοιπο')
+        align = (1, 1, 1, 3, 3, 3)
+        typos = (0, 0, 0, 1, 1, 1)
         vals = []
         ypo = 0
         for tr in sorted(self.trans, key=attrgetter('dat')):
             if tr.apo.startswith(lmos):
                 ypo -= tr.val
-                vals.append((tr.datgr, tr.per, 0, tr.val, round(ypo, 2), tr.id))
+                vals.append((tr.id, tr.datgr, tr.per, 0, tr.val, round(ypo, 2)))
             if tr.se.startswith(lmos):
                 ypo += tr.val
-                vals.append((tr.datgr, tr.per, tr.val, 0, round(ypo, 2), tr.id))
+                vals.append((tr.id, tr.datgr, tr.per, tr.val, 0, round(ypo, 2)))
         return headers, vals, align, typos
     
     def kartella(self, lmos):

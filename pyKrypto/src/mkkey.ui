@@ -6,47 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
-    <height>213</height>
+    <width>439</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Δημιουργία κλειδιού</string>
+   <string>Key creator</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="bFilename">
-       <property name="text">
-        <string>Αρχείο</string>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/key</normaloff>:/key</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="txtFilename">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">
+       <property name="toolTip">
+        <string>Number of lines</string>
+       </property>
        <property name="text">
-        <string>Γραμμές</string>
+        <string>Lines</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="doubleSpinBox">
+       <property name="toolTip">
+        <string>Number of lines</string>
+       </property>
        <property name="decimals">
         <number>0</number>
        </property>
@@ -77,6 +61,31 @@
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="bFilename">
+       <property name="statusTip">
+        <string>File name for the new key</string>
+       </property>
+       <property name="text">
+        <string>File name</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/key</normaloff>:/key</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="txtFilename">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QProgressBar" name="progressBar">
      <property name="value">
       <number>0</number>
@@ -95,6 +104,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>doubleSpinBox</tabstop>
+  <tabstop>bFilename</tabstop>
+  <tabstop>txtFilename</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>
@@ -106,12 +121,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>240</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
+     <y>249</y>
     </hint>
    </hints>
   </connection>
@@ -122,12 +137,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>240</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>274</y>
+     <y>249</y>
     </hint>
    </hints>
   </connection>

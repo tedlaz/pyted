@@ -1,4 +1,5 @@
-<RCC>
+<!DOCTYPE RCC>
+<RCC version="1.0">
   <qresource>
     <file alias="filenew.png">images/filenew.png</file>
     <file alias="filesave.png">images/filesave.png</file>

@@ -26,8 +26,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="button_makeKey">
+        <property name="toolTip">
+         <string>Generate new key file</string>
+        </property>
         <property name="text">
-         <string>Δημιουργία κλειδιού</string>
+         <string>New key</string>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
@@ -37,8 +40,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="button_openkey">
+        <property name="toolTip">
+         <string>Use existing key file</string>
+        </property>
         <property name="text">
-         <string>Κλειδί..</string>
+         <string>Select key</string>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
@@ -74,8 +80,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QPushButton" name="button_open">
+        <property name="toolTip">
+         <string>Message to decrypt</string>
+        </property>
         <property name="text">
-         <string>Μύνημα</string>
+         <string>Open message</string>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
@@ -98,8 +107,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="button_save">
+        <property name="toolTip">
+         <string>Save encrypted message to a file</string>
+        </property>
         <property name="text">
-         <string>Αποθήκευση</string>
+         <string>Save message</string>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
@@ -109,8 +121,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_2">
+        <property name="statusTip">
+         <string>Exit application</string>
+        </property>
         <property name="text">
-         <string>Τερματισμός</string>
+         <string>Exit</string>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
@@ -128,7 +143,7 @@
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>23</height>
+     <height>29</height>
     </rect>
    </property>
   </widget>

@@ -276,7 +276,8 @@ class Dmodel(qc.QAbstractTableModel):
             if orientation == qc.Qt.Horizontal:
                 return self.headers[section]
             else:
-                return section + 1
+                pass
+                # return section + 1
         if role == qc.Qt.TextAlignmentRole:
             return qc.Qt.AlignCenter
 
@@ -334,7 +335,7 @@ class Dialog(qw.QWidget):
         self.tbl.doubleClicked.connect(self.model_rowdata)
 
     def model_rowdata(self, idx):
-        tran = self.book.trans[self.model_lmos.vals[idx.row()][5]]
+        tran = self.book.trans[self.model_lmos.vals[idx.row()][0]]
         stv = "Ημερομηνία: {dat}\nΑπό : {apo}\nΣε  : {se}\nΠοσό: {val}\nΠεριγραφή: {per}"
         qw.QMessageBox.information(self,
                                    "Εγγραφή %s" % (tran.row_dict['id']), 
@@ -355,9 +356,11 @@ class Dialog(qw.QWidget):
             self.parent.setWindowTitle("%s" % lmos)  
         self.model_lmos = Dmodel(self.book.kartella_model(lmos))  
         self.tbl.setModel(self.model_lmos)
-        self.tbl.setColumnWidth(0, 100)
-        self.tbl.setColumnWidth(1, 450)
+        self.tbl.setColumnWidth(0, 50)
+        self.tbl.setColumnWidth(1, 100)
+        self.tbl.setColumnWidth(2, 450)
         self.tbl.resizeRowsToContents()
+
 
 def test_sidebar(lmoi):
     app = qw.QApplication(sys.argv)
@@ -404,7 +407,7 @@ class MainWindow(qw.QMainWindow):
             self.init_vals(fnam)
 
 
-def test_app2(filename=None):
+def main(filename=None):
     app = qw.QApplication(sys.argv)
     dlg = MainWindow(filename)
     dlg.show()
@@ -414,4 +417,4 @@ def test_app2(filename=None):
 if __name__ == "__main__":
     # fil = "/home/ted/Documents/ted-data"
     # book = mac.Book.from_file(fil, '2030-10-31')
-    test_app2()
+    main()
