@@ -15,10 +15,10 @@ class krypto():
         self.keyLineLength = len(self.fkey)
         self.keyLines = 0
         try:
-            fk = open(self.fkey, 'r')
+            fk = open(self.fkey, 'r', encoding="utf-8")
         except:
             self.makeKey(self.fkey, keyLength)
-            fk = open(self.fkey, 'r')
+            fk = open(self.fkey, 'r', encoding="utf-8")
         try:
             i = 0
             for l in fk:

@@ -2,6 +2,37 @@ import random as rnd
 CHUNKSIZE = 4096
 
 
+def bisenet(filename, keyfile, outfile):
+    key = ''
+    msg = ''
+    cip = []
+    with open(keyfile, 'br') as kfil:
+        key = kfil.read()
+    key_lengh = len(key)
+    with open(filename, 'br') as mfil:
+        msg = mfil.read()
+    for i, abyt in enumerate(msg):
+        keypos = i % key_lengh
+        cip.append((abyt + key[keypos]) % 256)
+    with open(outfile, 'bw') as ofil:
+        ofil.write(bytes(cip))
+
+
+def debisenet(cipherfile, keyfile, messagefile):
+    key = ''
+    cip = ''
+    msg = []
+    with open(keyfile, 'br') as kfil:
+        key = kfil.read()
+    key_lengh = len(key)
+    with open(cipherfile, 'br') as mfil:
+        cip = mfil.read()
+    for i, abyt in enumerate(cip):
+        keypos = i % key_lengh
+        msg.append((abyt - key[keypos]) % 256)
+    with open(messagefile, 'bw') as ofil:
+        ofil.write(bytes(msg))    
+
 def crypto_byte(filename, key=220):
     fil = open(filename, 'br')
     fsave = "%s.enc" % filename
@@ -117,4 +148,6 @@ if __name__ == "__main__":
     # print([len(aaa[i]) for i in aaa.keys()])
     # encrypt("/home/ted/aaa.txt", '/home/ted/keya', "/home/ted/aaa.enc")
     # print(is_good_key('/home/ted/keya'))
-    decrypt("/home/ted/aaa.enc", '/home/ted/keya', "/home/ted/aaa1.txt")
+    # decrypt("/home/ted/aaa.enc", '/home/ted/keya', "/home/ted/aaa1.txt")
+    # bisenet("/home/ted/aaa.txt", '/home/ted/keya', '/home/ted/aaa.biz')
+    debisenet("/home/ted/aaa.biz", '/home/ted/keya', '/home/ted/aaa1.txt')
