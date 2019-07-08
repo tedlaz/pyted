@@ -21,6 +21,7 @@ document.write('\
 <li><a href="neuralnet.html">Machine Learning</a></li>\
 <li><a href="webserv.html">Web Υπηρεσίες</a></li>\
 <li><a href="personal.html">Προσωπικά</a></li>\
+<li><a href="youtube.html">YouTube Channels</a></li>\
 <li><a href="hardware.html">Hardware</a></li>\
 <li><a href="sequrity.html">Sequrity - ip tools</a></li>\
 <li><a href="games.html">Games</a></li>\
