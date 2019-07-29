@@ -51,5 +51,5 @@ def runit(dbf, xrisi, period='', ypoloipo=0):
 
 
 if __name__ == '__main__':
-    DBF = '/home/ted/tmp/fpa/2018.sql3'
-    runit(DBF, '2018', 'd', 44.44)
+    DBF = '/home/ted/Documents/pelates/samaras/2019b/el2019b.sql3'
+    runit(DBF, '2019', 'b', 0)
