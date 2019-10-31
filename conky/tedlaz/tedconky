@@ -1,0 +1,101 @@
+background no
+use_xft yes
+font Terminus:size=8
+xftalpha 0.5
+update_interval 1
+total_run_times 0
+own_window yes
+own_window_type normal
+own_window_transparent yes
+own_window_argb_visual yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+#default_bar_size 0 6
+ 
+maximum_width 220
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+default_color white
+default_shade_color red
+default_outline_color green
+alignment top_right
+gap_x 25
+gap_y 5
+no_buffers yes
+uppercase no
+cpu_avg_samples 2
+net_avg_samples 2
+override_utf8_locale yes
+use_spacer no
+ 
+own_window_argb_value 0
+own_window_colour 000000
+minimum_size 0 0
+
+#color0 dodgerblue3
+color0 aaddff
+color1 EC0100
+color2 E9E101
+color3 18FF00
+color4 66aaff
+color5 green
+color6 aaddff
+
+TEXT
+${font Ubuntu:pixelsize=20}${color5}${execi 6000 hostnamectl | awk '/Operating System/ {print $3,$4,$5}'}${execi 6000 hostnamectl | awk '/Architecture/ {print $2}'}
+$color${font Open Sans:size=8}${time %A}, ${if_match "pmfix${time %p}" == "pmfix"}${time %d %B %Y    %k:%M %P}${else}${time %d %B %Y    %l:%M %P}${endif}$font$color 
+Kernel$alignr$sysname $kernel 
+Uptime $alignr $uptime
+# DISKS
+${color1}${hr 3}
+${font Open Sans:Bold:size=10}${color0}DISK ${color2}${fs_used_perc /}%
+$color${font Open Sans:bold:size=8.5}${font Open Sans:bold:size=8.5}ROOT$font(${fs_type /})${color2}$alignr${fs_used /} / $color5${fs_size /}
+${color aaddff}write: ${diskio_write /dev/sdc}${color6}${alignc -20} read:${diskio_read /dev/sdc}  
+${color2}${fs_bar /}${color}
+${exec 10 ~/semplice-conky-harddisks.sh}
+${font Open Sans:bold:size=8.5}~(user home) $font$alignr ${execi 6000 du -sh ~ | awk '{print $1}'}
+${font Open Sans:bold:size=8.5}~/Documents $font$alignr ${execi 6000 du -sh ~/Documents | awk '{print $1}'}
+${font Open Sans:bold:size=8.5}~/Downloads $font$alignr ${execi 6000 du -sh ~/Downloads | awk '{print $1}'}
+# MEMORY
+${color1}${hr 3}
+${font Open Sans:Bold:size=10}${color0}MEMORY ${color2}$memperc%
+$color${font Open Sans:bold:size=8.5}Used:$color2$alignr$font $mem / $color5$memmax
+$color${font Open Sans:bold:size=8.5}Free:$alignr$font $color5$memeasyfree
+$color${font Open Sans:bold:size=8.5}Buffers / Cached:$alignr$font$buffers / $cached
+${color2}${membar 4} 
+$alignr${font Open Sans:Bold:size=10}${color0}RAM      CPU 
+$font${top_mem name 1}${alignr}${top_mem cpu 1} %
+${voffset -13}${alignr}${offset -60}${top_mem mem 1} %
+${top_mem name 2}${alignr}${top_mem cpu 2} %
+${voffset -13}${alignr}${offset -60}${top_mem mem 2} %
+${top_mem name 3}${alignr}${top_mem cpu 3} %
+${voffset -13}${alignr}${offset -60}${top_mem mem 3} %
+${top_mem name 4}${alignr}${top_mem cpu 4} %
+${voffset -13}${alignr}${offset -60}${top_mem mem 4} %
+# CPU
+${color1}${hr 3}
+${font Open Sans:Bold:size=10}${color0}CPU ${color2}$cpu% 
+$alignc${cpugraph 20,219 ff0000 ff4400}
+$alignr${font Open Sans:Bold:size=10}${color0}RAM      CPU 
+$font${top name 1}${alignr}${top cpu 1} %
+${voffset -13}${alignr}${offset -60}${top mem 1} %
+${top name 2}${alignr}${top cpu 2} %
+${voffset -13}${alignr}${offset -60}${top mem 2} %
+${top name 3}${alignr}${top cpu 3} %
+${voffset -13}${alignr}${offset -60}${top mem 3} %
+${top name 4}${alignr}${top cpu 4} %
+${voffset -13}${alignr}${offset -60}${top mem 4} %
+# NETWORK
+${color1}${hr 3}
+${font Open Sans:Bold:size=10}${color0}NETWORK $color
+$color${font Open Sans:bold:size=8.5}External IP ${font}${alignr}${execi 3600 wget -q -O /dev/stdout http://checkip.dyndns.org/ | cut -d : -f 2- | cut -d \< -f -1}$font
+${font Open Sans:bold:size=8.5}Ethernet $font$alignr ${addr enp37s0}
+
+↑${upspeedf enp37s0} kb/s $alignr ${totalup enp37s0}
+${voffset -20}$alignc${upspeedgraph enp37s0 18, 100  ff7700 ff0000}
+
+↓${downspeedf enp37s0} kb/s $alignr ${totaldown enp37s0}
+${voffset -20}$alignc${downspeedgraph enp37s0 18,100  005577 00ff00}
+${color1}${hr 3}

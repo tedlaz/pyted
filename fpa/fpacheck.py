@@ -153,6 +153,6 @@ def main(dbpath):
 
 
 if __name__ == '__main__':
-    dbpath = '/home/ted/Documents/pelates/samaras/2019b/el2019b.sql3'
+    dbpath = '/home/ted/Documents/pelates/samaras/2019/2019c/el2019c.sql3'
     main(dbpath)
     # print(accountSimilar('64.02.06.024', ['54.00.29.024', '54.00.29.025']))
