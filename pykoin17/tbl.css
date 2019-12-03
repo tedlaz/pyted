@@ -1,0 +1,26 @@
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #000000;
+  padding: 4px;
+}
+
+th {
+  font-size: 14px;
+}
+
+td {
+  font-size: 13px;
+}
+
+tr:nth-child(even) {
+  background-color: #eeeeee;
+}
+
+.ted1 {
+  font-size: 8px;
+}
